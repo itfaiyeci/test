@@ -166,70 +166,95 @@
             gap: 10px;
             background: white;
             padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.06);
             width: 100%;
             max-width: 210mm;
         }
         
         button {
             padding: 10px 15px;
-            background: #3498db;
+            background: #2563eb;
+            background-image: linear-gradient(180deg, #3b7cf6, #2563eb);
             color: white;
-            border: none;
-            border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s;
+            font-size: 11px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 6px;
             white-space: nowrap;
             min-height: 40px;
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            box-shadow: 0 1px 2px rgba(15,23,42,0.08);
         }
         
         button:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
+            filter: brightness(1.06);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(15,23,42,0.14);
         }
         
+        button:active {
+            transform: translateY(0);
+            filter: brightness(0.97);
+            box-shadow: 0 1px 2px rgba(15,23,42,0.1);
+        }
+        
+        /* Birincil aksiyon: PDF İndir - en yüksek görsel ağırlık */
         .btn-success {
-            background: #2ecc71;
+            background-image: linear-gradient(180deg, #22b06b, #16974f);
         }
         
         .btn-success:hover {
-            background: #27ae60;
+            filter: brightness(1.08);
         }
         
         .btn-warning {
-            background: #f39c12;
+            background-image: linear-gradient(180deg, #64748b, #475569);
         }
         
         .btn-warning:hover {
-            background: #e67e22;
+            filter: brightness(1.1);
         }
         
+        /* Nadir kullanılan, yıkıcı aksiyon: hafif/outline görünüm, dikkat çekmesin */
         .btn-danger {
-            background: #e74c3c;
+            background: #fff;
+            background-image: none;
+            color: #dc2626;
+            border: 1.5px solid #fecaca;
+            box-shadow: none;
         }
         
         .btn-danger:hover {
-            background: #c0392b;
+            background: #fef2f2;
+            filter: none;
+            box-shadow: none;
         }
         
         .btn-secondary {
-            background: #8e44ad;
+            background: #fff;
+            background-image: none;
+            color: #475569;
+            border: 1.5px solid #e2e8f0;
+            box-shadow: none;
             padding: 8px 12px;
-            font-size: 9.6px;
+            font-size: 11px;
+            font-weight: 600;
             min-height: 32px;
             gap: 4px;
-            border-radius: 6.4px;
+            border-radius: 8px;
         }
         
         .btn-secondary:hover {
-            background: #732d91;
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            filter: none;
+            box-shadow: none;
         }
         
         /* A4 BOYUTU SABİT STİLLERİ */
@@ -1102,7 +1127,11 @@
             }
             
             .controls {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            #save-pdf {
+                grid-column: 1 / -1;
             }
             
             .controls button {
@@ -1112,7 +1141,7 @@
             }
             
             .controls .btn-secondary {
-                font-size: 9px;
+                font-size: 11px;
             }
             
             .instructions, .header {
@@ -1143,14 +1172,18 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             
+            #save-pdf {
+                grid-column: 1 / -1;
+            }
+            
             .controls button {
                 min-width: 0;
                 padding: 8px 4px;
-                font-size: 10px;
+                font-size: 11px;
             }
             
             .controls .btn-secondary {
-                font-size: 8.5px;
+                font-size: 11px;
             }
             
             .instructions, .header {
@@ -2377,7 +2410,7 @@ img {
                 </button>
                 <button id="export-data" class="btn-secondary" type="button">
                     <span>💾</span>
-                    <span class="button-text" data-key="exportData">Yedeği İndir</span>
+                    <span class="button-text" data-key="exportData">Yedekle</span>
                 </button>
                 <button id="import-data" class="btn-secondary" type="button">
                     <span>📂</span>
@@ -2740,7 +2773,7 @@ img {
                 "clearAll": "Tümünü Temizle",
                 "preview": "Önizleme",
                 "savePDF": "PDF İndir",
-                "exportData": "Yedeği İndir",
+                "exportData": "Yedekle",
                 "importData": "Yedeği Yükle",
                 "importSuccess": "Yedek başarıyla yüklendi!",
                 "importError": "Geçersiz yedek dosyası!",
@@ -4586,12 +4619,14 @@ class SocialMediaManager {
                 
                 // Input event listener
                 emailInput.addEventListener('input', function(e) {
+                    if (this.classList.contains('empty-field')) return; // placeholder metni, gerçek girdi değil
                     const value = this.textContent.trim();
                     showEmailSuggestions(value, emailDomains, suggestionsBox, emailInput);
                 });
                 
                 // Focus event - önerileri göster
                 emailInput.addEventListener('focus', function() {
+                    if (this.classList.contains('empty-field')) return; // placeholder metni, gerçek girdi değil
                     const value = this.textContent.trim();
                     if (value && !value.includes('@')) {
                         showEmailSuggestions(value, emailDomains, suggestionsBox, emailInput);
@@ -7185,4 +7220,4 @@ s0.parentNode.insertBefore(s1,s0);
 </body>
 
 
-</html>
+</html>  
