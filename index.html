@@ -1101,6 +1101,20 @@
                 width: calc(100vw - 20px);
             }
             
+            .controls {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .controls button {
+                min-width: 0;
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+            
+            .controls .btn-secondary {
+                font-size: 9px;
+            }
+            
             .instructions, .header {
                 width: calc(100vw - 20px);
                 max-width: none;
@@ -1123,6 +1137,20 @@
                 position: sticky;
                 left: 5px;
                 width: calc(100vw - 10px);
+            }
+            
+            .controls {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .controls button {
+                min-width: 0;
+                padding: 8px 4px;
+                font-size: 10px;
+            }
+            
+            .controls .btn-secondary {
+                font-size: 8.5px;
             }
             
             .instructions, .header {
@@ -7157,4 +7185,4 @@ s0.parentNode.insertBefore(s1,s0);
 </body>
 
 
-</html>  
+</html>
