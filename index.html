@@ -428,6 +428,65 @@
             padding: 10px;
         }
 
+        .avatar-size-hint {
+            display: block;
+            font-size: 11px;
+            color: #a0a6ab;
+            margin-top: 4px;
+        }
+
+        /* Fotoğraf kaydırma (pan) kontrolleri */
+        .avatar-pan-controls {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            margin: 6px auto 0;
+            width: fit-content;
+        }
+
+        .avatar-pan-controls.active {
+            display: flex;
+        }
+
+        .avatar-pan-row {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .avatar-pan-btn {
+            width: 28px;
+            height: 28px;
+            min-height: auto;
+            padding: 0;
+            border-radius: 50%;
+            background: #ecf0f1;
+            color: #2c3e50;
+            border: 1px solid #d5dbdb;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .avatar-pan-btn:hover {
+            background: #d5dbdb;
+        }
+
+        .avatar-pan-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            background: #ecf0f1;
+        }
+
+        .avatar-pan-reset {
+            font-size: 8px;
+            color: #3498db;
+        }
+
         #delAvatar {
             position: absolute;
             top: 5px;
@@ -1038,7 +1097,7 @@
             }
             
             /* TÜM BUTONLARI GİZLE */
-            button, .buttons-inline, .add-btn, .remove-btn, #delAvatar {
+            button, .buttons-inline, .add-btn, .remove-btn, #delAvatar, #avatarPanControls {
                 display: none !important;
             }
             
@@ -2710,9 +2769,22 @@ img {
                                 <!-- Fotoğraf yükleme alanı -->
                                 <div id="avatarBox" data-hint="CV'niz için profesyonel bir fotoğraf ekleyin">
                                     <img id="avatar" alt="Fotoğraf" />
-                                    <span id="avatarText" data-key="addPhoto">Fotoğraf eklemek için tıklayın</span>
+                                    <span id="avatarText">
+                                        <span data-key="addPhoto">Fotoğraf eklemek için tıklayın</span>
+                                        <span id="avatarSizeHint" class="avatar-size-hint" data-key="avatarBiometricSize">(Biyometrik ölçü: 50×60mm)</span>
+                                    </span>
                                     <span id="delAvatar" class="no-print">X</span>
                                     <input type="file" id="photoInput" accept="image/*" style="display:none;" />
+                                </div>
+                                <!-- Fotoğraf konumlandırma (kaydırma) kontrolleri - sadece fotoğraf yüklüyken görünür -->
+                                <div id="avatarPanControls" class="avatar-pan-controls no-print">
+                                    <button type="button" id="avatarPanUp" class="avatar-pan-btn avatar-pan-up" title="Yukarı kaydır" data-key-title="panUp">▲</button>
+                                    <div class="avatar-pan-row">
+                                        <button type="button" id="avatarPanLeft" class="avatar-pan-btn avatar-pan-left" title="Sola kaydır" data-key-title="panLeft">◀</button>
+                                        <button type="button" id="avatarPanReset" class="avatar-pan-btn avatar-pan-reset" title="Ortala" data-key-title="panReset">●</button>
+                                        <button type="button" id="avatarPanRight" class="avatar-pan-btn avatar-pan-right" title="Sağa kaydır" data-key-title="panRight">▶</button>
+                                    </div>
+                                    <button type="button" id="avatarPanDown" class="avatar-pan-btn avatar-pan-down" title="Aşağı kaydır" data-key-title="panDown">▼</button>
                                 </div>
                             </div>
                             
@@ -3178,6 +3250,12 @@ img {
                 "languageNamePlaceholder": "Türkçe",
                 "languageLevelPlaceholder": "Ana Dil",
                 "addPhoto": "Fotoğraf eklemek için tıklayın",
+                "avatarBiometricSize": "(Biyometrik ölçü: 50×60mm)",
+                "panUp": "Yukarı kaydır",
+                "panDown": "Aşağı kaydır",
+                "panLeft": "Sola kaydır",
+                "panRight": "Sağa kaydır",
+                "panReset": "Ortala",
                 
                 // İpucu Metinleri
                 "fullNameHint": "Tam adınızı yazın",
@@ -3360,6 +3438,12 @@ img {
                 "languageNamePlaceholder": "English",
                 "languageLevelPlaceholder": "Native",
                 "addPhoto": "Click to add photo",
+                "avatarBiometricSize": "(Biometric size: 50×60mm)",
+                "panUp": "Move up",
+                "panDown": "Move down",
+                "panLeft": "Move left",
+                "panRight": "Move right",
+                "panReset": "Center",
                 "fullNameHint": "Write your full name",
                 "professionHint": "e.g.: Software Developer, Accounting Specialist",
                 "phoneHint": "Enter only numbers, format will be applied automatically",
@@ -3536,6 +3620,12 @@ img {
                 "languageNamePlaceholder": "Deutsch",
                 "languageLevelPlaceholder": "Muttersprache",
                 "addPhoto": "Klicken Sie, um ein Foto hinzuzufügen",
+                "avatarBiometricSize": "(Biometrisches Maß: 50×60mm)",
+                "panUp": "Nach oben verschieben",
+                "panDown": "Nach unten verschieben",
+                "panLeft": "Nach links verschieben",
+                "panRight": "Nach rechts verschieben",
+                "panReset": "Zentrieren",
                 "fullNameHint": "Schreiben Sie Ihren vollständigen Namen",
                 "professionHint": "z.B.: Softwareentwickler, Buchhaltungsspezialist",
                 "phoneHint": "Geben Sie nur Zahlen ein, das Format wird automatisch angewendet",
@@ -3711,6 +3801,12 @@ img {
                 "languageNamePlaceholder": "Français",
                 "languageLevelPlaceholder": "Langue maternelle",
                 "addPhoto": "Cliquez pour ajouter une photo",
+                "avatarBiometricSize": "(Taille biométrique : 50×60mm)",
+                "panUp": "Déplacer vers le haut",
+                "panDown": "Déplacer vers le bas",
+                "panLeft": "Déplacer à gauche",
+                "panRight": "Déplacer à droite",
+                "panReset": "Centrer",
                 "fullNameHint": "Écrivez votre nom complet",
                 "professionHint": "ex: Développeur de logiciels, Spécialiste comptable",
                 "phoneHint": "Saisissez uniquement des chiffres, le format sera appliqué automatiquement",
@@ -3886,6 +3982,12 @@ img {
                 "languageNamePlaceholder": "Español",
                 "languageLevelPlaceholder": "Lengua materna",
                 "addPhoto": "Haz clic para agregar foto",
+                "avatarBiometricSize": "(Tamaño biométrico: 50×60mm)",
+                "panUp": "Mover arriba",
+                "panDown": "Mover abajo",
+                "panLeft": "Mover a la izquierda",
+                "panRight": "Mover a la derecha",
+                "panReset": "Centrar",
                 "fullNameHint": "Escribe tu nombre completo",
                 "professionHint": "ej: Desarrollador de software, Especialista en contabilidad",
                 "phoneHint": "Ingresa solo números, el formato se aplicará automáticamente",
@@ -4061,6 +4163,12 @@ img {
                 "languageNamePlaceholder": "Italiano",
                 "languageLevelPlaceholder": "Madrelingua",
                 "addPhoto": "Clicca per aggiungere foto",
+                "avatarBiometricSize": "(Misura biometrica: 50×60mm)",
+                "panUp": "Sposta su",
+                "panDown": "Sposta giù",
+                "panLeft": "Sposta a sinistra",
+                "panRight": "Sposta a destra",
+                "panReset": "Centra",
                 "fullNameHint": "Scrivi il tuo nome completo",
                 "professionHint": "es: Sviluppatore software, Specialista contabile",
                 "phoneHint": "Inserisci solo numeri, il formato sarà applicato automaticamente",
@@ -4236,6 +4344,12 @@ img {
                 "languageNamePlaceholder": "Português",
                 "languageLevelPlaceholder": "Língua materna",
                 "addPhoto": "Clique para adicionar foto",
+                "avatarBiometricSize": "(Tamanho biométrico: 50×60mm)",
+                "panUp": "Mover para cima",
+                "panDown": "Mover para baixo",
+                "panLeft": "Mover para esquerda",
+                "panRight": "Mover para direita",
+                "panReset": "Centralizar",
                 "fullNameHint": "Escreva seu nome completo",
                 "professionHint": "ex: Desenvolvedor de software, Especialista em contabilidade",
                 "phoneHint": "Digite apenas números, o formato será aplicado automaticamente",
@@ -4411,6 +4525,12 @@ img {
                 "languageNamePlaceholder": "Русский",
                 "languageLevelPlaceholder": "Родной",
                 "addPhoto": "Нажмите, чтобы добавить фото",
+                "avatarBiometricSize": "(Биометрический размер: 50×60мм)",
+                "panUp": "Сдвинуть вверх",
+                "panDown": "Сдвинуть вниз",
+                "panLeft": "Сдвинуть влево",
+                "panRight": "Сдвинуть вправо",
+                "panReset": "Центрировать",
                 "fullNameHint": "Напишите свое полное имя",
                 "professionHint": "напр: Разработчик программного обеспечения, Специалист по бухгалтерии",
                 "phoneHint": "Вводите только цифры, формат будет применен автоматически",
@@ -4586,6 +4706,12 @@ img {
                 "languageNamePlaceholder": "العربية",
                 "languageLevelPlaceholder": "اللغة الأم",
                 "addPhoto": "انقر لإضافة صورة",
+                "avatarBiometricSize": "(المقاس الحيوي: 50×60 مم)",
+                "panUp": "تحريك لأعلى",
+                "panDown": "تحريك لأسفل",
+                "panLeft": "تحريك لليسار",
+                "panRight": "تحريك لليمين",
+                "panReset": "توسيط",
                 "fullNameHint": "اكتب اسمك الكامل",
                 "professionHint": "مثال: مطور برمجيات، أخصائي محاسبة",
                 "phoneHint": "أدخل أرقامًا فقط، سيتم تطبيق التنسيق تلقائيًا",
@@ -4761,6 +4887,12 @@ img {
                 "languageNamePlaceholder": "中文",
                 "languageLevelPlaceholder": "母语",
                 "addPhoto": "点击添加照片",
+                "avatarBiometricSize": "(生物特征尺寸：50×60毫米)",
+                "panUp": "上移",
+                "panDown": "下移",
+                "panLeft": "左移",
+                "panRight": "右移",
+                "panReset": "居中",
                 "fullNameHint": "写下您的全名",
                 "professionHint": "例如: 软件开发人员, 会计专家",
                 "phoneHint": "只输入数字, 格式将自动应用",
@@ -5114,22 +5246,112 @@ class SocialMediaManager {
             // Sayfa yüklendiğinde varsayılan dili ayarla
             changeLanguage('tr');
             
+            // Fotoğraf seçildiğinde yükle - kutunun oranına (5:6) göre kırpılır.
+            // Orijinal görsel saklanır, kullanıcı ok butonlarıyla kırpma alanını
+            // kaydırabilir (sağa/sola/yukarı/aşağı). CSS object-fit'e hiç
+            // ihtiyaç yok; görsel her zaman kutuya birebir uyan bir dikdörtgen olur.
+            const AVATAR_TARGET_W = 500;
+            const AVATAR_TARGET_H = 600;
+            const AVATAR_TARGET_RATIO = AVATAR_TARGET_W / AVATAR_TARGET_H;
+            const AVATAR_PAN_STEP = 0.08; // her tık, mevcut kayma payının %8'i kadar oynatır
+
+            window.avatarOriginalImg = null;
+            window.avatarPanX = 0.5; // 0 = en sol, 0.5 = orta, 1 = en sağ
+            window.avatarPanY = 0.5; // 0 = en üst, 0.5 = orta, 1 = en alt
+
+            // Orijinal görsel + mevcut pan durumuna göre kırpıp #avatar'a basar
+            function renderAvatarCrop() {
+                const img = window.avatarOriginalImg;
+                if (!img) return;
+
+                const srcW = img.naturalWidth;
+                const srcH = img.naturalHeight;
+                const srcRatio = srcW / srcH;
+
+                let cropW, cropH, maxX, maxY;
+                if (srcRatio > AVATAR_TARGET_RATIO) {
+                    cropH = srcH;
+                    cropW = srcH * AVATAR_TARGET_RATIO;
+                } else {
+                    cropW = srcW;
+                    cropH = srcW / AVATAR_TARGET_RATIO;
+                }
+                maxX = srcW - cropW; // yatayda kayabileceğimiz toplam mesafe
+                maxY = srcH - cropH; // dikeyde kayabileceğimiz toplam mesafe
+
+                const cropX = maxX * window.avatarPanX;
+                const cropY = maxY * window.avatarPanY;
+
+                const canvas = document.createElement('canvas');
+                canvas.width = AVATAR_TARGET_W;
+                canvas.height = AVATAR_TARGET_H;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, AVATAR_TARGET_W, AVATAR_TARGET_H);
+
+                document.getElementById("avatar").src = canvas.toDataURL('image/jpeg', 0.92);
+
+                // Kayma payı olmayan yönde (örn. görsel tam oranda ise) butonları devre dışı bırak
+                document.getElementById('avatarPanLeft').disabled = maxX <= 0;
+                document.getElementById('avatarPanRight').disabled = maxX <= 0;
+                document.getElementById('avatarPanUp').disabled = maxY <= 0;
+                document.getElementById('avatarPanDown').disabled = maxY <= 0;
+            }
+
+            function panAvatar(dx, dy) {
+                window.avatarPanX = Math.min(1, Math.max(0, window.avatarPanX + dx));
+                window.avatarPanY = Math.min(1, Math.max(0, window.avatarPanY + dy));
+                renderAvatarCrop();
+                if (window.autoSaveManager) window.autoSaveManager.debouncedSave();
+            }
+
+            document.getElementById('avatarPanUp').addEventListener('click', function(e){ e.stopPropagation(); panAvatar(0, -AVATAR_PAN_STEP); });
+            document.getElementById('avatarPanDown').addEventListener('click', function(e){ e.stopPropagation(); panAvatar(0, AVATAR_PAN_STEP); });
+            document.getElementById('avatarPanLeft').addEventListener('click', function(e){ e.stopPropagation(); panAvatar(-AVATAR_PAN_STEP, 0); });
+            document.getElementById('avatarPanRight').addEventListener('click', function(e){ e.stopPropagation(); panAvatar(AVATAR_PAN_STEP, 0); });
+            document.getElementById('avatarPanReset').addEventListener('click', function(e){
+                e.stopPropagation();
+                window.avatarPanX = 0.5;
+                window.avatarPanY = 0.5;
+                renderAvatarCrop();
+                if (window.autoSaveManager) window.autoSaveManager.debouncedSave();
+            });
+
             // Fotoğraf yükleme işlevselliği
             document.getElementById("avatarBox").addEventListener("click", function(){
                 document.getElementById("photoInput").click();
             });
 
-            // Fotoğraf seçildiğinde yükle
             document.getElementById("photoInput").addEventListener("change", function(){
                 let file = this.files[0];
                 if(file){
                     let reader = new FileReader();
                     reader.onload = e => {
-                        const avatar = document.getElementById("avatar");
-                        avatar.src = e.target.result;
-                        avatar.style.display = "block";
-                        document.getElementById("avatarText").style.display = "none";
-                        document.getElementById("delAvatar").style.display = "block";
+                        const rawDataUrl = e.target.result;
+                        const img = new Image();
+                        img.onload = () => {
+                            window.avatarOriginalImg = img;
+                            window.avatarPanX = 0.5;
+                            window.avatarPanY = 0.5;
+                            try {
+                                renderAvatarCrop();
+                            } catch (err) {
+                                console.error('Fotoğraf kırpma hatası:', err);
+                                document.getElementById("avatar").src = rawDataUrl;
+                            }
+                            document.getElementById("avatar").style.display = "block";
+                            document.getElementById("avatarText").style.display = "none";
+                            document.getElementById("delAvatar").style.display = "block";
+                            document.getElementById("avatarPanControls").classList.add('active');
+                        };
+                        img.onerror = () => {
+                            // Tarayıcı görseli hiç açamazsa (örn. desteklenmeyen format), ham veriyi kullan
+                            window.avatarOriginalImg = null;
+                            document.getElementById("avatar").src = rawDataUrl;
+                            document.getElementById("avatar").style.display = "block";
+                            document.getElementById("avatarText").style.display = "none";
+                            document.getElementById("delAvatar").style.display = "block";
+                        };
+                        img.src = rawDataUrl;
                     };
                     reader.readAsDataURL(file);
                 }
@@ -5138,10 +5360,14 @@ class SocialMediaManager {
             // Fotoğraf silme
             document.getElementById("delAvatar").addEventListener("click", function(e){
                 e.stopPropagation();
+                window.avatarOriginalImg = null;
+                window.avatarPanX = 0.5;
+                window.avatarPanY = 0.5;
                 document.getElementById("avatar").src = "";
                 document.getElementById("avatar").style.display = "none";
                 document.getElementById("avatarText").style.display = "block";
                 document.getElementById("delAvatar").style.display = "none";
+                document.getElementById("avatarPanControls").classList.remove('active');
                 document.getElementById("photoInput").value = "";
             });
 
@@ -6857,7 +7083,7 @@ if (socialMediaSection) {
                 const cvContent = document.getElementById('cv-form').cloneNode(true);
                 
                 // Butonları gizle
-                const buttons = cvContent.querySelectorAll('.buttons-inline, .add-btn, .remove-btn, #delAvatar');
+                const buttons = cvContent.querySelectorAll('.buttons-inline, .add-btn, .remove-btn, #delAvatar, #avatarPanControls');
                 buttons.forEach(button => {
                     button.style.display = 'none';
                 });
@@ -6949,7 +7175,7 @@ if (socialMediaSection) {
                     width: 794, // 210mm in pixels
                     height: 1123, // 297mm in pixels
                     onclone: function(clonedDoc) {
-                        const clonedButtons = clonedDoc.querySelectorAll('.buttons-inline, .add-btn, .remove-btn, #delAvatar');
+                        const clonedButtons = clonedDoc.querySelectorAll('.buttons-inline, .add-btn, .remove-btn, #delAvatar, #avatarPanControls');
                         clonedButtons.forEach(button => { button.style.display = 'none'; });
 
                         const clonedSectionDescriptions = clonedDoc.querySelectorAll('.section-description');
@@ -6999,7 +7225,7 @@ if (socialMediaSection) {
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF('p', 'mm', 'a4');
 
-                    const originalButtons = document.querySelectorAll('.buttons-inline, .add-btn, .remove-btn, #delAvatar');
+                    const originalButtons = document.querySelectorAll('.buttons-inline, .add-btn, .remove-btn, #delAvatar, #avatarPanControls');
                     const originalDisplay = [];
                     originalButtons.forEach(button => {
                         originalDisplay.push(button.style.display);
@@ -8317,4 +8543,4 @@ s0.parentNode.insertBefore(s1,s0);
 </body>
 
 
-</html>  
+</html>
