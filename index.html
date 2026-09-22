@@ -410,9 +410,9 @@
         }
 
         #avatar {
-            width: auto;
+            width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             object-position: center;
             display: none;
         }
@@ -601,7 +601,7 @@
             min-height: 80px;
         }
         
-        .experience-item, .education-item, .course-item {
+        .experience-item, .education-item, .course-item, .project-item {
             margin-bottom: 10px;
             padding-bottom: 10px;
             border-bottom: 1px dashed #ecf0f1;
@@ -686,6 +686,37 @@
             color: #777;
             text-align: right;
             min-width: 100px;
+        }
+        
+        /* PROJELER BÖLÜMÜ İÇİN STİLLER */
+        .project-subtitle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 3px 0;
+        }
+        
+        .project-tech {
+            font-style: italic;
+            font-size: 12px;
+            color: #555;
+            text-align: left;
+            flex: 1;
+        }
+        
+        .project-date {
+            font-size: 11px;
+            color: #777;
+            text-align: right;
+            min-width: 100px;
+        }
+        
+        .project-link {
+            font-size: 11px;
+            color: #3498db;
+            text-decoration: underline;
+            margin-top: 3px;
+            word-break: break-all;
         }
         
         /* Kurs bölümü için özel stiller */
@@ -1037,9 +1068,9 @@
             }
             
             #avatar {
-                width: auto !important;
+                width: 100% !important;
                 height: 100% !important;
-                object-fit: contain !important;
+                object-fit: cover !important;
             }
 
             /* Boş alanlar için sarı arka planı kaldır */
@@ -1074,6 +1105,7 @@
             .section.hidden-in-pdf,
             .education-item.hidden-in-pdf,
             .experience-item.hidden-in-pdf,
+            .project-item.hidden-in-pdf,
             .course-item.hidden-in-pdf,
             .reference-item.hidden-in-pdf,
             .language-item.hidden-in-pdf {
@@ -1113,14 +1145,15 @@
         }
         
         .pdf-mode #avatar {
-            width: auto !important;
+            width: 100% !important;
             height: 100% !important;
-            object-fit: contain !important;
+            object-fit: cover !important;
         }
 
         .pdf-mode .editable.empty-field {
             background-color: transparent !important;
             border-color: transparent !important;
+            display: none !important;
         }
 
         .pdf-mode .left-column {
@@ -1147,6 +1180,7 @@
         .pdf-mode .section.hidden-in-pdf,
         .pdf-mode .education-item.hidden-in-pdf,
         .pdf-mode .experience-item.hidden-in-pdf,
+        .pdf-mode .project-item.hidden-in-pdf,
         .pdf-mode .course-item.hidden-in-pdf,
         .pdf-mode .reference-item.hidden-in-pdf,
         .pdf-mode .language-item.hidden-in-pdf {
@@ -1423,6 +1457,7 @@
         .pdf-mode .editable.empty-field {
             background-color: transparent !important;
             border-color: transparent !important;
+            display: none !important;
         }
 
         /* Tarih alanları için sabit genişlik */
@@ -2477,19 +2512,25 @@ img {
 .a4-container .item-subtitle,
 .a4-container .education-institution,
 .a4-container .experience-company,
-.a4-container .course-institution {
+.a4-container .course-institution,
+.a4-container .project-tech {
     color: var(--cv-text-secondary) !important;
 }
 .a4-container .item-duration,
 .a4-container .education-date,
 .a4-container .experience-duration,
-.a4-container .course-date {
+.a4-container .course-date,
+.a4-container .project-date {
     color: var(--cv-text-muted) !important;
 }
 .a4-container .experience-item,
 .a4-container .education-item,
-.a4-container .course-item {
+.a4-container .course-item,
+.a4-container .project-item {
     border-bottom-color: var(--cv-border-light) !important;
+}
+.a4-container .project-link {
+    color: var(--cv-accent) !important;
 }
 .a4-container .skill-item,
 .a4-container .interest-item {
@@ -2828,6 +2869,27 @@ img {
                                 </div>
                             </div>
                             
+                            <!-- Projeler -->
+                            <div class="section" id="projects-section">
+                                <div class="section-title" data-key="projects">Projeler</div>
+                                <div class="section-description" data-key="projectsDescription">Geliştirdiğiniz projeleri ekleyin (Maksimum 5)</div>
+                                <div id="projects-container">
+                                    <div class="project-item">
+                                        <div class="item-title editable empty-field" contenteditable="true" data-placeholder-key="projectTitlePlaceholder" data-hint-key="projectTitleHint"></div>
+                                        <div class="project-subtitle-container">
+                                            <div class="project-tech editable empty-field" contenteditable="true" data-placeholder-key="projectTechPlaceholder" data-hint-key="projectTechHint"></div>
+                                            <div class="project-date editable date-input" contenteditable="true" data-placeholder-key="projectDatePlaceholder" data-hint-key="projectDateHint"></div>
+                                        </div>
+                                        <div class="item-description editable empty-field" contenteditable="true" data-placeholder-key="projectDescriptionPlaceholder" data-hint-key="projectDescriptionHint"></div>
+                                        <div class="project-link editable empty-field" contenteditable="true" data-placeholder-key="projectLinkPlaceholder" data-hint-key="projectLinkHint"></div>
+                                    </div>
+                                </div>
+                                <div class="buttons-inline">
+                                    <button class="add-btn" id="add-project-btn" data-key="addProject">+ Proje Ekle</button>
+                                    <button class="remove-btn" id="remove-project-btn" data-key="removeProject">Son Projeyi Kaldır</button>
+                                </div>
+                            </div>
+                            
                             <!-- Kurslar & Sertifikalar -->
                             <div class="section" id="courses-section">
                                 <div class="section-title" data-key="courses">Kurslar & Sertifikalar</div>
@@ -3055,6 +3117,20 @@ img {
                 "aboutDescription": "Kendinizi kısaca tanıtın. Deneyimleriniz, hedefleriniz ve uzmanlık alanlarınız hakkında bilgi verin.",
                 "educationDescription": "En yüksek seviyeden başlayarak eğitim geçmişinizi ekleyin",
                 "experienceDescription": "En son çalıştığınız işten başlayarak iş deneyimlerinizi ekleyin (Maksimum 5)",
+                "projects": "Projeler",
+                "projectsDescription": "Geliştirdiğiniz projeleri ekleyin (Maksimum 5)",
+                "projectTitlePlaceholder": "Proje Adı",
+                "projectTitleHint": "Projenizin adı",
+                "projectTechPlaceholder": "Kullanılan Teknolojiler",
+                "projectTechHint": "Örn: React, Node.js, MongoDB",
+                "projectDatePlaceholder": "0000",
+                "projectDateHint": "Sadece rakam girin, tire otomatik eklenecek",
+                "projectDescriptionPlaceholder": "Projenin ne yaptığı ve rolünüz",
+                "projectDescriptionHint": "Kısaca projeyi ve katkınızı açıklayın",
+                "projectLinkPlaceholder": "Proje linki (GitHub, demo vb.)",
+                "projectLinkHint": "Projenin GitHub veya canlı demo linki",
+                "addProject": "+ Proje Ekle",
+                "removeProject": "Son Projeyi Kaldır",
                 "coursesDescription": "Aldığınız kurslar, sertifikalar ve eğitimler (Maksimum 5)",
                 "skillsDescription": "Teknik, dil veya kişisel yetenekleriniz",
                 "referencesDescription": "İşverenlerin iletişim kurabileceği referanslarınız",
@@ -3087,14 +3163,14 @@ img {
                 "disabilityStatusPlaceholder": "Varsa engelli rapor oranınız",
                 "aboutPlaceholder": "Buraya hakkınızda kısa bir yazı yazın...",
                 "educationInstitutionPlaceholder": "Üniversite Bölüm",
-                "educationDatePlaceholder": "2018-2022",
+                "educationDatePlaceholder": "0000-0000",
                 "experienceTitlePlaceholder": "Pozisyon / Görev",
                 "experienceCompanyPlaceholder": "Şirket / Kurum",
-                "experienceDatePlaceholder": "2020-2023",
+                "experienceDatePlaceholder": "0000-0000",
                 "experienceDescriptionPlaceholder": "Görevleriniz ve projeleriniz",
                 "courseTitlePlaceholder": "Kurs / Sertifika Adı",
                 "courseInstitutionPlaceholder": "Kurum / Eğitmen",
-                "courseDatePlaceholder": "2023",
+                "courseDatePlaceholder": "0000",
                 "skillPlaceholder": "Yetenek",
                 "referenceNamePlaceholder": "Referans Adı Soyadı",
                 "referencePositionPlaceholder": "Pozisyon ve Şirket",
@@ -3227,6 +3303,20 @@ img {
                 "aboutDescription": "Introduce yourself briefly. Provide information about your experiences, goals and areas of expertise.",
                 "educationDescription": "Add your education history starting from the highest level",
                 "experienceDescription": "Add your work experiences starting from your last job (Maximum 5)",
+                "projects": "Projects",
+                "projectsDescription": "Add the projects you have developed (Maximum 5)",
+                "projectTitlePlaceholder": "Project Name",
+                "projectTitleHint": "The name of your project",
+                "projectTechPlaceholder": "Technologies Used",
+                "projectTechHint": "e.g.: React, Node.js, MongoDB",
+                "projectDatePlaceholder": "0000",
+                "projectDateHint": "Enter only numbers, dash will be added automatically",
+                "projectDescriptionPlaceholder": "What the project does and your role",
+                "projectDescriptionHint": "Briefly describe the project and your contribution",
+                "projectLinkPlaceholder": "Project link (GitHub, demo, etc.)",
+                "projectLinkHint": "GitHub or live demo link of the project",
+                "addProject": "+ Add Project",
+                "removeProject": "Remove Last Project",
                 "coursesDescription": "Courses, certificates and trainings you have taken (Maximum 5)",
                 "skillsDescription": "Your technical, language or personal skills",
                 "referencesDescription": "Your references that employers can contact",
@@ -3255,14 +3345,14 @@ img {
                 "disabilityStatusPlaceholder": "If any, disability report rate",
                 "aboutPlaceholder": "Write a short text about yourself here...",
                 "educationInstitutionPlaceholder": "University Department",
-                "educationDatePlaceholder": "2018-2022",
+                "educationDatePlaceholder": "0000-0000",
                 "experienceTitlePlaceholder": "Position / Duty",
                 "experienceCompanyPlaceholder": "Company / Institution",
-                "experienceDatePlaceholder": "2020-2023",
+                "experienceDatePlaceholder": "0000-0000",
                 "experienceDescriptionPlaceholder": "Your duties and projects",
                 "courseTitlePlaceholder": "Course / Certificate Name",
                 "courseInstitutionPlaceholder": "Institution / Instructor",
-                "courseDatePlaceholder": "2023",
+                "courseDatePlaceholder": "0000",
                 "skillPlaceholder": "Skill",
                 "referenceNamePlaceholder": "Reference Full Name",
                 "referencePositionPlaceholder": "Position and Company",
@@ -3389,6 +3479,20 @@ img {
                 "aboutDescription": "Stellen Sie sich kurz vor. Geben Sie Informationen zu Ihren Erfahrungen, Zielen und Fachgebieten.",
                 "educationDescription": "Fügen Sie Ihren Bildungsweg beginnend mit der höchsten Stufe hinzu",
                 "experienceDescription": "Fügen Sie Ihre Berufserfahrungen beginnend mit Ihrer letzten Stelle hinzu (Maximal 5)",
+                "projects": "Projekte",
+                "projectsDescription": "Fügen Sie die von Ihnen entwickelten Projekte hinzu (Maximal 5)",
+                "projectTitlePlaceholder": "Projektname",
+                "projectTitleHint": "Der Name Ihres Projekts",
+                "projectTechPlaceholder": "Verwendete Technologien",
+                "projectTechHint": "z.B.: React, Node.js, MongoDB",
+                "projectDatePlaceholder": "0000",
+                "projectDateHint": "Geben Sie nur Zahlen ein, Bindestrich wird automatisch hinzugefügt",
+                "projectDescriptionPlaceholder": "Was das Projekt macht und Ihre Rolle",
+                "projectDescriptionHint": "Beschreiben Sie kurz das Projekt und Ihren Beitrag",
+                "projectLinkPlaceholder": "Projektlink (GitHub, Demo usw.)",
+                "projectLinkHint": "GitHub- oder Live-Demo-Link des Projekts",
+                "addProject": "+ Projekt hinzufügen",
+                "removeProject": "Letztes Projekt entfernen",
                 "coursesDescription": "Kurse, Zertifikate und Schulungen, die Sie absolviert haben (Maximal 5)",
                 "skillsDescription": "Ihre technischen, sprachlichen oder persönlichen Fähigkeiten",
                 "referencesDescription": "Ihre Referenzen, die Arbeitgeber kontaktieren können",
@@ -3417,14 +3521,14 @@ img {
                 "disabilityStatusPlaceholder": "Falls vorhanden, Grad der Behinderung",
                 "aboutPlaceholder": "Schreiben Sie hier einen kurzen Text über sich...",
                 "educationInstitutionPlaceholder": "Universität Fachbereich",
-                "educationDatePlaceholder": "2018-2022",
+                "educationDatePlaceholder": "0000-0000",
                 "experienceTitlePlaceholder": "Position / Aufgabe",
                 "experienceCompanyPlaceholder": "Unternehmen / Institution",
-                "experienceDatePlaceholder": "2020-2023",
+                "experienceDatePlaceholder": "0000-0000",
                 "experienceDescriptionPlaceholder": "Ihre Aufgaben und Projekte",
                 "courseTitlePlaceholder": "Kurs / Zertifikatname",
                 "courseInstitutionPlaceholder": "Institution / Ausbilder",
-                "courseDatePlaceholder": "2023",
+                "courseDatePlaceholder": "0000",
                 "skillPlaceholder": "Fähigkeit",
                 "referenceNamePlaceholder": "Referenz Vollständiger Name",
                 "referencePositionPlaceholder": "Position und Unternehmen",
@@ -3550,6 +3654,20 @@ img {
                 "aboutDescription": "Présentez-vous brièvement. Fournissez des informations sur vos expériences, objectifs et domaines d'expertise.",
                 "educationDescription": "Ajoutez votre parcours éducatif en commençant par le niveau le plus élevé",
                 "experienceDescription": "Ajoutez vos expériences professionnelles en commençant par votre dernier emploi (Maximum 5)",
+                "projects": "Projets",
+                "projectsDescription": "Ajoutez les projets que vous avez développés (Maximum 5)",
+                "projectTitlePlaceholder": "Nom du projet",
+                "projectTitleHint": "Le nom de votre projet",
+                "projectTechPlaceholder": "Technologies utilisées",
+                "projectTechHint": "ex: React, Node.js, MongoDB",
+                "projectDatePlaceholder": "0000",
+                "projectDateHint": "Saisissez uniquement des chiffres, le tiret sera ajouté automatiquement",
+                "projectDescriptionPlaceholder": "Ce que fait le projet et votre rôle",
+                "projectDescriptionHint": "Décrivez brièvement le projet et votre contribution",
+                "projectLinkPlaceholder": "Lien du projet (GitHub, démo, etc.)",
+                "projectLinkHint": "Lien GitHub ou démo en direct du projet",
+                "addProject": "+ Ajouter projet",
+                "removeProject": "Supprimer dernier projet",
                 "coursesDescription": "Cours, certificats et formations que vous avez suivis (Maximum 5)",
                 "skillsDescription": "Vos compétences techniques, linguistiques ou personnelles",
                 "referencesDescription": "Vos références que les employeurs peuvent contacter",
@@ -3578,14 +3696,14 @@ img {
                 "disabilityStatusPlaceholder": "Si applicable, taux d'incapacité",
                 "aboutPlaceholder": "Écrivez un court texte sur vous ici...",
                 "educationInstitutionPlaceholder": "Université Département",
-                "educationDatePlaceholder": "2018-2022",
+                "educationDatePlaceholder": "0000-0000",
                 "experienceTitlePlaceholder": "Poste / Fonction",
                 "experienceCompanyPlaceholder": "Entreprise / Institution",
-                "experienceDatePlaceholder": "2020-2023",
+                "experienceDatePlaceholder": "0000-0000",
                 "experienceDescriptionPlaceholder": "Vos tâches et projets",
                 "courseTitlePlaceholder": "Nom du cours / certificat",
                 "courseInstitutionPlaceholder": "Institution / Formateur",
-                "courseDatePlaceholder": "2023",
+                "courseDatePlaceholder": "0000",
                 "skillPlaceholder": "Compétence",
                 "referenceNamePlaceholder": "Nom complet de la référence",
                 "referencePositionPlaceholder": "Poste et entreprise",
@@ -3711,6 +3829,20 @@ img {
                 "aboutDescription": "Preséntate brevemente. Proporciona información sobre tus experiencias, objetivos y áreas de especialización.",
                 "educationDescription": "Agrega tu historial educativo comenzando desde el nivel más alto",
                 "experienceDescription": "Agrega tus experiencias laborales comenzando desde tu último trabajo (Máximo 5)",
+                "projects": "Proyectos",
+                "projectsDescription": "Agrega los proyectos que has desarrollado (Máximo 5)",
+                "projectTitlePlaceholder": "Nombre del proyecto",
+                "projectTitleHint": "El nombre de tu proyecto",
+                "projectTechPlaceholder": "Tecnologías utilizadas",
+                "projectTechHint": "ej: React, Node.js, MongoDB",
+                "projectDatePlaceholder": "0000",
+                "projectDateHint": "Ingresa solo números, el guión se agregará automáticamente",
+                "projectDescriptionPlaceholder": "Qué hace el proyecto y tu rol",
+                "projectDescriptionHint": "Describe brevemente el proyecto y tu contribución",
+                "projectLinkPlaceholder": "Enlace del proyecto (GitHub, demo, etc.)",
+                "projectLinkHint": "Enlace de GitHub o demo en vivo del proyecto",
+                "addProject": "+ Agregar proyecto",
+                "removeProject": "Eliminar último proyecto",
                 "coursesDescription": "Cursos, certificados y capacitaciones que has tomado (Máximo 5)",
                 "skillsDescription": "Tus habilidades técnicas, lingüísticas o personales",
                 "referencesDescription": "Tus referencias que los empleadores pueden contactar",
@@ -3739,14 +3871,14 @@ img {
                 "disabilityStatusPlaceholder": "Si corresponde, porcentaje de discapacidad",
                 "aboutPlaceholder": "Escribe un texto breve sobre ti aquí...",
                 "educationInstitutionPlaceholder": "Universidad Departamento",
-                "educationDatePlaceholder": "2018-2022",
+                "educationDatePlaceholder": "0000-0000",
                 "experienceTitlePlaceholder": "Puesto / Función",
                 "experienceCompanyPlaceholder": "Empresa / Institución",
-                "experienceDatePlaceholder": "2020-2023",
+                "experienceDatePlaceholder": "0000-0000",
                 "experienceDescriptionPlaceholder": "Tus tareas y proyectos",
                 "courseTitlePlaceholder": "Nombre del curso / certificado",
                 "courseInstitutionPlaceholder": "Institución / Instructor",
-                "courseDatePlaceholder": "2023",
+                "courseDatePlaceholder": "0000",
                 "skillPlaceholder": "Habilidad",
                 "referenceNamePlaceholder": "Nombre completo de referencia",
                 "referencePositionPlaceholder": "Puesto y empresa",
@@ -3872,6 +4004,20 @@ img {
                 "aboutDescription": "Presentati brevemente. Fornisci informazioni sulle tue esperienze, obiettivi e aree di competenza.",
                 "educationDescription": "Aggiungi il tuo percorso formativo partendo dal livello più alto",
                 "experienceDescription": "Aggiungi le tue esperienze lavorative partendo dall'ultimo lavoro (Massimo 5)",
+                "projects": "Progetti",
+                "projectsDescription": "Aggiungi i progetti che hai sviluppato (Massimo 5)",
+                "projectTitlePlaceholder": "Nome del progetto",
+                "projectTitleHint": "Il nome del tuo progetto",
+                "projectTechPlaceholder": "Tecnologie utilizzate",
+                "projectTechHint": "es: React, Node.js, MongoDB",
+                "projectDatePlaceholder": "0000",
+                "projectDateHint": "Inserisci solo numeri, il trattino sarà aggiunto automaticamente",
+                "projectDescriptionPlaceholder": "Cosa fa il progetto e il tuo ruolo",
+                "projectDescriptionHint": "Descrivi brevemente il progetto e il tuo contributo",
+                "projectLinkPlaceholder": "Link del progetto (GitHub, demo, ecc.)",
+                "projectLinkHint": "Link GitHub o demo live del progetto",
+                "addProject": "+ Aggiungi progetto",
+                "removeProject": "Rimuovi ultimo progetto",
                 "coursesDescription": "Corsi, certificati e formazione che hai seguito (Massimo 5)",
                 "skillsDescription": "Le tue competenze tecniche, linguistiche o personali",
                 "referencesDescription": "Le tue referenze che i datori di lavoro possono contattare",
@@ -3900,14 +4046,14 @@ img {
                 "disabilityStatusPlaceholder": "Se presente, percentuale di disabilità",
                 "aboutPlaceholder": "Scrivi un breve testo su di te qui...",
                 "educationInstitutionPlaceholder": "Università Dipartimento",
-                "educationDatePlaceholder": "2018-2022",
+                "educationDatePlaceholder": "0000-0000",
                 "experienceTitlePlaceholder": "Posizione / Incarico",
                 "experienceCompanyPlaceholder": "Azienda / Istituzione",
-                "experienceDatePlaceholder": "2020-2023",
+                "experienceDatePlaceholder": "0000-0000",
                 "experienceDescriptionPlaceholder": "Le tue mansioni e progetti",
                 "courseTitlePlaceholder": "Nome corso / certificato",
                 "courseInstitutionPlaceholder": "Istituzione / Istruttore",
-                "courseDatePlaceholder": "2023",
+                "courseDatePlaceholder": "0000",
                 "skillPlaceholder": "Competenza",
                 "referenceNamePlaceholder": "Nome completo referenza",
                 "referencePositionPlaceholder": "Posizione e azienda",
@@ -4033,6 +4179,20 @@ img {
                 "aboutDescription": "Apresente-se brevemente. Forneça informações sobre suas experiências, objetivos e áreas de especialização.",
                 "educationDescription": "Adicione seu histórico educacional começando do nível mais alto",
                 "experienceDescription": "Adicione suas experiências profissionais começando do último trabalho (Máximo 5)",
+                "projects": "Projetos",
+                "projectsDescription": "Adicione os projetos que você desenvolveu (Máximo 5)",
+                "projectTitlePlaceholder": "Nome do projeto",
+                "projectTitleHint": "O nome do seu projeto",
+                "projectTechPlaceholder": "Tecnologias utilizadas",
+                "projectTechHint": "ex: React, Node.js, MongoDB",
+                "projectDatePlaceholder": "0000",
+                "projectDateHint": "Digite apenas números, o traço será adicionado automaticamente",
+                "projectDescriptionPlaceholder": "O que o projeto faz e seu papel",
+                "projectDescriptionHint": "Descreva brevemente o projeto e sua contribuição",
+                "projectLinkPlaceholder": "Link do projeto (GitHub, demo, etc.)",
+                "projectLinkHint": "Link do GitHub ou demo ao vivo do projeto",
+                "addProject": "+ Adicionar projeto",
+                "removeProject": "Remover último projeto",
                 "coursesDescription": "Cursos, certificados e treinamentos que você realizou (Máximo 5)",
                 "skillsDescription": "Suas habilidades técnicas, linguísticas ou pessoais",
                 "referencesDescription": "Suas referências que os empregadores podem contatar",
@@ -4061,14 +4221,14 @@ img {
                 "disabilityStatusPlaceholder": "Se aplicável, percentual de deficiência",
                 "aboutPlaceholder": "Escreva um texto breve sobre você aqui...",
                 "educationInstitutionPlaceholder": "Universidade Departamento",
-                "educationDatePlaceholder": "2018-2022",
+                "educationDatePlaceholder": "0000-0000",
                 "experienceTitlePlaceholder": "Cargo / Função",
                 "experienceCompanyPlaceholder": "Empresa / Instituição",
-                "experienceDatePlaceholder": "2020-2023",
+                "experienceDatePlaceholder": "0000-0000",
                 "experienceDescriptionPlaceholder": "Suas tarefas e projetos",
                 "courseTitlePlaceholder": "Nome do curso / certificado",
                 "courseInstitutionPlaceholder": "Instituição / Instrutor",
-                "courseDatePlaceholder": "2023",
+                "courseDatePlaceholder": "0000",
                 "skillPlaceholder": "Habilidade",
                 "referenceNamePlaceholder": "Nome completo da referência",
                 "referencePositionPlaceholder": "Cargo e empresa",
@@ -4194,6 +4354,20 @@ img {
                 "aboutDescription": "Кратко представьте себя. Предоставьте информацию о своем опыте, целях и областях экспертизы.",
                 "educationDescription": "Добавьте свою историю образования, начиная с самого высокого уровня",
                 "experienceDescription": "Добавьте свой опыт работы, начиная с последней работы (Максимум 5)",
+                "projects": "Проекты",
+                "projectsDescription": "Добавьте разработанные вами проекты (Максимум 5)",
+                "projectTitlePlaceholder": "Название проекта",
+                "projectTitleHint": "Название вашего проекта",
+                "projectTechPlaceholder": "Используемые технологии",
+                "projectTechHint": "напр: React, Node.js, MongoDB",
+                "projectDatePlaceholder": "0000",
+                "projectDateHint": "Вводите только цифры, дефис будет добавлен автоматически",
+                "projectDescriptionPlaceholder": "Что делает проект и ваша роль",
+                "projectDescriptionHint": "Кратко опишите проект и ваш вклад",
+                "projectLinkPlaceholder": "Ссылка на проект (GitHub, демо и т.д.)",
+                "projectLinkHint": "Ссылка на GitHub или живую демонстрацию проекта",
+                "addProject": "+ Добавить проект",
+                "removeProject": "Удалить последний проект",
                 "coursesDescription": "Курсы, сертификаты и тренинги, которые вы прошли (Максимум 5)",
                 "skillsDescription": "Ваши технические, языковые или личные навыки",
                 "referencesDescription": "Ваши рекомендации, с которыми могут связаться работодатели",
@@ -4222,14 +4396,14 @@ img {
                 "disabilityStatusPlaceholder": "Если применимо, процент инвалидности",
                 "aboutPlaceholder": "Напишите краткий текст о себе здесь...",
                 "educationInstitutionPlaceholder": "Университет Факультет",
-                "educationDatePlaceholder": "2018-2022",
+                "educationDatePlaceholder": "0000-0000",
                 "experienceTitlePlaceholder": "Должность / Обязанности",
                 "experienceCompanyPlaceholder": "Компания / Учреждение",
-                "experienceDatePlaceholder": "2020-2023",
+                "experienceDatePlaceholder": "0000-0000",
                 "experienceDescriptionPlaceholder": "Ваши обязанности и проекты",
                 "courseTitlePlaceholder": "Название курса / сертификата",
                 "courseInstitutionPlaceholder": "Учреждение / Инструктор",
-                "courseDatePlaceholder": "2023",
+                "courseDatePlaceholder": "0000",
                 "skillPlaceholder": "Навык",
                 "referenceNamePlaceholder": "Полное имя рекомендации",
                 "referencePositionPlaceholder": "Должность и компания",
@@ -4355,6 +4529,20 @@ img {
                 "aboutDescription": "قدم نفسك باختصار. قدم معلومات حول خبراتك وأهدافك ومجالات تخصصك.",
                 "educationDescription": "أضف سجل تعليمك بدءًا من أعلى مستوى",
                 "experienceDescription": "أضف خبراتك العملية بدءًا من آخر وظيفة (5 كحد أقصى)",
+                "projects": "المشاريع",
+                "projectsDescription": "أضف المشاريع التي طورتها (5 كحد أقصى)",
+                "projectTitlePlaceholder": "اسم المشروع",
+                "projectTitleHint": "اسم مشروعك",
+                "projectTechPlaceholder": "التقنيات المستخدمة",
+                "projectTechHint": "مثال: React, Node.js, MongoDB",
+                "projectDatePlaceholder": "0000",
+                "projectDateHint": "أدخل أرقامًا فقط، سيتم إضافة الشرطة تلقائيًا",
+                "projectDescriptionPlaceholder": "ما يفعله المشروع ودورك فيه",
+                "projectDescriptionHint": "صف المشروع ومساهمتك باختصار",
+                "projectLinkPlaceholder": "رابط المشروع (GitHub، عرض توضيحي، إلخ)",
+                "projectLinkHint": "رابط GitHub أو العرض التوضيحي المباشر للمشروع",
+                "addProject": "+ إضافة مشروع",
+                "removeProject": "إزالة آخر مشروع",
                 "coursesDescription": "الدورات والشهادات والتدريبات التي حصلت عليها (5 كحد أقصى)",
                 "skillsDescription": "مهاراتك التقنية أو اللغوية أو الشخصية",
                 "referencesDescription": "مراجعك التي يمكن لأصحاب العمل الاتصال بهم",
@@ -4383,14 +4571,14 @@ img {
                 "disabilityStatusPlaceholder": "إن وجد، نسبة الإعاقة",
                 "aboutPlaceholder": "اكتب نصًا قصيرًا عنك هنا...",
                 "educationInstitutionPlaceholder": "الجامعة القسم",
-                "educationDatePlaceholder": "2018-2022",
+                "educationDatePlaceholder": "0000-0000",
                 "experienceTitlePlaceholder": "المنصب / المهمة",
                 "experienceCompanyPlaceholder": "الشركة / المؤسسة",
-                "experienceDatePlaceholder": "2020-2023",
+                "experienceDatePlaceholder": "0000-0000",
                 "experienceDescriptionPlaceholder": "مهامك ومشاريعك",
                 "courseTitlePlaceholder": "اسم الدورة / الشهادة",
                 "courseInstitutionPlaceholder": "المؤسسة / المدرب",
-                "courseDatePlaceholder": "2023",
+                "courseDatePlaceholder": "0000",
                 "skillPlaceholder": "المهارة",
                 "referenceNamePlaceholder": "الاسم الكامل للمرجع",
                 "referencePositionPlaceholder": "المنصب والشركة",
@@ -4516,6 +4704,20 @@ img {
                 "aboutDescription": "简要介绍自己。提供有关您的经验、目标和专业领域的信息。",
                 "educationDescription": "从最高级别开始添加您的教育背景",
                 "experienceDescription": "从您最后的工作开始添加您的工作经验(最多5个)",
+                "projects": "项目",
+                "projectsDescription": "添加您开发的项目(最多5个)",
+                "projectTitlePlaceholder": "项目名称",
+                "projectTitleHint": "您的项目名称",
+                "projectTechPlaceholder": "使用的技术",
+                "projectTechHint": "例如: React, Node.js, MongoDB",
+                "projectDatePlaceholder": "0000",
+                "projectDateHint": "只输入数字,连字符将自动添加",
+                "projectDescriptionPlaceholder": "项目的功能和您的角色",
+                "projectDescriptionHint": "简要描述项目和您的贡献",
+                "projectLinkPlaceholder": "项目链接(GitHub、演示等)",
+                "projectLinkHint": "项目的GitHub或在线演示链接",
+                "addProject": "+ 添加项目",
+                "removeProject": "移除最后一个项目",
                 "coursesDescription": "您参加的课程、证书和培训(最多5个)",
                 "skillsDescription": "您的技术、语言或个人技能",
                 "referencesDescription": "雇主可以联系的推荐人",
@@ -4544,14 +4746,14 @@ img {
                 "disabilityStatusPlaceholder": "如有, 残疾百分比",
                 "aboutPlaceholder": "在这里写一段关于您的简短文字...",
                 "educationInstitutionPlaceholder": "大学 专业",
-                "educationDatePlaceholder": "2018-2022",
+                "educationDatePlaceholder": "0000-0000",
                 "experienceTitlePlaceholder": "职位/职责",
                 "experienceCompanyPlaceholder": "公司/机构",
-                "experienceDatePlaceholder": "2020-2023",
+                "experienceDatePlaceholder": "0000-0000",
                 "experienceDescriptionPlaceholder": "您的职责和项目",
                 "courseTitlePlaceholder": "课程/证书名称",
                 "courseInstitutionPlaceholder": "机构/讲师",
-                "courseDatePlaceholder": "2023",
+                "courseDatePlaceholder": "0000",
                 "skillPlaceholder": "技能",
                 "referenceNamePlaceholder": "推荐人全名",
                 "referencePositionPlaceholder": "职位和公司",
@@ -4897,6 +5099,7 @@ class SocialMediaManager {
 		
             // Maksimum sınırlar
             const MAX_EXPERIENCE = 5;
+            const MAX_PROJECTS = 5;
             const MAX_COURSES = 5;
             const MAX_LANGUAGES = 5;
             const MAX_EDUCATION = 5;
@@ -5608,6 +5811,35 @@ updateCalendarLanguage(); // İlk yükleme
                     }
                 });
                 
+                // Proje ekle/çıkar
+                document.getElementById('add-project-btn').addEventListener('click', function() {
+                    const container = document.getElementById('projects-container');
+                    if (container.children.length < MAX_PROJECTS) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'project-item';
+                        newItem.innerHTML = `
+                            <div class="item-title editable empty-field" contenteditable="true" data-placeholder-key="projectTitlePlaceholder" data-hint-key="projectTitleHint"></div>
+                            <div class="project-subtitle-container">
+                                <div class="project-tech editable empty-field" contenteditable="true" data-placeholder-key="projectTechPlaceholder" data-hint-key="projectTechHint"></div>
+                                <div class="project-date editable date-input" contenteditable="true" data-placeholder-key="projectDatePlaceholder" data-hint-key="projectDateHint"></div>
+                            </div>
+                            <div class="item-description editable empty-field" contenteditable="true" data-placeholder-key="projectDescriptionPlaceholder" data-hint-key="projectDescriptionHint"></div>
+                            <div class="project-link editable empty-field" contenteditable="true" data-placeholder-key="projectLinkPlaceholder" data-hint-key="projectLinkHint"></div>
+                        `;
+                        container.appendChild(newItem);
+                        setupEditableFieldsForElement(newItem);
+                    } else {
+                        alert(`Maksimum ${MAX_PROJECTS} proje ekleyebilirsiniz.`);
+                    }
+                });
+                
+                document.getElementById('remove-project-btn').addEventListener('click', function() {
+                    const container = document.getElementById('projects-container');
+                    if (container.children.length > 1) {
+                        container.removeChild(container.lastChild);
+                    }
+                });
+                
                 // Kurs ekle/çıkar
                 document.getElementById('add-course-btn').addEventListener('click', function() {
                     const container = document.getElementById('courses-container');
@@ -6279,6 +6511,18 @@ const languagesSection = document.getElementById('languages-section');
         }
     });
                 
+                // Proje öğelerini kontrol et
+               document.querySelectorAll('.project-item').forEach(item => {
+        const titleElement = item.querySelector('.item-title');
+        const techElement = item.querySelector('.project-tech');
+        if ((titleElement && titleElement.classList.contains('empty-field')) && 
+            (techElement && techElement.classList.contains('empty-field'))) {
+            item.classList.add('hidden-in-pdf');
+        } else {
+            item.classList.remove('hidden-in-pdf');
+        }
+    });
+                
                 // Kurs öğelerini kontrol et
                document.querySelectorAll('.course-item').forEach(item => {
         const titleElement = item.querySelector('.item-title');
@@ -6360,6 +6604,9 @@ if (socialMediaSection) {
         } else if (sectionId === 'experience-section') {
             const experienceItems = section.querySelectorAll('.experience-item');
             hasContent = Array.from(experienceItems).some(item => !item.classList.contains('hidden-in-pdf'));
+        } else if (sectionId === 'projects-section') {
+            const projectItems = section.querySelectorAll('.project-item');
+            hasContent = Array.from(projectItems).some(item => !item.classList.contains('hidden-in-pdf'));
         } else if (sectionId === 'courses-section') {
             const courseItems = section.querySelectorAll('.course-item');
             hasContent = Array.from(courseItems).some(item => !item.classList.contains('hidden-in-pdf'));
@@ -6458,6 +6705,21 @@ if (socialMediaSection) {
                     if (company && !company.classList.contains('empty-field')) push(company.textContent);
                     if (duration && !duration.classList.contains('empty-field')) push(duration.textContent);
                     if (desc && !desc.classList.contains('empty-field')) push(desc.textContent);
+                });
+
+                // Projeler
+                document.querySelectorAll('#projects-container .project-item').forEach(item => {
+                    if (item.classList.contains('hidden-in-pdf')) return;
+                    const title = item.querySelector('.item-title');
+                    const tech = item.querySelector('.project-tech');
+                    const date = item.querySelector('.project-date');
+                    const desc = item.querySelector('.item-description');
+                    const link = item.querySelector('.project-link');
+                    if (title && !title.classList.contains('empty-field')) push(title.textContent);
+                    if (tech && !tech.classList.contains('empty-field')) push(tech.textContent);
+                    if (date && !date.classList.contains('empty-field')) push(date.textContent);
+                    if (desc && !desc.classList.contains('empty-field')) push(desc.textContent);
+                    if (link && !link.classList.contains('empty-field')) push(link.textContent);
                 });
 
                 // Kurslar
@@ -6644,6 +6906,7 @@ if (socialMediaSection) {
                     { sectionId: 'about-section', itemSelector: null },
                     { sectionId: 'education-section', itemSelector: '.education-item' },
                     { sectionId: 'experience-section', itemSelector: '.experience-item' },
+                    { sectionId: 'projects-section', itemSelector: '.project-item' },
                     { sectionId: 'courses-section', itemSelector: '.course-item' },
                     { sectionId: 'skills-section', itemSelector: '.skill-item' },
                     { sectionId: 'references-section', itemSelector: '.reference-item' }
@@ -6655,7 +6918,7 @@ if (socialMediaSection) {
                     if (section.classList.contains('hidden-in-pdf') || getComputedStyle(section).display === 'none') return;
 
                     if (!cfg.itemSelector) {
-                        blocks.push({ elements: [section] });
+                        blocks.push({ elements: [section], sectionId: cfg.sectionId, titleEl: null, isHeaderBlock: false });
                         return;
                     }
 
@@ -6667,9 +6930,9 @@ if (socialMediaSection) {
 
                     // İlk blok: section başlığı + ilk madde birlikte (başlık tek başına kalıp
                     // içeriği sonraki sayfaya gitmesin diye)
-                    blocks.push({ elements: title ? [title, items[0]] : [items[0]] });
+                    blocks.push({ elements: title ? [title, items[0]] : [items[0]], sectionId: cfg.sectionId, titleEl: title, isHeaderBlock: true });
                     for (let i = 1; i < items.length; i++) {
-                        blocks.push({ elements: [items[i]] });
+                        blocks.push({ elements: [items[i]], sectionId: cfg.sectionId, titleEl: title, isHeaderBlock: false });
                     }
                 });
 
@@ -6789,10 +7052,19 @@ if (socialMediaSection) {
                                 rightColumn.style.paddingTop = '10mm';
                             }
 
-                            // Bu sayfadan önce gösterilmiş blokları geçici gizle
+                            // Bu sayfadan önce gösterilmiş blokları geçici gizle.
+                            // İSTİSNA: Eğer bu sayfa bir section'ın ORTASINDAN başlıyorsa
+                            // (başlığı önceki sayfada kaldıysa), başlığı burada da göster -
+                            // "yarım geçiş" olmasın, içerik her zaman başlığıyla birlikte görünsün.
+                            const currentBlock = blocks[startIndex];
+                            const repeatTitleEl = (currentBlock && currentBlock.titleEl && !currentBlock.isHeaderBlock)
+                                ? currentBlock.titleEl
+                                : null;
+
                             const hiddenBefore = [];
                             for (let i = 0; i < startIndex; i++) {
                                 blocks[i].elements.forEach(el => {
+                                    if (repeatTitleEl && el === repeatTitleEl) return; // gizleme, tekrar görünsün
                                     hiddenBefore.push(el);
                                     el.dataset.__pdfPagPrev = el.style.display;
                                     el.style.display = 'none';
@@ -7293,6 +7565,7 @@ class AutoSaveManager {
             about: this.getAboutText(),
             education: this.getEducationData(),
             experience: this.getExperienceData(),
+            projects: this.getProjectsData(),
             courses: this.getCoursesData(),
             skills: this.getSkillsData(),
             references: this.getReferencesData(),
@@ -7408,6 +7681,9 @@ class AutoSaveManager {
         // Deneyim
         if (data.experience) this.setExperienceData(data.experience);
         
+        // Projeler
+        if (data.projects) this.setProjectsData(data.projects);
+        
         // Kurslar
         if (data.courses) this.setCoursesData(data.courses);
         
@@ -7492,6 +7768,27 @@ class AutoSaveManager {
             }
         });
         return experience;
+    }
+
+    getProjectsData() {
+        const projects = [];
+        document.querySelectorAll('#projects-container .project-item').forEach(item => {
+            const titleEl = item.querySelector('.item-title');
+            const techEl = item.querySelector('.project-tech');
+            const dateEl = item.querySelector('.project-date');
+            const descEl = item.querySelector('.item-description');
+            const linkEl = item.querySelector('.project-link');
+            const title = (titleEl && !titleEl.classList.contains('empty-field')) ? titleEl.textContent.trim() : '';
+            const tech = (techEl && !techEl.classList.contains('empty-field')) ? techEl.textContent.trim() : '';
+            const date = (dateEl && !dateEl.classList.contains('empty-field')) ? dateEl.textContent.trim() : '';
+            const description = (descEl && !descEl.classList.contains('empty-field')) ? descEl.textContent.trim() : '';
+            const link = (linkEl && !linkEl.classList.contains('empty-field')) ? linkEl.textContent.trim() : '';
+            
+            if (title || tech || date || description || link) {
+                projects.push({ title, tech, date, description, link });
+            }
+        });
+        return projects;
     }
 
     getCoursesData() {
@@ -7683,6 +7980,57 @@ class AutoSaveManager {
                 if (description && exp.description) {
                     description.textContent = exp.description;
                     description.classList.remove('empty-field');
+                }
+            }
+        });
+    }
+
+    setProjectsData(projects) {
+        const container = document.getElementById('projects-container');
+        if (!container) return;
+
+        while (container.children.length > 1) {
+            container.removeChild(container.lastChild);
+        }
+
+        projects.forEach((proj, index) => {
+            let item;
+            if (index === 0) {
+                item = container.children[0];
+            } else {
+                document.getElementById('add-project-btn')?.click();
+                item = container.lastElementChild;
+            }
+
+            if (item) {
+                const title = item.querySelector('.item-title');
+                const tech = item.querySelector('.project-tech');
+                const date = item.querySelector('.project-date');
+                const description = item.querySelector('.item-description');
+                const link = item.querySelector('.project-link');
+                
+                if (title && proj.title) {
+                    title.textContent = proj.title;
+                    title.classList.remove('empty-field');
+                }
+                
+                if (tech && proj.tech) {
+                    tech.textContent = proj.tech;
+                    tech.classList.remove('empty-field');
+                }
+                
+                if (date && proj.date) {
+                    date.textContent = proj.date;
+                }
+                
+                if (description && proj.description) {
+                    description.textContent = proj.description;
+                    description.classList.remove('empty-field');
+                }
+                
+                if (link && proj.link) {
+                    link.textContent = proj.link;
+                    link.classList.remove('empty-field');
                 }
             }
         });
