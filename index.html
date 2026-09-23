@@ -5385,6 +5385,7 @@ class SocialMediaManager {
             setupContentChangeListener();
             setupAddRemoveButtons();
             setupThemeSelector();
+			setupLanguageNameValidation();
 
             // Renk teması seçiciyi ayarla
             function setupThemeSelector() {
@@ -6454,7 +6455,20 @@ function hideHintBubble(hintBubble) {
         hintBubble.style.display = 'none';
     }, 200);
 }
+             // Dil validasyonu ayarla
+             function setupLanguageNameValidation() { 
+				 document.addEventListener('keydown', function(e) { 
+					 if (e.target.classList.contains('language-name')) { 
+						 const allowedKeys = [ 'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 
+											  'ArrowUp', 'ArrowDown', 'Tab', 'Home', 'End', ' ' ]; 
+						 if (!allowedKeys.includes(e.key) && !/^[a-zA-ZğüşıöçĞÜŞİÖÇ]$/.test(e.key)) { 
+							 e.preventDefault(); return false; 
+						 } 
+					 } 
+				 }); 
+			 }
 
+			
             // Tarih validasyonu ayarla
             function setupDateInputValidation() {
                 document.addEventListener('input', function(e) {
