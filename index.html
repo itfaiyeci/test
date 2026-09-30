@@ -2,7 +2,9 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" id="viewport-meta">
+    <!-- Not: Varsayılan MOBİL-KOLAY görünüm. Masaüstü görünümü artık aşağıdaki
+         script ile eklenen bir düğmeyle isteğe bağlı olarak açılabiliyor. -->
     
     <!-- Primary Meta Tags -->
     <title>MobilCV - Üyeliksiz ve Ücretsiz Mobil CV Oluşturucu (PDF)</title>
@@ -168,7 +170,25 @@
         box-sizing: border-box;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
+
+    /* En üst düzey güvenlik ağı: Tawk.to gibi üçüncü parti widget'lar (canlı
+       destek balonu vb.) kendi CSS'leriyle sayfayı yatay olarak taşırabilir.
+       html/body'de max-width + overflow-x:hidden olması, viewport'un ASLA
+       aşılamamasını garanti eder - taşan kısım görsel olarak kırpılır ama
+       sayfa her zaman telefon genişliğine tam oturur, tarayıcı otomatik
+       zoom-out yapmaz. Aşağıdaki diğer html/body kuralları bunun üzerine
+       yazılabilir ama hiçbiri overflow-x'i tekrar açık bırakmamalıdır.
+
+       NOT: "auto" denendi ama sayfanın tamamen otomatik küçülmesine
+       (zoom-out) neden olduğu görüldü, bu yüzden "hidden"a geri dönüldü.
+       .right-column erişimi artık #main-content + .cv-layout üzerindeki
+       YEREL (local) scroll container ile sağlanıyor, html/body seviyesi
+       hiç değişmeden kalıyor. */
+    html, body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
     body {
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         padding: 20px;
@@ -176,7 +196,7 @@
         flex-direction: column;
         align-items: center;
         min-height: 100vh;
-        overflow-x: auto;
+        overflow-x: hidden;
         width: 100%;
     }
         
@@ -436,7 +456,9 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
         }
         
         .left-column {
@@ -1060,6 +1082,19 @@
             margin-right: 5px;
             margin-bottom: 0;
         }
+
+        /* Dokunmatik ekranlarda (telefon) Ekle/Kaldır düğmeleri büyük ve birbirinden ayrık:
+           yanlışlıkla 'Kaldır'a basıp içerik silme riskini azaltır. */
+        @media (pointer: coarse) {
+            .buttons-inline button.add-btn,
+            .buttons-inline button.remove-btn {
+                min-height: 40px;
+                padding: 8px 14px;
+                font-size: 13px;
+                margin-right: 12px;
+                margin-bottom: 8px;
+            }
+        }
         
         .photo-input {
             display: none;
@@ -1361,11 +1396,17 @@
             border-color: #e74c3c !important;
         }
 
-        /* MOBİL CİHAZLAR İÇİN SADECE KAYDIRMA - LAYOUT DEĞİŞMEZ */
+        /* MOBİL CİHAZLAR İÇİN - YATAY TAŞMA ENGELLENİR (overflow-x: auto DEĞİL).
+           Not: Önceki "auto" değeri, üçüncü parti bir widget (örn. Tawk.to canlı
+           destek balonu) sayfayı yatay olarak taşırdığında tarayıcının TÜM
+           SAYFAYI otomatik küçültmesine (zoom-out) neden oluyordu - sayfa
+           "masaüstü sitesi gibi" küçük ve sıkışık görünüyordu. "hidden" ile
+           taşan içerik (widget dahil) görsel olarak kırpılır ama sayfanın
+           kendisi her zaman telefon genişliğine tam oturur. */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
-                overflow-x: auto;
+                overflow-x: hidden;
                 align-items: flex-start;
             }
             
@@ -2766,6 +2807,23 @@ img {
     background: #a8354f;
 }
 
+/* iOS Safari, font-size'ı 16px'den küçük olan bir alana dokunulduğunda sayfayı
+   otomatik büyütüyor (kullanıcı kontrolü dışında bir zoom). Kullanıcı manuel
+   küçültse bile tam eski haline dönmeyebiliyor. Çözüm: SADECE odaklanma anında,
+   SADECE mobilde, ilgili alanın font boyutunu geçici olarak 16px'e çıkarmak -
+   CV'nin görünümü (odaklanılmamış haldeyken) hiç değişmez, otomatik zoom
+   tetiklenmez. Bu kural, stil bloğunun EN SONUNDA yer alır ki .right-column
+   .editable gibi eşit özgüllükteki diğer !important kuralları geçersiz kılsın. */
+@media (max-width: 480px) {
+    .editable:focus,
+    .right-column .editable:focus,
+    .left-column .editable:focus,
+    input:focus,
+    textarea:focus {
+        font-size: 16px !important;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -2884,7 +2942,7 @@ img {
                                 </div>
                             </div>
                             
-                            <div class="personal-info">
+                            <div class="personal-info" id="personal-info-section">
                                 <!-- Ad Soyad - Özel stil - ZORUNLU -->
                                 <div class="personal-info-item name-item" data-field="fullname">
                                     <div class="personal-info-label" style="display:none;" data-key="fullName">Ad Soyad</div>
@@ -3020,7 +3078,7 @@ img {
                             <!-- İş Deneyimi - ZORUNLU -->
                             <div class="section" id="experience-section">
                                 <div class="section-title" data-key="experience">İş Deneyimi</div>
-                                <div class="section-description" data-key="experienceDescription">En son çalıştığınız işten başlayarak iş deneyimlerinizi ekleyin (Maksimum 3)</div>
+                                <div class="section-description" data-key="experienceDescription">En son çalıştığınız işten başlayarak iş deneyimlerinizi ekleyin (Maksimum 5)</div>
                                 <div id="experience-container">
                                     <div class="experience-item">
                                         <div class="item-title editable empty-field required-field" contenteditable="true" data-placeholder-key="experienceTitlePlaceholder" data-hint-key="experienceTitleHint" data-required="true"></div>
@@ -3061,7 +3119,7 @@ img {
                             <!-- Kurslar & Sertifikalar -->
                             <div class="section" id="courses-section">
                                 <div class="section-title" data-key="courses">Kurslar & Sertifikalar</div>
-                                <div class="section-description" data-key="coursesDescription">Aldığınız kurslar, sertifikalar ve eğitimler (Maksimum 3)</div>
+                                <div class="section-description" data-key="coursesDescription">Aldığınız kurslar, sertifikalar ve eğitimler (Maksimum 5)</div>
                                 <div id="courses-container">
                                     <div class="course-item">
                                         <div class="item-title editable" contenteditable="true" data-placeholder-key="courseTitlePlaceholder" data-hint-key="courseTitleHint"></div>
@@ -3251,6 +3309,7 @@ img {
                 
                 // Butonlar
                 "clearAll": "Tümünü Temizle",
+                "confirmRemoveItem": "Son satırdaki yazdığınız içerik silinecek. Emin misiniz?",
                 "preview": "Önizleme",
                 "savePDF": "PDF İndir",
                 "exportData": "Yedekle",
@@ -3274,7 +3333,7 @@ img {
                 "tip": "İpucu:",
                 "tipText": "Eğitim süresi, çalışma süresi ve kurs tarihi alanlarına sadece rakam girebilirsiniz, tire (-) otomatik olarak eklenecektir (örn: 20182022 → 2018-2022).",
                 "limitations": "Sınırlamalar:",
-                "limitationsText": "Maksimum 3 iş deneyimi ve 3 kurs/sertifika ekleyebilirsiniz.",
+                "limitationsText": "Maksimum 5 iş deneyimi ve 5 kurs/sertifika ekleyebilirsiniz.",
                 "phoneFormat": "Telefon Formatı:",
                 "phoneFormatText": "Tüm telefon numaralarına sadece rakam girin, xxx xxx xxxx formatı otomatik uygulanacaktır.",
                 
@@ -3349,7 +3408,7 @@ img {
                 "referenceNamePlaceholder": "Referans Adı Soyadı",
                 "referencePositionPlaceholder": "Pozisyon ve Şirket",
                 "referencePhonePlaceholder": "555 123 4567",
-                "languageNamePlaceholder": "Türkçe",
+                "languageNamePlaceholder": "Dil",
                 "languageLevelPlaceholder": "XXXXX",
                 "addPhoto": "Fotoğraf eklemek için tıklayın",
                 "avatarBiometricSize": "(Biyometrik ölçü: 50×60mm)",
@@ -3451,6 +3510,7 @@ img {
                 "themeEmerald": "Emerald",
                 "themeExecutive": "Executive",
                 "clearAll": "Clear All",
+                "confirmRemoveItem": "The content you entered in the last entry will be deleted. Are you sure?",
                 "preview": "Preview",
                 "savePDF": "Download PDF",
                 "exportData": "Download Backup",
@@ -3472,7 +3532,7 @@ img {
                 "tip": "Tip:",
                 "tipText": "You can only enter numbers in education duration, work duration and course date fields, dash (-) will be added automatically (e.g.: 20182022 → 2018-2022).",
                 "limitations": "Limitations:",
-                "limitationsText": "You can add maximum 3 work experiences and 3 courses/certificates.",
+                "limitationsText": "You can add maximum 5 work experiences and 5 courses/certificates.",
                 "phoneFormat": "Phone Format:",
                 "phoneFormatText": "Enter only numbers for all phone numbers, xxx xxx xxxx format will be applied automatically.",
                 "about": "About Me",
@@ -3539,7 +3599,7 @@ img {
                 "referenceNamePlaceholder": "Reference Full Name",
                 "referencePositionPlaceholder": "Position and Company",
                 "referencePhonePlaceholder": "555 123 4567",
-                "languageNamePlaceholder": "English",
+                "languageNamePlaceholder": "Language",
                 "languageLevelPlaceholder": "XXXXX",
                 "addPhoto": "Click to add photo",
                 "avatarBiometricSize": "(Biometric size: 50×60mm)",
@@ -3635,6 +3695,7 @@ img {
                 "themeEmerald": "Smaragd",
                 "themeExecutive": "Executive",
                 "clearAll": "Alles löschen",
+                "confirmRemoveItem": "Der Inhalt im letzten Eintrag wird gelöscht. Sind Sie sicher?",
                 "preview": "Vorschau",
                 "savePDF": "PDF herunterladen",
                 "exportData": "Backup herunterladen",
@@ -3656,7 +3717,7 @@ img {
                 "tip": "Tipp:",
                 "tipText": "Sie können in den Feldern für Bildungsdauer, Arbeitsdauer und Kursdatum nur Zahlen eingeben, der Bindestrich (-) wird automatisch hinzugefügt (z.B.: 20182022 → 2018-2022).",
                 "limitations": "Einschränkungen:",
-                "limitationsText": "Sie können maximal 3 Arbeitserfahrungen und 3 Kurse/Zertifikate hinzufügen.",
+                "limitationsText": "Sie können maximal 5 Arbeitserfahrungen und 5 Kurse/Zertifikate hinzufügen.",
                 "phoneFormat": "Telefonformat:",
                 "phoneFormatText": "Geben Sie für alle Telefonnummern nur Zahlen ein, das Format xxx xxx xxxx wird automatisch angewendet.",
                 "about": "Über mich",
@@ -3723,7 +3784,7 @@ img {
                 "referenceNamePlaceholder": "Referenz Vollständiger Name",
                 "referencePositionPlaceholder": "Position und Unternehmen",
                 "referencePhonePlaceholder": "555 123 4567",
-                "languageNamePlaceholder": "Deutsch",
+                "languageNamePlaceholder": "Sprache",
                 "languageLevelPlaceholder": "XXXXX",
                 "addPhoto": "Klicken Sie, um ein Foto hinzuzufügen",
                 "avatarBiometricSize": "(Biometrisches Maß: 50×60mm)",
@@ -3818,6 +3879,7 @@ img {
                 "themeEmerald": "Émeraude",
                 "themeExecutive": "Executive",
                 "clearAll": "Tout effacer",
+                "confirmRemoveItem": "Le contenu de la dernière entrée sera supprimé. Êtes-vous sûr ?",
                 "preview": "Aperçu",
                 "savePDF": "Télécharger PDF",
                 "exportData": "Sauvegarder",
@@ -3839,7 +3901,7 @@ img {
                 "tip": "Astuce:",
                 "tipText": "Vous ne pouvez saisir que des chiffres dans les champs de durée d'éducation, durée de travail et date de cours, le tiret (-) sera ajouté automatiquement (ex: 20182022 → 2018-2022).",
                 "limitations": "Limitations:",
-                "limitationsText": "Vous pouvez ajouter maximum 3 expériences professionnelles et 3 cours/certificats.",
+                "limitationsText": "Vous pouvez ajouter maximum 5 expériences professionnelles et 5 cours/certificats.",
                 "phoneFormat": "Format téléphone:",
                 "phoneFormatText": "Saisissez uniquement des chiffres pour tous les numéros de téléphone, le format xxx xxx xxxx sera appliqué automatiquement.",
                 "about": "À propos de moi",
@@ -3906,7 +3968,7 @@ img {
                 "referenceNamePlaceholder": "Nom complet de la référence",
                 "referencePositionPlaceholder": "Poste et entreprise",
                 "referencePhonePlaceholder": "555 123 4567",
-                "languageNamePlaceholder": "Français",
+                "languageNamePlaceholder": "Langue",
                 "languageLevelPlaceholder": "XXXXX",
                 "addPhoto": "Cliquez pour ajouter une photo",
                 "avatarBiometricSize": "(Taille biométrique : 50×60mm)",
@@ -4001,6 +4063,7 @@ img {
                 "themeEmerald": "Esmeralda",
                 "themeExecutive": "Executive",
                 "clearAll": "Limpiar todo",
+                "confirmRemoveItem": "Se eliminará el contenido de la última entrada. ¿Está seguro?",
                 "preview": "Vista previa",
                 "savePDF": "Descargar PDF",
                 "exportData": "Descargar copia",
@@ -4022,7 +4085,7 @@ img {
                 "tip": "Consejo:",
                 "tipText": "Solo puedes ingresar números en los campos de duración de educación, duración laboral y fecha del curso, el guión (-) se agregará automáticamente (ej: 20182022 → 2018-2022).",
                 "limitations": "Limitaciones:",
-                "limitationsText": "Puedes agregar máximo 3 experiencias laborales y 3 cursos/certificados.",
+                "limitationsText": "Puedes agregar máximo 5 experiencias laborales y 5 cursos/certificados.",
                 "phoneFormat": "Formato telefónico:",
                 "phoneFormatText": "Ingresa solo números para todos los teléfonos, el formato xxx xxx xxxx se aplicará automáticamente.",
                 "about": "Sobre mí",
@@ -4089,7 +4152,7 @@ img {
                 "referenceNamePlaceholder": "Nombre completo de referencia",
                 "referencePositionPlaceholder": "Puesto y empresa",
                 "referencePhonePlaceholder": "555 123 4567",
-                "languageNamePlaceholder": "Español",
+                "languageNamePlaceholder": "Idioma",
                 "languageLevelPlaceholder": "XXXXX",
                 "addPhoto": "Haz clic para agregar foto",
                 "avatarBiometricSize": "(Tamaño biométrico: 50×60mm)",
@@ -4184,6 +4247,7 @@ img {
                 "themeEmerald": "Smeraldo",
                 "themeExecutive": "Executive",
                 "clearAll": "Pulisci tutto",
+                "confirmRemoveItem": "Il contenuto dell'ultima voce verrà eliminato. Sei sicuro?",
                 "preview": "Anteprima",
                 "savePDF": "Scarica PDF",
                 "exportData": "Scarica backup",
@@ -4205,7 +4269,7 @@ img {
                 "tip": "Suggerimento:",
                 "tipText": "Puoi inserire solo numeri nei campi durata istruzione, durata lavoro e data corso, il trattino (-) sarà aggiunto automaticamente (es: 20182022 → 2018-2022).",
                 "limitations": "Limitazioni:",
-                "limitationsText": "Puoi aggiungere massimo 3 esperienze lavorative e 3 corsi/certificati.",
+                "limitationsText": "Puoi aggiungere massimo 5 esperienze lavorative e 5 corsi/certificati.",
                 "phoneFormat": "Formato telefono:",
                 "phoneFormatText": "Inserisci solo numeri per tutti i telefoni, il formato xxx xxx xxxx sarà applicato automaticamente.",
                 "about": "Su di me",
@@ -4272,7 +4336,7 @@ img {
                 "referenceNamePlaceholder": "Nome completo referenza",
                 "referencePositionPlaceholder": "Posizione e azienda",
                 "referencePhonePlaceholder": "555 123 4567",
-                "languageNamePlaceholder": "Italiano",
+                "languageNamePlaceholder": "Lingua",
                 "languageLevelPlaceholder": "XXXXX",
                 "addPhoto": "Clicca per aggiungere foto",
                 "avatarBiometricSize": "(Misura biometrica: 50×60mm)",
@@ -4367,6 +4431,7 @@ img {
                 "themeEmerald": "Esmeralda",
                 "themeExecutive": "Executive",
                 "clearAll": "Limpar tudo",
+                "confirmRemoveItem": "O conteúdo da última entrada será excluído. Tem certeza?",
                 "preview": "Pré-visualização",
                 "savePDF": "Baixar PDF",
                 "exportData": "Baixar backup",
@@ -4388,7 +4453,7 @@ img {
                 "tip": "Dica:",
                 "tipText": "Você só pode inserir números nos campos de duração da educação, duração do trabalho e data do curso, o traço (-) será adicionado automaticamente (ex: 20182022 → 2018-2022).",
                 "limitations": "Limitações:",
-                "limitationsText": "Você pode adicionar no máximo 3 experiências de trabalho e 3 cursos/certificados.",
+                "limitationsText": "Você pode adicionar no máximo 5 experiências de trabalho e 5 cursos/certificados.",
                 "phoneFormat": "Formato telefone:",
                 "phoneFormatText": "Digite apenas números para todos os telefones, o formato xxx xxx xxxx será aplicado automaticamente.",
                 "about": "Sobre mim",
@@ -4455,7 +4520,7 @@ img {
                 "referenceNamePlaceholder": "Nome completo da referência",
                 "referencePositionPlaceholder": "Cargo e empresa",
                 "referencePhonePlaceholder": "555 123 4567",
-                "languageNamePlaceholder": "Português",
+                "languageNamePlaceholder": "Idioma",
                 "languageLevelPlaceholder": "XXXXX",
                 "addPhoto": "Clique para adicionar foto",
                 "avatarBiometricSize": "(Tamanho biométrico: 50×60mm)",
@@ -4550,6 +4615,7 @@ img {
                 "themeEmerald": "Изумруд",
                 "themeExecutive": "Executive",
                 "clearAll": "Очистить все",
+                "confirmRemoveItem": "Содержимое последней записи будет удалено. Вы уверены?",
                 "preview": "Предпросмотр",
                 "savePDF": "Скачать PDF",
                 "exportData": "Скачать копию",
@@ -4571,7 +4637,7 @@ img {
                 "tip": "Совет:",
                 "tipText": "Вы можете вводить только цифры в поля продолжительности образования, продолжительности работы и даты курса, дефис (-) будет добавлен автоматически (напр: 20182022 → 2018-2022).",
                 "limitations": "Ограничения:",
-                "limitationsText": "Вы можете добавить максимум 3 опыта работы и 3 курса/сертификата.",
+                "limitationsText": "Вы можете добавить максимум 5 опыта работы и 5 курса/сертификата.",
                 "phoneFormat": "Формат телефона:",
                 "phoneFormatText": "Вводите только цифры для всех телефонов, формат xxx xxx xxxx будет применен автоматически.",
                 "about": "Обо мне",
@@ -4638,7 +4704,7 @@ img {
                 "referenceNamePlaceholder": "Полное имя рекомендации",
                 "referencePositionPlaceholder": "Должность и компания",
                 "referencePhonePlaceholder": "555 123 4567",
-                "languageNamePlaceholder": "Русский",
+                "languageNamePlaceholder": "Язык",
                 "languageLevelPlaceholder": "XXXXX",
                 "addPhoto": "Нажмите, чтобы добавить фото",
                 "avatarBiometricSize": "(Биометрический размер: 50×60мм)",
@@ -4733,6 +4799,7 @@ img {
                 "themeEmerald": "زمردي",
                 "themeExecutive": "تنفيذي",
                 "clearAll": "مسح الكل",
+                "confirmRemoveItem": "سيتم حذف المحتوى الموجود في آخر إدخال. هل أنت متأكد؟",
                 "preview": "معاينة",
                 "savePDF": "تحميل PDF",
                 "exportData": "تنزيل نسخة",
@@ -4754,7 +4821,7 @@ img {
                 "tip": "نصيحة:",
                 "tipText": "يمكنك إدخال أرقام فقط في حقول مدة التعليم، مدة العمل وتاريخ الدورة، سيتم إضافة الشرطة (-) تلقائيًا (مثال: 20182022 → 2018-2022).",
                 "limitations": "القيود:",
-                "limitationsText": "يمكنك إضافة 3 خبرات عمل كحد أقصى و 3 دورات/شهادات.",
+                "limitationsText": "يمكنك إضافة 5 خبرات عمل كحد أقصى و 5 دورات/شهادات.",
                 "phoneFormat": "تنسيق الهاتف:",
                 "phoneFormatText": "أدخل أرقامًا فقط لجميع أرقام الهاتف، سيتم تطبيق تنسيق xxx xxx xxxx تلقائيًا.",
                 "about": "نبذة عني",
@@ -4821,7 +4888,7 @@ img {
                 "referenceNamePlaceholder": "الاسم الكامل للمرجع",
                 "referencePositionPlaceholder": "المنصب والشركة",
                 "referencePhonePlaceholder": "555 123 4567",
-                "languageNamePlaceholder": "العربية",
+                "languageNamePlaceholder": "اللغة",
                 "languageLevelPlaceholder": "XXXXX",
                 "addPhoto": "انقر لإضافة صورة",
                 "avatarBiometricSize": "(المقاس الحيوي: 50×60 مم)",
@@ -4916,6 +4983,7 @@ img {
                 "themeEmerald": "祖母绿",
                 "themeExecutive": "行政",
                 "clearAll": "全部清除",
+                "confirmRemoveItem": "最后一项中的内容将被删除。确定吗？",
                 "preview": "预览",
                 "savePDF": "下载PDF",
                 "exportData": "下载备份",
@@ -4937,7 +5005,7 @@ img {
                 "tip": "提示:",
                 "tipText": "您只能在教育时长、工作时间和课程日期字段中输入数字，连字符(-)将自动添加(例如: 20182022 → 2018-2022)。",
                 "limitations": "限制:",
-                "limitationsText": "您最多可以添加3个工作经验和3个课程/证书。",
+                "limitationsText": "您最多可以添加5个工作经验和5个课程/证书。",
                 "phoneFormat": "电话格式:",
                 "phoneFormatText": "所有电话号码只输入数字，xxx xxx xxxx格式将自动应用。",
                 "about": "关于我",
@@ -5004,7 +5072,7 @@ img {
                 "referenceNamePlaceholder": "推荐人全名",
                 "referencePositionPlaceholder": "职位和公司",
                 "referencePhonePlaceholder": "555 123 4567",
-                "languageNamePlaceholder": "中文",
+                "languageNamePlaceholder": "语言",
                 "languageLevelPlaceholder": "XXXXX",
                 "addPhoto": "点击添加照片",
                 "avatarBiometricSize": "(生物特征尺寸：50×60毫米)",
@@ -6241,9 +6309,9 @@ document.getElementById('add-skill-btn').addEventListener('click', function() {
         setupEditableFieldsForElement(newItem);
         
         // Yeni eklenen yeteneğe focus ol
-        setTimeout(() => {
-            newItem.focus();
-        }, 100);
+        // Dokunma (kullanıcı hareketi) anında odaklan: gecikmeli (setTimeout) odaklama
+        // telefonlarda klavyeyi açmıyor / ilk yazılan harfleri kaybettiriyordu.
+        newItem.focus();
     } else {
         alert(`Maksimum ${MAX_SKILLS} yetenek ekleyebilirsiniz.`);
     }
@@ -6377,6 +6445,12 @@ function setupEditableFieldsForElement(element) {
                         this.classList.add('hidden-in-pdf');
                     }
                 }
+                // Odak kaybedince font boyutunu normale (12px) döndür - mobilde
+                // focus sırasında geçici olarak 16px yapılmıştı (iOS Safari zoom önlemi).
+                if (this.closest('.right-column')) {
+                    this.style.fontSize = '12px';
+                    this.style.lineHeight = '1.4';
+                }
             });
             
             el.addEventListener('input', function() {
@@ -6437,8 +6511,11 @@ function setupEditableFieldsForElement(element) {
                                 this.classList.remove('empty-field');
                             }
                             // Focus olduğunda font size kontrolü
+                            // Mobilde (480px altı) 16px kullanılır: iOS Safari,
+                            // odaklanılan alanın font'u 16px'den küçükse sayfayı
+                            // otomatik büyütüyor - bunu önlemek için gerekli.
                             if (this.closest('.right-column')) {
-                                this.style.fontSize = '12px';
+                                if (window.innerWidth <= 480) { this.style.setProperty('font-size', '16px', 'important'); } else { this.style.fontSize = '12px'; }
                                 this.style.lineHeight = '1.4';
                             }
                         });
@@ -6448,6 +6525,12 @@ function setupEditableFieldsForElement(element) {
     if (this.textContent.trim() === '') {
         this.textContent = placeholder;
         this.classList.add('empty-field');
+    }
+    // Odak kaybedince font boyutunu normale (12px) döndür - mobilde
+    // focus sırasında geçici olarak 16px yapılmıştı (iOS Safari zoom önlemi).
+    if (this.closest('.right-column')) {
+        this.style.fontSize = '12px';
+        this.style.lineHeight = '1.4';
     }
 });
                         
@@ -6460,7 +6543,7 @@ function setupEditableFieldsForElement(element) {
                             
                             // Input sırasında font size kontrolü
                             if (this.closest('.right-column')) {
-                                this.style.fontSize = '12px';
+                                if (window.innerWidth <= 480) { this.style.setProperty('font-size', '16px', 'important'); } else { this.style.fontSize = '12px'; }
                                 this.style.lineHeight = '1.4';
                             }
                         });
@@ -6589,6 +6672,9 @@ function hideHintBubble(hintBubble) {
                 
                 document.addEventListener('keydown', function(e) {
                     if (e.target.classList.contains('date-input')) {
+                        // Telefon klavyeleri (IME) tuş olayını 'Unidentified'/229 bildirir; bunları engellemek
+                        // harf/rakam atlamasına yol açabiliyordu. Doğrulama 'input' aşamasında yapılır.
+                        if (e.isComposing || e.keyCode === 229 || e.key === 'Unidentified' || e.key === 'Process') return;
                         // Sadece rakam, backspace, delete, ok tuşlarına izin ver
                         const allowedKeys = [
                             'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 
@@ -6615,6 +6701,9 @@ function hideHintBubble(hintBubble) {
             function setupLanguageNameValidation() {
                 document.addEventListener('keydown', function(e) {
                     if (e.target.classList.contains('language-name')) {
+                        // Telefon klavyeleri (IME) tuş olayını 'Unidentified'/229 bildirir; bunları engellemek
+                        // harf atlamasına yol açıyordu. Doğrulama 'input' aşamasında yapılır.
+                        if (e.isComposing || e.keyCode === 229 || e.key === 'Unidentified' || e.key === 'Process') return;
                         const allowedKeys = [
                             'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
                             'ArrowUp', 'ArrowDown', 'Tab', 'Home', 'End', ' '
@@ -6631,6 +6720,9 @@ function hideHintBubble(hintBubble) {
             function setupLanguageLevelValidation() {
                 document.addEventListener('keydown', function(e) {
                     if (e.target.classList.contains('language-level')) {
+                        // Telefon klavyeleri (IME) tuş olayını 'Unidentified'/229 bildirir; bunları engellemek
+                        // harf atlamasına yol açıyordu. Doğrulama 'input' aşamasında yapılır.
+                        if (e.isComposing || e.keyCode === 229 || e.key === 'Unidentified' || e.key === 'Process') return;
                         const allowedKeys = [
                             'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
                             'ArrowUp', 'ArrowDown', 'Tab', 'Home', 'End', ' '
@@ -6700,6 +6792,9 @@ function hideHintBubble(hintBubble) {
                 
                 document.addEventListener('keydown', function(e) {
                     if (e.target.classList.contains('phone-input')) {
+                        // Telefon klavyeleri (IME) tuş olayını 'Unidentified'/229 bildirir; bunları engellemek
+                        // harf atlamasına yol açıyordu. Doğrulama 'input' aşamasında yapılır.
+                        if (e.isComposing || e.keyCode === 229 || e.key === 'Unidentified' || e.key === 'Process') return;
                         // Sadece rakam, backspace, delete, ok tuşlarına izin ver
                         const allowedKeys = [
                             'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 
@@ -6809,7 +6904,7 @@ if (phoneNumber.startsWith('90') && phoneNumber.length > 10) {
                     element.addEventListener('input', function() {
                         // Font size kontrolü
                         if (this.closest('.right-column')) {
-                            this.style.fontSize = '12px';
+                            if (window.innerWidth <= 480) { this.style.setProperty('font-size', '16px', 'important'); } else { this.style.fontSize = '12px'; }
                             this.style.lineHeight = '1.4';
                         }
                     });
@@ -6817,7 +6912,7 @@ if (phoneNumber.startsWith('90') && phoneNumber.length > 10) {
                     // Focus event'inde de font size kontrolü
                     element.addEventListener('focus', function() {
                         if (this.closest('.right-column')) {
-                            this.style.fontSize = '12px';
+                            if (window.innerWidth <= 480) { this.style.setProperty('font-size', '16px', 'important'); } else { this.style.fontSize = '12px'; }
                             this.style.lineHeight = '1.4';
                         }
                     });
@@ -7744,11 +7839,18 @@ class PasteHandler {
     
     enforceStyles(element) {
         if (!this.isEditableField(element)) return;
+
+        // iOS Safari, font-size'ı 16px'den küçük olan bir alana odaklanıldığında
+        // sayfayı otomatik büyütüyor (kullanıcı kontrolü dışında bir zoom).
+        // Bu yüzden SADECE mobilde VE element şu an odaklıyken 16px kullanılır;
+        // odak yokken (normal görünüm) her zaman 12px kalır, CV görünümü değişmez.
+        const isMobileFocused = window.innerWidth <= 480 && document.activeElement === element;
+        const dynamicFontSize = isMobileFocused ? '16px' : '12px';
         
         // Sağ sütun için font ayarları
         if (element.closest('.right-column')) {
             const styles = {
-                'font-size': '12px',
+                'font-size': dynamicFontSize,
                 'line-height': '1.4',
                 'font-family': "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
                 'color': '#555',
@@ -7762,17 +7864,19 @@ class PasteHandler {
                 element.style.setProperty(property, styles[property], 'important');
             });
             
-            // İç içe elementlerin stillerini de sıfırla
+            // İç içe elementlerin stillerini de sıfırla (font-size hariç -
+            // iç içe elementler ayrı odaklanamaz, 12px'te sabit kalmalı)
             element.querySelectorAll('*').forEach(child => {
                 Object.keys(styles).forEach(property => {
-                    child.style.setProperty(property, styles[property], 'important');
+                    const val = property === 'font-size' ? '12px' : styles[property];
+                    child.style.setProperty(property, val, 'important');
                 });
             });
         }
         
         // Sol sütun için font ayarları
         if (element.closest('.left-column')) {
-            element.style.fontSize = '12px';
+            element.style.fontSize = dynamicFontSize;
             element.style.lineHeight = '1.4';
         }
     }
@@ -8738,7 +8842,484 @@ s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
 <!--End of Tawk.to Script-->
+
+<script>
+/* Son satırı silmeden önce onay: yalnızca içi DOLU bir satır silinecekse ve
+   tıklama gerçek bir kullanıcı dokunuşuysa (demo/otomasyon scriptleri etkilenmez). */
+(function () {
+    var MAP = {
+        'remove-language-btn': ['languages-container', 2],
+        'remove-education-btn': ['education-container', 1],
+        'remove-experience-btn': ['experience-container', 1],
+        'remove-project-btn': ['projects-container', 1],
+        'remove-course-btn': ['courses-container', 1],
+        'remove-skill-btn': ['skills-container', 1],
+        'remove-reference-btn': ['references-container', 1]
+    };
+    document.addEventListener('click', function (e) {
+        if (!e.isTrusted) return;
+        var btn = e.target.closest && e.target.closest('button[id^="remove-"]');
+        if (!btn || !MAP[btn.id]) return;
+        var container = document.getElementById(MAP[btn.id][0]);
+        if (!container || container.children.length <= MAP[btn.id][1]) return;
+        var last = container.lastElementChild;
+        var fields = [last].concat(Array.prototype.slice.call(last.querySelectorAll('.editable')));
+        var filled = fields.some(function (el) {
+            return el.classList && el.classList.contains('editable') &&
+                   !el.classList.contains('empty-field') && el.textContent.trim() !== '';
+        });
+        if (!filled) return;
+        var lang = document.getElementById('language-select').value;
+        var t = (typeof translations !== 'undefined' && (translations[lang] || translations.tr)) || {};
+        var msg = t.confirmRemoveItem || 'Son satırdaki içerik silinecek. Emin misiniz?';
+        if (!window.confirm(msg)) { e.stopImmediatePropagation(); e.preventDefault(); }
+    }, true);
+})();
+</script>
+
+<script>
+/* Dil adı/seviyesi alanlarında rakamları yazıldıktan SONRA temizle. Tuş filtresi telefon
+   klavyelerinde harf atlattığı için doğrulama 'input' aşamasına taşındı. */
+(function () {
+    function clean(t) {
+        var s = t.textContent, k = s.replace(/\p{N}/gu, '');
+        if (k !== s) {
+            t.textContent = k;
+            var r = document.createRange(); r.selectNodeContents(t); r.collapse(false);
+            var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        }
+    }
+    function isLangField(t) {
+        return t && t.classList && (t.classList.contains('language-name') || t.classList.contains('language-level'));
+    }
+    document.addEventListener('input', function (e) { if (isLangField(e.target) && !e.isComposing) clean(e.target); }, true);
+    document.addEventListener('compositionend', function (e) { if (isLangField(e.target)) clean(e.target); }, true);
+})();
+</script>
+
+
+
+<!-- ===== YENİ: Sabit alt eylem çubuğu ve eksik alan uyarı mesajı ===== -->
+<div id="sticky-action-bar">
+    <button type="button" id="sticky-preview-btn"></button>
+    <button type="button" id="sticky-pdf-btn"></button>
+</div>
+<div id="missing-field-toast"></div>
+
+<style>
+/* ============================================================
+   KULLANICI KOLAYLIĞI ÖZELLİKLERİ (5 madde)
+   ============================================================ */
+
+/* --- 1) Masaüstü/Mobil görünüm geçiş düğmesi --- */
+#view-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#view-toggle-btn:hover { background: #f3f4f6; }
+
+/* --- 2) İlerleme göstergesi --- */
+#cv-progress-bar {
+    width: calc(100vw - 24px);
+    max-width: 600px;
+    min-width: 0;
+    margin: 10px auto;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-sizing: border-box;
+}
+#cv-progress-bar .cv-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 6px;
+}
+#cv-progress-bar .cv-progress-track {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+}
+#cv-progress-bar .cv-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f59e0b, #10b981);
+    border-radius: 6px;
+    transition: width 0.4s ease;
+    width: 0%;
+}
+
+/* --- 3) Hızlı Git menüsü --- */
+#quick-nav {
+    width: calc(100vw - 24px);
+    max-width: 600px;
+    min-width: 0;
+    box-sizing: border-box;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 2px 10px 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+#quick-nav::-webkit-scrollbar { height: 4px; }
+#quick-nav::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+#quick-nav button {
+    flex: 0 0 auto;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #374151;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#quick-nav button:active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+
+.cv-toolbar-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: calc(100vw - 24px);
+    max-width: 600px;
+    min-width: 0;
+    box-sizing: border-box;
+    margin: 0 auto 6px auto;
+    flex-wrap: wrap;
+}
+
+/* --- 4) Sabit (sticky) Önizleme + PDF bar --- */
+#sticky-action-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9998;
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    background: rgba(255,255,255,0.98);
+    border-top: 1px solid #e5e7eb;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+}
+#sticky-action-bar.visible { transform: translateY(0); }
+#sticky-action-bar button {
+    flex: 1;
+    padding: 12px 10px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+}
+#sticky-preview-btn { background: #f59e0b; color: #fff; }
+#sticky-pdf-btn { background: #10b981; color: #fff; }
+
+/* --- 5) Eksik alan uyarısı --- */
+.field-missing-highlight {
+    animation: fieldMissingPulse 1.6s ease 2;
+    outline: 3px solid #ef4444 !important;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+@keyframes fieldMissingPulse {
+    0%, 100% { outline-color: #ef4444; }
+    50% { outline-color: rgba(239,68,68,0.25); }
+}
+#missing-field-toast {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    z-index: 10000;
+    background: #ef4444;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: all 0.25s ease;
+    max-width: 90vw;
+    text-align: center;
+}
+#missing-field-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* main'in kendisi (page-wrapper'a göre) SINIRLI tutuluyor ki .cv-layout
+   kendi içinde (aşağıda tanımlı overflow-x:auto ile) YEREL bir kaydırma
+   alanı oluşturabilsin. main sınırlı olmazsa .cv-layout'un clientWidth'i
+   de scrollWidth'i ile eşit olup scroll edilecek bir şey kalmıyordu. */
+#main-content {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+/* .a4-container (CV'nin PDF/A4 önizlemesi) kasıtlı olarak sabit genişlikte
+   (210mm) - bu, PDF çıktı kalitesi için gerekli, değiştirilmemeli. Onu saran
+   bu section'a yerel bir kaydırma alanı vererek, main-content sınırlı
+   kalırken (main'e width:100% verildi) kullanıcı .right-column'a (Hakkımda,
+   Eğitim, Deneyim...) parmağıyla yatay kaydırarak ulaşabiliyor. */
+section[aria-labelledby="cv-form-title"] {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+    #sticky-action-bar button { font-size: 13px; padding: 11px 8px; }
+    #quick-nav button { padding: 6px 12px; font-size: 12px; }
+}
+</style>
+
+<script>
+(function () {
+    'use strict';
+
+    /* ========================================================
+       1) MASAÜSTÜ / MOBİL GÖRÜNÜM GEÇİŞİ
+       ======================================================== */
+    function initViewToggle() {
+        var btn = document.getElementById('view-toggle-btn');
+        if (!btn) return;
+        var meta = document.getElementById('viewport-meta');
+        var isDesktop = false;
+
+        function label() {
+            btn.innerHTML = isDesktop ? '📱 Mobil Görünüm' : '🖥️ Masaüstü Görünüm';
+        }
+        btn.addEventListener('click', function () {
+            isDesktop = !isDesktop;
+            meta.setAttribute('content', isDesktop ? 'width=1024' : 'width=device-width, initial-scale=1.0');
+            label();
+        });
+        label();
+    }
+
+    /* ========================================================
+       2) İLERLEME GÖSTERGESİ
+       ======================================================== */
+    var progressLabels = {
+        tr: 'CV\'niz %{p} hazır', en: 'Your CV is {p}% ready', de: 'Ihr Lebenslauf ist zu {p}% fertig',
+        fr: 'Votre CV est prêt à {p}%', es: 'Su CV está {p}% listo', it: 'Il tuo CV è pronto al {p}%',
+        pt: 'Seu CV está {p}% pronto', ru: 'Ваше резюме готово на {p}%', ar: 'سيرتك الذاتية جاهزة بنسبة {p}%',
+        zh: '您的简历已完成 {p}%'
+    };
+
+    function isFilled(el) {
+        if (!el) return false;
+        if (el.classList && el.classList.contains('empty-field')) return false;
+        return el.textContent && el.textContent.trim().length > 0;
+    }
+
+    function computeProgress() {
+        var checks = [];
+        checks.push(isFilled(document.querySelector('.name-item .personal-info-value')));
+        checks.push(isFilled(document.querySelector('.personal-info-value.phone-input')));
+        checks.push(isFilled(document.querySelector('.personal-info-value.email-input')));
+        checks.push(isFilled(document.getElementById('about-text')));
+        checks.push(isFilled(document.querySelector('#education-container .education-institution')));
+        var expItem = document.querySelector('#experience-container .experience-item');
+        checks.push(!!(expItem && isFilled(expItem.querySelector('.item-title')) && isFilled(expItem.querySelector('.experience-company'))));
+        checks.push(!!document.querySelector('#skills-container .skill-item:not(.empty-field)'));
+        checks.push(!!document.querySelector('#languages-container .language-item .language-name:not(.empty-field)'));
+
+        var filled = checks.filter(Boolean).length;
+        return Math.round((filled / checks.length) * 100);
+    }
+
+    function updateProgress() {
+        var bar = document.getElementById('cv-progress-bar');
+        if (!bar) return;
+        var pct = computeProgress();
+        var lang = (document.getElementById('language-select') || {}).value || 'tr';
+        var tmpl = progressLabels[lang] || progressLabels.tr;
+        bar.querySelector('.cv-progress-text').textContent = tmpl.replace('{p}', pct);
+        bar.querySelector('.cv-progress-fill').style.width = pct + '%';
+    }
+
+    /* ========================================================
+       3) HIZLI GİT MENÜSÜ
+       ======================================================== */
+    var quickNavLabels = {
+        tr: ['Kişisel Bilgiler','Diller','Hakkımda','Eğitim','Deneyim','Projeler','Kurslar','Yetenekler','Referanslar'],
+        en: ['Personal Info','Languages','About','Education','Experience','Projects','Courses','Skills','References']
+    };
+    var quickNavTargets = ['personal-info-section','languages-section','about-section','education-section','experience-section','projects-section','courses-section','skills-section','references-section'];
+
+    function updateQuickNavLabels() {
+        var nav = document.getElementById('quick-nav');
+        if (!nav) return;
+        var lang = (document.getElementById('language-select') || {}).value || 'tr';
+        var labels = quickNavLabels[lang] || quickNavLabels.en;
+        var buttons = nav.querySelectorAll('button');
+        buttons.forEach(function (b, i) { if (labels[i]) b.textContent = labels[i]; });
+    }
+
+    function buildQuickNav() {
+        var nav = document.getElementById('quick-nav');
+        if (!nav) return;
+        quickNavTargets.forEach(function (id, i) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.textContent = (quickNavLabels.tr[i]);
+            b.addEventListener('click', function () {
+                var target = document.getElementById(id);
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            nav.appendChild(b);
+        });
+    }
+
+    /* ========================================================
+       4) SABİT (STICKY) ÖNİZLEME + PDF BAR
+       ======================================================== */
+    function initStickyBar() {
+        var bar = document.getElementById('sticky-action-bar');
+        var controls = document.querySelector('.controls');
+        if (!bar || !controls) return;
+
+        document.getElementById('sticky-preview-btn').addEventListener('click', function () {
+            var b = document.getElementById('preview-cv');
+            if (b) b.click();
+        });
+        document.getElementById('sticky-pdf-btn').addEventListener('click', function () {
+            var b = document.getElementById('save-pdf');
+            if (b) b.click();
+        });
+
+        var ticking = false;
+        function onScroll() {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(function () {
+                // Sayfa az miktarda (30px) kaydırılınca bile hemen görünsün -
+                // kontrol barının tamamen ekrandan çıkmasını beklemez.
+                var show = window.scrollY > 30;
+                bar.classList.toggle('visible', show);
+                ticking = false;
+            });
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+    }
+
+    function updateStickyLabels() {
+        var lang = (document.getElementById('language-select') || {}).value || 'tr';
+        var t = (typeof translations !== 'undefined' && (translations[lang] || translations.tr)) || {};
+        var pBtn = document.getElementById('sticky-preview-btn');
+        var dBtn = document.getElementById('sticky-pdf-btn');
+        if (pBtn) pBtn.textContent = '👁️ ' + (t.preview || 'Önizleme');
+        if (dBtn) dBtn.textContent = '📄 ' + (t.downloadPdf || 'PDF İndir');
+    }
+
+    /* ========================================================
+       5) EKSİK ZORUNLU ALAN UYARISI
+       ======================================================== */
+    var missingFieldMsgs = {
+        tr: 'Lütfen işaretli alanı doldurun', en: 'Please fill in the highlighted field',
+        de: 'Bitte füllen Sie das markierte Feld aus', fr: 'Veuillez remplir le champ surligné',
+        es: 'Complete el campo resaltado', it: 'Compila il campo evidenziato',
+        pt: 'Preencha o campo destacado', ru: 'Пожалуйста, заполните выделенное поле',
+        ar: 'يرجى ملء الحقل المميز', zh: '请填写突出显示的字段'
+    };
+
+    function showMissingToast(msg) {
+        var toast = document.getElementById('missing-field-toast');
+        if (!toast) return;
+        toast.textContent = msg;
+        toast.classList.add('visible');
+        clearTimeout(toast._hideTimer);
+        toast._hideTimer = setTimeout(function () { toast.classList.remove('visible'); }, 2800);
+    }
+
+    function findFirstMissingRequiredField() {
+        var fields = document.querySelectorAll('.required-field');
+        for (var i = 0; i < fields.length; i++) {
+            var f = fields[i];
+            // görünmez (gizli bölüm/silinmiş satır içindeki) alanları atla
+            if (f.offsetParent === null) continue;
+            if (!isFilled(f)) return f;
+        }
+        return null;
+    }
+
+    function validateBeforePdf(e) {
+        var missing = findFirstMissingRequiredField();
+        if (!missing) return; // her şey dolu, PDF üretimine izin ver
+
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        missing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        missing.classList.remove('field-missing-highlight');
+        void missing.offsetWidth; // reflow - animasyonu yeniden tetikle
+        missing.classList.add('field-missing-highlight');
+        setTimeout(function () { missing.classList.remove('field-missing-highlight'); }, 3300);
+
+        var lang = (document.getElementById('language-select') || {}).value || 'tr';
+        showMissingToast(missingFieldMsgs[lang] || missingFieldMsgs.tr);
+
+        setTimeout(function () {
+            try { missing.focus(); } catch (err) {}
+        }, 500);
+    }
+
+    function initPdfValidation() {
+        var btn = document.getElementById('save-pdf');
+        if (!btn) return;
+        btn.addEventListener('click', validateBeforePdf, true); // capture aşaması: mevcut kodu bozmadan önce çalışır
+    }
+
+    /* ========================================================
+       BAŞLAT
+       ======================================================== */
+    function initAll() {
+        initStickyBar();
+        initPdfValidation();
+        updateStickyLabels();
+
+        // Dil değişince sticky bar metinlerini güncelle
+        var langSelect = document.getElementById('language-select');
+        if (langSelect) {
+            langSelect.addEventListener('change', function () {
+                setTimeout(function () { updateStickyLabels(); }, 300);
+            });
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+        initAll();
+    }
+})();
+</script>
+
 </body>
-
-
-</html>  
+</html>
