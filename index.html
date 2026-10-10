@@ -2927,6 +2927,7 @@ img {
 .rk-top { display: flex; gap: 4mm; align-items: flex-start; }
 .rk-top table { flex: 1; }
 .rk-photo { width: 30mm; height: 40mm; flex: 0 0 30mm; border: 1px dashed #111; box-sizing: border-box; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 7.5pt; line-height: 1.5; overflow: hidden; }
+.rk-photo.rk-photo-empty { border-color: transparent; }
 .rk-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .rk-name { font-size: 18pt; height: 15mm; }
 .rk-hist td { height: 7.6mm; }
@@ -10177,8 +10178,8 @@ function saveCV() {
             ? cell(E, 'bY', b.y, 'YYYY') + '年' + cell(E, 'bM', b.m, 'MM') + '月' + cell(E, 'bD', b.d, 'DD') + '日生（満<span class="rk-age">' + esc(a) + '</span>歳）'
             : (b.y ? b.y + '年' + (+b.m) + '月' + (+b.d) + '日生（満' + a + '歳）' : '　　年　　月　　日生（満　　歳）');
         var h1 = S.history.slice(0, FIRST), h2 = S.history.slice(FIRST);
-        var photoBox = '<div class="rk-photo' + (E ? ' rk-photo-ed' : '') + '"' + (E ? ' title="写真を追加"' : '') + '>' +
-            (photo ? '<img src="' + photo + '" alt="">' : '写真をはる位置<br><br>写真をはる必要が<br>ある場合<br>1. 縦 36〜40mm<br>　横 24〜30mm<br>2. 本人単身胸から上<br>3. 裏面のりづけ') + '</div>';
+        var photoBox = '<div class="rk-photo' + (E ? ' rk-photo-ed' : '') + (!E && !photo ? ' rk-photo-empty' : '') + '"' + (E ? ' title="写真を追加"' : '') + '>' +
+            (photo ? '<img src="' + photo + '" alt="">' : (E ? '写真をはる位置<br><br>タップして<br>写真を追加' : '')) + '</div>';
         var p1 = '<div class="rk-page" lang="ja">' +
             '<div class="rk-title"><h1>履歴書</h1><div class="rk-date">' + now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日現在</div></div>' +
             '<div class="rk-top"><table class="rk-outer">' +
