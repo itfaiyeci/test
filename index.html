@@ -2938,6 +2938,10 @@ img {
 .rk-box .lbl { font-size: 9pt; height: 6mm; }
 .rk-box .txt { white-space: pre-wrap; }
 
+/* === JP FONT === */
+html[lang="ja"] .a4-container, .rk-page, .rk-page * { font-family: "MobilCV JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", "Noto Sans JP", "Noto Sans CJK JP", sans-serif !important; }
+html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-content .a4-container * { font-family: "MobilCV JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", "Noto Sans JP", "Noto Sans CJK JP", sans-serif !important; }
+
 @media (max-width: 480px) {
     .editable:focus,
     .right-column .editable:focus,
@@ -2984,6 +2988,40 @@ img {
     window.isJapaneseMode = function () {
         var s = document.getElementById('language-select');
         return (s && s.value === 'ja') || window.currentCvTemplate === 'tpl-rirekisho';
+    };
+    </script>
+    <script>
+    /* Japonca yazi tipi: yalnizca Japonca modda yuklenir (siteden, ucuncu taraf yok) */
+    window.MOBILCV_JP_FONT_CSS = 'fonts/jp/jp.css';
+    // html2canvas'in kopya belgesinde (iframe) yazi tipinin yuklenmesini bekle
+    window.jpFontInDoc = function (doc, text) {
+        try {
+            // Bazi alanlara JS ile satir ici "Segoe UI !important" yaziliyor; Japonca'da bunu ez
+            var JP = '"MobilCV JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", "Noto Sans JP", "Noto Sans CJK JP", sans-serif';
+            doc.querySelectorAll('#cv-form [style*="font-family"], .rk-page [style*="font-family"]').forEach(function (e) { e.style.setProperty('font-family', JP, 'important'); });
+            if (!doc.fonts || !doc.fonts.load) return Promise.resolve();
+            return Promise.all([doc.fonts.load('400 16px "MobilCV JP"', text || '日本語'), doc.fonts.load('700 16px "MobilCV JP"', text || '日本語')])
+                .then(function () { return doc.fonts.ready; }, function () {});
+        } catch (e) { return Promise.resolve(); }
+    };
+    window.ensureJpFont = function (text) {
+        return new Promise(function (resolve) {
+            var href = window.MOBILCV_JP_FONT_CSS;
+            var link = document.querySelector('link[data-jp-font]');
+            function go() {
+                if (!document.fonts || !document.fonts.load) { resolve(); return; }
+                var t = text || '日本語';
+                Promise.all([
+                    document.fonts.load('400 16px "MobilCV JP"', t),
+                    document.fonts.load('700 16px "MobilCV JP"', t)
+                ]).then(function () { resolve(); }, function () { resolve(); });
+            }
+            if (link) { if (link.__ready) go(); else link.addEventListener('load', go); setTimeout(go, 4000); return; }
+            link = document.createElement('link'); link.rel = 'stylesheet'; link.href = href; link.setAttribute('data-jp-font', '1');
+            link.onload = function () { link.__ready = true; go(); };
+            link.onerror = function () { resolve(); };
+            document.head.appendChild(link);
+        });
     };
     </script>
 </head>
@@ -7948,6 +7986,10 @@ if (socialMediaSection) {
                                 item.classList.add('hidden-in-pdf');
                             }
                         });
+                        // Japonca: kopya belgede yazi tipi parcalari yuklenmeden cizim yapilmasin
+                        if (window.isJapaneseMode && window.isJapaneseMode() && window.jpFontInDoc) {
+                            return window.jpFontInDoc(clonedDoc, clonedDoc.body.textContent);
+                        }
                     }
                 });
             }
@@ -7956,7 +7998,12 @@ if (socialMediaSection) {
             // Hem "PDF İndir" hem "Paylaş" butonu bu fonksiyonu kullanır.
             // İçerik bir sayfaya sığmazsa otomatik olarak 2. (ve gerekirse daha
             // fazla) sayfaya geçer; her sayfada fotoğraf/isim sütunu tekrar gösterilir.
-            function generateCvPdf() {
+            function generateCvPdf(__fontReady) {
+                if (!__fontReady && window.isJapaneseMode && window.isJapaneseMode() && window.ensureJpFont
+                    && window.currentCvTemplate !== 'tpl-rirekisho') {
+                    const formText = (document.getElementById('cv-form') || document.body).textContent;
+                    return window.ensureJpFont(formText).then(() => generateCvPdf(true));
+                }
                 if (window.currentCvTemplate === 'tpl-rirekisho' && window.buildRirekishoPdf) {
                     return window.buildRirekishoPdf();
                 }
@@ -10111,8 +10158,11 @@ function saveCV() {
             var doc = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             var els = host.querySelectorAll('.rk-page');
             (async function () {
+                if (window.ensureJpFont) await window.ensureJpFont(host.textContent);
                 for (var i = 0; i < els.length; i++) {
-                    var canvas = await html2canvas(els[i], { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: true });
+                    var txt = els[i].textContent;
+                    var canvas = await html2canvas(els[i], { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: true,
+                        onclone: function (cd) { return window.jpFontInDoc ? window.jpFontInDoc(cd, txt) : null; } });
                     if (i > 0) doc.addPage();
                     doc.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297, '', 'FAST');
                 }
@@ -10123,6 +10173,7 @@ function saveCV() {
     window.showRirekishoPreview = function () {
         var box = document.getElementById('preview-content');
         if (!box) return;
+        if (window.ensureJpFont) window.ensureJpFont(document.getElementById('cv-form').textContent + '履歴書学歴職歴免許資格');
         box.innerHTML = '';
         var wrap = document.createElement('div');
         wrap.style.cssText = 'display:flex;flex-direction:column;gap:12px;align-items:center;';
@@ -10141,6 +10192,17 @@ function saveCV() {
         });
         document.getElementById('preview-overlay').style.display = 'flex';
     };
+})();
+</script>
+<script>
+/* Dil Japonca secilince yazi tipini arka planda hazirla (ekranda da tutarli gorunsun) */
+(function () {
+    var s = document.getElementById('language-select');
+    function pre() { if (window.isJapaneseMode && window.isJapaneseMode() && window.ensureJpFont) window.ensureJpFont(); }
+    if (s) s.addEventListener('change', function () { setTimeout(pre, 50); });
+    var t = document.getElementById('template-select');
+    if (t) t.addEventListener('change', function () { setTimeout(pre, 50); });
+    setTimeout(pre, 1500);
 })();
 </script>
 </body>
