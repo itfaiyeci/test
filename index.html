@@ -9,7 +9,7 @@
     
     <!-- Primary Meta Tags -->
     <title>Ücretsiz CV Hazırla – Üyeliksiz, Telefondan PDF | MobilCV</title>
-    <meta name="description" content="Üyeliksiz ve reklamsız! Telefondan ücretsiz CV hazırlayın, bilgileriniz kaydedilmez. 10 dil desteği ile PDF CV'nizi dakikalar içinde oluşturun.">
+    <meta name="description" content="Üyeliksiz ve reklamsız! Telefondan ücretsiz CV hazırlayın, bilgileriniz kaydedilmez. 11 dil desteği ile PDF CV'nizi dakikalar içinde oluşturun.">
     <meta name="keywords" content="cv oluşturma, cv hazırlama, online cv, ücretsiz cv, profesyonel cv, cv şablonları, pdf cv, iş başvurusu, özgeçmiş">
     <meta name="author" content="MobilCV">
     <meta name="robots" content="noindex, nofollow">
@@ -18,7 +18,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.mobilcv.com/">
     <meta property="og:title" content="Ücretsiz CV Hazırla – Üyeliksiz, Telefondan PDF | MobilCV">
-    <meta property="og:description" content="Üyeliksiz ve reklamsız! Telefondan ücretsiz CV hazırlayın, bilgileriniz kaydedilmez. 10 dil desteği ile PDF CV'nizi dakikalar içinde oluşturun.">
+    <meta property="og:description" content="Üyeliksiz ve reklamsız! Telefondan ücretsiz CV hazırlayın, bilgileriniz kaydedilmez. 11 dil desteği ile PDF CV'nizi dakikalar içinde oluşturun.">
     <meta property="og:image" content="https://www.mobilcv.com/images/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -29,7 +29,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://www.mobilcv.com/">
     <meta name="twitter:title" content="Ücretsiz CV Hazırla – Üyeliksiz, Telefondan PDF | MobilCV">
-    <meta name="twitter:description" content="Üyeliksiz ve reklamsız! Telefondan ücretsiz CV hazırlayın, bilgileriniz kaydedilmez. 10 dil desteği ile PDF CV'nizi dakikalar içinde oluşturun.">
+    <meta name="twitter:description" content="Üyeliksiz ve reklamsız! Telefondan ücretsiz CV hazırlayın, bilgileriniz kaydedilmez. 11 dil desteği ile PDF CV'nizi dakikalar içinde oluşturun.">
     <meta name="twitter:image" content="https://www.mobilcv.com/images/og-image.jpg">
     
     <!-- Canonical URL -->
@@ -47,6 +47,7 @@
     <link rel="alternate" hreflang="ru" href="https://www.mobilcv.com/ru/">
     <link rel="alternate" hreflang="ar" href="https://www.mobilcv.com/ar/">
     <link rel="alternate" hreflang="zh" href="https://www.mobilcv.com/zh/">
+    <link rel="alternate" hreflang="ja" href="https://www.mobilcv.com/ja/">
     <link rel="alternate" hreflang="x-default" href="https://www.mobilcv.com/">
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -61,11 +62,11 @@
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "MobilCV - Ücretsiz Online CV Oluşturucu",
-        "description": "10 dil desteği ile ücretsiz profesyonel CV oluşturma aracı. PDF indirme, 4 renk teması, mobil uyumlu.",
+        "description": "11 dil desteği ile ücretsiz profesyonel CV oluşturma aracı. PDF indirme, 4 renk teması, mobil uyumlu.",
         "url": "https://www.mobilcv.com",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Any",
-		"inLanguage": ["tr", "en", "de", "fr", "es", "it", "pt", "ru", "ar", "zh"],
+		"inLanguage": ["tr", "en", "de", "fr", "es", "it", "pt", "ru", "ar", "zh", "ja"],
         "permissions": "browser",
         "offers": {
             "@type": "Offer",
@@ -80,7 +81,7 @@
         },
         "featureList": [
             "Ücretsiz CV oluşturma",
-            "10 dil desteği", 
+            "11 dil desteği", 
             "PDF indirme",
             "4 renk teması",
             "Mobil uyumlu"
@@ -138,7 +139,7 @@
       "name": "CV'mi hangi dillerde hazırlayabilirim?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Türkçe, İngilizce, Almanca, Fransızca, İspanyolca, İtalyanca, Portekizce, Rusça, Arapça ve Çince olmak üzere 10 dilde hazırlayabilirsiniz."
+        "text": "Türkçe, İngilizce, Almanca, Fransızca, İspanyolca, İtalyanca, Portekizce, Rusça, Arapça, Çince ve Japonca olmak üzere 11 dilde hazırlayabilirsiniz."
       }
     },
     {
@@ -2861,7 +2862,8 @@ img {
    .editable gibi eşit özgüllükteki diğer !important kuralları geçersiz kılsın. */
 /* === SABLON: KLASIK (tek sutun) === */
 /* Sablon secici */
-.template-picker { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 0 12px; font-size: 14px; color: #475569; }
+.template-picker { grid-column: 1 / -1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 0 12px; font-size: 14px; color: #475569; }
+.template-picker select { min-width: 0; max-width: 100%; }
 .template-picker label { white-space: nowrap; flex: 0 0 auto; width: auto; margin: 0; }
 .template-picker select { font-size: 15px; padding: 7px 12px; border: 1px solid #cbd5e1; border-radius: 10px; background: #fff; color: #1e293b; cursor: pointer; }
 
@@ -2957,6 +2959,22 @@ img {
 /* === JP FONT === */
 html[lang="ja"] .a4-container, .rk-page, .rk-page * { font-family: "MobilCV JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", "Noto Sans JP", "Noto Sans CJK JP", sans-serif !important; }
 html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-content .a4-container * { font-family: "MobilCV JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", "Noto Sans JP", "Noto Sans CJK JP", sans-serif !important; }
+
+/* === TAVSIYE KUTUSU === */
+.rec-box { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%); z-index: 10050; width: min(420px, calc(100vw - 24px));
+  background: #fff; color: #1e293b; border-radius: 16px; box-shadow: 0 12px 40px rgba(15,23,42,.25); padding: 18px 18px 14px; font-family: inherit; }
+.rec-box h3 { margin: 0 34px 6px 0; font-size: 17px; }
+.rec-box p { margin: 0 0 12px; font-size: 14px; color: #475569; line-height: 1.45; }
+.rec-box .rec-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.rec-box .rec-btns a, .rec-box .rec-btns button { flex: 1 1 auto; text-align: center; border: 0; border-radius: 10px; padding: 10px 12px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; color: #fff; }
+.rec-box .rec-share { background: #2563eb; }
+.rec-box .rec-wa { background: #16a34a; }
+.rec-box .rec-li { background: #0a66c2; }
+.rec-box .rec-copy { background: #e2e8f0; color: #1e293b !important; }
+.rec-box .rec-x { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border: 0; border-radius: 50%; background: #f1f5f9; color: #475569; font-size: 18px; line-height: 30px; cursor: pointer; }
+.rec-box[dir="rtl"] .rec-x { right: auto; left: 10px; }
+.rec-box[dir="rtl"] h3 { margin: 0 0 6px 34px; }
+@media print { .rec-box { display: none !important; } }
 
 @media (max-width: 480px) {
     .editable:focus,
@@ -3067,7 +3085,7 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
     <div class="page-wrapper">
         <header class="header" role="banner">
             <h1>Ücretsiz CV Hazırla – Üye Olmadan</h1>  
-            <p>Telefondan 10 dilde profesyonel CV oluşturun, PDF olarak indirin</p>
+            <p>Telefondan 11 dilde profesyonel CV oluşturun, PDF olarak indirin</p>
         </header>
         
         <main id="main-content" role="main">
@@ -3100,7 +3118,7 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
                     <select id="template-select">
                         <option value="" id="tpl-opt-modern">Modern</option>
                         <option value="tpl-classic" id="tpl-opt-classic">Klasik (tek sütun)</option>
-                        <option value="tpl-rirekisho" id="tpl-opt-rirekisho">Japon özgeçmişi (履歴書)</option>
+                        <option value="tpl-rirekisho" id="tpl-opt-rirekisho">Japon tipi özgeçmiş (履歴書)</option>
                     </select>
                 </div>
                 <div class="theme-dots" id="theme-options" role="radiogroup" aria-label="Renk Teması">
@@ -3419,14 +3437,14 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             <h2 id="seo-steps-title">3 adımda CV hazırlayın</h2>
             <ol><li>Bilgilerinizi forma yazın: iletişim, deneyim, eğitim, yetenekler. İsterseniz fotoğraf ekleyin.</li><li>Renk temasını ve CV dilini seçin; değişiklikleri önizlemede anında görün.</li><li><b>PDF İndir</b> düğmesine basın. CV'niz başvuruya hazır.</li></ol>
             <h2>Neden MobilCV?</h2>
-            <ul><li><b>Tamamen ücretsiz:</b> Gizli ücret, deneme süresi veya filigran yok.</li><li><b>Üyelik yok:</b> E-posta, şifre veya hesap gerekmez.</li><li><b>Bilgileriniz sizde kalır:</b> CV'niz yalnızca kendi tarayıcınızda tutulur, sunucuya gönderilmez.</li><li><b>Telefon için tasarlandı:</b> Bilgisayar olmadan, birkaç dakikada CV hazırlayabilirsiniz.</li><li><b>10 dil:</b> Türkçe, İngilizce, Almanca, Fransızca, İspanyolca, İtalyanca, Portekizce, Rusça, Arapça ve Çince.</li></ul>
+            <ul><li><b>Tamamen ücretsiz:</b> Gizli ücret, deneme süresi veya filigran yok.</li><li><b>Üyelik yok:</b> E-posta, şifre veya hesap gerekmez.</li><li><b>Bilgileriniz sizde kalır:</b> CV'niz yalnızca kendi tarayıcınızda tutulur, sunucuya gönderilmez.</li><li><b>Telefon için tasarlandı:</b> Bilgisayar olmadan, birkaç dakikada CV hazırlayabilirsiniz.</li><li><b>11 dil:</b> Türkçe, İngilizce, Almanca, Fransızca, İspanyolca, İtalyanca, Portekizce, Rusça, Arapça, Çince ve Japonca.</li></ul>
             <h2>Sıkça Sorulan Sorular</h2>
             <details><summary>MobilCV gerçekten ücretsiz mi?</summary><p>Evet. CV oluşturmak ve PDF olarak indirmek tamamen ücretsizdir; gizli ücret veya filigran yoktur.</p></details>
             <details><summary>CV hazırlamak için üye olmam gerekiyor mu?</summary><p>Hayır. Üyelik, e-posta veya şifre gerekmez; sayfayı açıp hemen başlayabilirsiniz.</p></details>
             <details><summary>Bilgilerim nereye kaydediliyor?</summary><p>Bilgileriniz yalnızca kendi cihazınızda, tarayıcınızın yerel depolama alanında tutulur ve sunucularımıza gönderilmez. Silmek için Tümünü Temizle düğmesini kullanabilirsiniz.</p></details>
             <details><summary>Telefondan CV hazırlayabilir miyim?</summary><p>Evet. MobilCV telefonda kullanılmak üzere tasarlandı; bilgisayarda da çalışır.</p></details>
             <details><summary>CV'me fotoğraf ekleyebilir miyim?</summary><p>Evet. Fotoğraf eklemek isteğe bağlıdır; fotoğraf alanına dokunarak ekleyebilirsiniz.</p></details>
-            <details><summary>CV'mi hangi dillerde hazırlayabilirim?</summary><p>Türkçe, İngilizce, Almanca, Fransızca, İspanyolca, İtalyanca, Portekizce, Rusça, Arapça ve Çince olmak üzere 10 dilde hazırlayabilirsiniz.</p></details>
+            <details><summary>CV'mi hangi dillerde hazırlayabilirim?</summary><p>Türkçe, İngilizce, Almanca, Fransızca, İspanyolca, İtalyanca, Portekizce, Rusça, Arapça, Çince ve Japonca olmak üzere 11 dilde hazırlayabilirsiniz.</p></details>
             <details><summary>CV'mi nasıl indiririm?</summary><p>Formu doldurduktan sonra PDF İndir düğmesine basın. CV'niz PDF dosyası olarak cihazınıza kaydedilir.</p></details>
             <p class="seo-more">Meslek bazlı CV örnekleri ve CV yazma rehberleri için <a href="https://mobilcv.net/cv-ornekleri.html" target="_blank" rel="noopener">CV örneklerine göz atın</a></p>
         </section>
@@ -3559,8 +3577,8 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             tr: {
                 // Başlık ve açıklamalar
                 "appTitle": "Ücretsiz CV Hazırla – Üye Olmadan",
-        "appDescription": "Telefondan 10 dilde profesyonel CV oluşturun, PDF olarak indirin",
-		"pageTitle": "Mobil CV Oluşturucu | 10 Dil Desteği",
+        "appDescription": "Telefondan 11 dilde profesyonel CV oluşturun, PDF olarak indirin",
+		"pageTitle": "Ücretsiz CV Hazırla | 11 Dilde, Üyeliksiz",
                 "selectLanguage": "Dil Seçin",
                 "selectTheme": "Renk Teması",
                 "themeClassic": "Klasik Mavi",
@@ -3762,8 +3780,8 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             },
             en: {
                 "appTitle": "Free CV Maker – No Sign-Up", 
-        "appDescription": "Create a professional CV on your phone in 10 languages and download it as PDF",
-		 "pageTitle": "Mobile CV Creator | 10 Language Support",
+        "appDescription": "Create a professional CV on your phone in 11 languages and download it as PDF",
+		 "pageTitle": "Free CV Maker | Available in 11 Languages",
                 "selectLanguage": "Select Language",
                 "selectTheme": "Color Theme",
                 "themeClassic": "Classic Blue",
@@ -3947,8 +3965,8 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             },
             de: {
                "appTitle": "Lebenslauf kostenlos erstellen – ohne Anmeldung",
-        "appDescription": "Professionellen Lebenslauf am Handy in 10 Sprachen erstellen und als PDF herunterladen",
-		 "pageTitle": "Mobil-Lebenslauf-Ersteller | 10 Sprachunterstützung",
+        "appDescription": "Professionellen Lebenslauf am Handy in 11 Sprachen erstellen und als PDF herunterladen",
+		 "pageTitle": "Lebenslauf-Generator fürs Handy | In 11 Sprachen",
                 "selectLanguage": "Sprache auswählen",
                 "selectTheme": "Farbthema",
                 "themeClassic": "Klassisch Blau",
@@ -4131,8 +4149,8 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             },
             fr: {
                 "appTitle": "Créer un CV gratuit – sans inscription",
-        "appDescription": "Créez un CV professionnel sur votre téléphone en 10 langues et téléchargez-le en PDF",
-		 "pageTitle": "Créateur de CV Mobile | Support 10 Langues",
+        "appDescription": "Créez un CV professionnel sur votre téléphone en 11 langues et téléchargez-le en PDF",
+		 "pageTitle": "Créer son CV sur mobile | 11 langues disponibles",
                 "selectLanguage": "Sélectionner la langue",
                 "selectTheme": "Thème de couleur",
                 "themeClassic": "Bleu classique",
@@ -4315,8 +4333,8 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             },
             es: {
                  "appTitle": "Crear currículum gratis – sin registro", 
-        "appDescription": "Crea un currículum profesional desde el móvil en 10 idiomas y descárgalo en PDF",
-		 "pageTitle": "Creador de CV Móvil | Soporte 10 Idiomas",
+        "appDescription": "Crea un currículum profesional desde el móvil en 11 idiomas y descárgalo en PDF",
+		 "pageTitle": "Crea tu CV desde el móvil | Disponible en 11 idiomas",
                 "selectLanguage": "Seleccionar idioma",
                 "selectTheme": "Tema de color",
                 "themeClassic": "Azul clásico",
@@ -4499,8 +4517,8 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             },
             it: {
                 "appTitle": "Crea il tuo CV gratis – senza registrazione",
-        "appDescription": "Crea un CV professionale dal telefono in 10 lingue e scaricalo in PDF", 
-		"pageTitle": "Creatore CV Mobile | Supporto 10 Lingue",
+        "appDescription": "Crea un CV professionale dal telefono in 11 lingue e scaricalo in PDF", 
+		"pageTitle": "Crea il tuo CV dal telefono | Disponibile in 11 lingue",
                 "selectLanguage": "Seleziona lingua",
                 "selectTheme": "Tema colore",
                 "themeClassic": "Blu classico",
@@ -4683,8 +4701,8 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
 	 },
             pt: {
                  "appTitle": "Criar currículo grátis – sem cadastro",
-        "appDescription": "Crie um currículo profissional pelo celular em 10 idiomas e baixe em PDF",
-		 "pageTitle": "Criador de CV Móvel | Suporte 10 Idiomas",
+        "appDescription": "Crie um currículo profissional pelo celular em 11 idiomas e baixe em PDF",
+		 "pageTitle": "Crie seu currículo no celular | Disponível em 11 idiomas",
                 "selectLanguage": "Selecionar idioma",
                 "selectTheme": "Tema de cor",
                 "themeClassic": "Azul clássico",
@@ -4867,8 +4885,8 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             },
             ru: {
                  "appTitle": "Создать резюме бесплатно – без регистрации",
-        "appDescription": "Создайте профессиональное резюме с телефона на 10 языках и скачайте в PDF",
-		 "pageTitle": "Мобильный Создатель Резюме | Поддержка 10 Языков",
+        "appDescription": "Создайте профессиональное резюме с телефона на 11 языках и скачайте в PDF",
+		 "pageTitle": "Конструктор резюме для телефона | 11 языков",
                 "selectLanguage": "Выберите язык",
                 "selectTheme": "Цветовая тема",
                 "themeClassic": "Классический синий",
@@ -5051,8 +5069,8 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             },
             ar: {
                "appTitle": "أنشئ سيرتك الذاتية مجانًا – بدون تسجيل",
-        "appDescription": "أنشئ سيرة ذاتية احترافية من هاتفك بعشر لغات وحمّلها بصيغة PDF",
-		 "pageTitle": "منشئ السيرة الذاتية للموبايل | دعم 10 لغات",
+        "appDescription": "أنشئ سيرة ذاتية احترافية من هاتفك بإحدى عشرة لغة وحمّلها بصيغة PDF",
+		 "pageTitle": "منشئ السيرة الذاتية للجوال | متوفر بـ 11 لغة",
                 "selectLanguage": "اختر اللغة",
                 "selectTheme": "نمط الألوان",
                 "themeClassic": "أزرق كلاسيكي",
@@ -5235,8 +5253,8 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             },
             zh: {
                 "appTitle": "免费制作简历 – 无需注册",
-        "appDescription": "用手机以10种语言制作专业简历，并下载为PDF",
-		"pageTitle": "移动简历生成器 | 10种语言支持",
+        "appDescription": "用手机以11种语言制作专业简历，并下载为PDF",
+		"pageTitle": "手机简历制作工具 | 支持11种语言",
                 "selectLanguage": "选择语言",
                 "selectTheme": "配色主题",
                 "themeClassic": "经典蓝",
@@ -5420,7 +5438,7 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             ja: {  /* ja-dil-destegi */
                 "appTitle": "無料の履歴書作成ツール – 登録不要",
                 "appDescription": "スマホで11言語の履歴書を作成し、PDFでダウンロード",
-                "pageTitle": "モバイル履歴書作成 | 11言語対応",
+                "pageTitle": "スマホで履歴書作成 | 11言語対応",
                 "selectLanguage": "言語を選択",
                 "selectTheme": "カラーテーマ",
                 "themeClassic": "クラシックブルー",
@@ -8175,6 +8193,7 @@ if (socialMediaSection) {
             document.getElementById('save-pdf').addEventListener('click', function() {
                 generateCvPdf().then(doc => {
                     doc.save('CV.pdf');
+                    if (window.mobilcvRecommend) setTimeout(window.mobilcvRecommend, 1500);
                 }).catch(error => {
                     console.error('PDF oluşturma hatası:', error);
                     alert('PDF oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
@@ -9967,17 +9986,17 @@ function saveCV() {
 /* === SABLON SECICI (Modern / Klasik) === */
 (function () {
     var L = {
-        tr: ['Şablon', 'Modern', 'Klasik (tek sütun)', 'Japon özgeçmişi (履歴書)'],
+        tr: ['Şablon', 'Modern', 'Klasik (tek sütun)', 'Japon tipi özgeçmiş (履歴書)'],
         en: ['Template', 'Modern', 'Classic (single column)', 'Japanese résumé (履歴書)'],
         de: ['Vorlage', 'Modern', 'Klassisch (einspaltig)', 'Japanischer Lebenslauf (履歴書)'],
         fr: ['Modèle', 'Moderne', 'Classique (une colonne)', 'CV japonais (履歴書)'],
         es: ['Plantilla', 'Moderna', 'Clásica (una columna)', 'Currículum japonés (履歴書)'],
         it: ['Modello', 'Moderno', 'Classico (una colonna)', 'CV giapponese (履歴書)'],
         pt: ['Modelo', 'Moderno', 'Clássico (uma coluna)', 'Currículo japonês (履歴書)'],
-        ru: ['Шаблон', 'Современный', 'Классический (одна колонка)', 'Японское резюме (履歴書)'],
+        ru: ['Шаблон', 'Современный', 'Классический (в одну колонку)', 'Японское резюме (履歴書)'],
         ar: ['القالب', 'عصري', 'كلاسيكي (عمود واحد)', 'سيرة ذاتية يابانية (履歴書)'],
-        zh: ['模板', '现代', '经典（单栏）', '日本履历书（履歴書）'],
-        ja: ['テンプレート', 'モダン', 'クラシック（1段組）', '履歴書（日本形式）']
+        zh: ['模板', '现代', '经典（单栏）', '日式履历书（履歴書）'],
+        ja: ['テンプレート', 'モダン', 'クラシック（1カラム）', '履歴書']
     };
     var form = document.getElementById('cv-form');
     var select = document.getElementById('template-select');
@@ -10353,6 +10372,42 @@ function saveCV() {
     var t = document.getElementById('template-select');
     if (t) t.addEventListener('change', function () { setTimeout(pre, 50); });
     setTimeout(pre, 1500);
+})();
+</script>
+<script>
+/* === TAVSIYE KUTUSU: PDF indirildikten sonra, 14 gunde en fazla bir kez. Hicbir veri gonderilmez. === */
+(function () {
+    var T = {"tr": ["CV'niz hazır!", "MobilCV'yi faydalı bulduysanız, iş arayan bir tanıdığınıza önerebilirsiniz.", "Paylaş", "Linki kopyala", "Kopyalandı ✓", "Kapat", "Ücretsiz ve üyeliksiz CV hazırlama aracı:"], "en": ["Your CV is ready!", "If MobilCV helped you, you can recommend it to someone who is looking for a job.", "Share", "Copy link", "Copied ✓", "Close", "Free CV builder, no sign-up needed:"], "de": ["Ihr Lebenslauf ist fertig!", "Wenn Ihnen MobilCV geholfen hat, empfehlen Sie es gern jemandem, der gerade auf Jobsuche ist.", "Teilen", "Link kopieren", "Kopiert ✓", "Schließen", "Kostenloser Lebenslauf-Generator, ohne Anmeldung:"], "fr": ["Votre CV est prêt !", "Si MobilCV vous a été utile, vous pouvez le recommander à une personne en recherche d'emploi.", "Partager", "Copier le lien", "Copié ✓", "Fermer", "Créateur de CV gratuit, sans inscription :"], "es": ["¡Tu currículum está listo!", "Si MobilCV te ha sido útil, puedes recomendarlo a alguien que esté buscando trabajo.", "Compartir", "Copiar enlace", "Copiado ✓", "Cerrar", "Creador de currículum gratis, sin registro:"], "it": ["Il tuo CV è pronto!", "Se MobilCV ti è stato utile, puoi consigliarlo a chi sta cercando lavoro.", "Condividi", "Copia link", "Copiato ✓", "Chiudi", "Creatore di CV gratuito, senza registrazione:"], "pt": ["Seu currículo está pronto!", "Se o MobilCV foi útil, você pode recomendá-lo a alguém que esteja procurando emprego.", "Compartilhar", "Copiar link", "Copiado ✓", "Fechar", "Criador de currículo grátis, sem cadastro:"], "ru": ["Ваше резюме готово!", "Если MobilCV оказался полезен, порекомендуйте его тому, кто сейчас ищет работу.", "Поделиться", "Скопировать ссылку", "Скопировано ✓", "Закрыть", "Бесплатный конструктор резюме без регистрации:"], "ar": ["سيرتك الذاتية جاهزة!", "إذا كان MobilCV مفيدًا لك، يمكنك أن توصي به لشخص يبحث عن عمل.", "مشاركة", "نسخ الرابط", "تم النسخ ✓", "إغلاق", "أداة مجانية لإنشاء السيرة الذاتية دون تسجيل:"], "zh": ["您的简历已完成！", "如果MobilCV对您有帮助，欢迎推荐给正在找工作的朋友。", "分享", "复制链接", "已复制 ✓", "关闭", "免费简历制作工具，无需注册："], "ja": ["履歴書が完成しました！", "MobilCVがお役に立ちましたら、就職活動中の方にぜひご紹介ください。", "共有", "リンクをコピー", "コピーしました ✓", "閉じる", "登録不要の無料履歴書作成ツール："]};
+    var KEY = 'mobilcv_rec_ts', GAP = 14 * 24 * 3600 * 1000;
+    function lang() { var s = document.getElementById('language-select'); var l = (s && s.value) || window.MOBILCV_PAGE_LANG || 'tr'; return T[l] ? l : 'en'; }
+    function siteUrl(l) { return 'https://www.mobilcv.com/' + (l === 'tr' ? '' : l + '/'); }
+    function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; return e; }
+    window.mobilcvRecommend = function (force) {
+        try { var last = +localStorage.getItem(KEY) || 0; if (!force && Date.now() - last < GAP) return; localStorage.setItem(KEY, String(Date.now())); } catch (e) {}
+        var old = document.querySelector('.rec-box'); if (old) old.remove();
+        var l = lang(), t = T[l], url = siteUrl(l) + '?utm_source=recommend&utm_medium=share', msg = t[6] + ' ' + url;
+        var box = el('div', 'rec-box'); box.setAttribute('role', 'dialog'); box.setAttribute('aria-live', 'polite');
+        if (l === 'ar') box.setAttribute('dir', 'rtl');
+        var x = el('button', 'rec-x', '×'); x.type = 'button'; x.setAttribute('aria-label', t[5]); x.onclick = function () { box.remove(); };
+        box.appendChild(x); box.appendChild(el('h3', '', t[0])); box.appendChild(el('p', '', t[1]));
+        var btns = el('div', 'rec-btns');
+        if (navigator.share) {
+            var sh = el('button', 'rec-share', t[2]); sh.type = 'button';
+            sh.onclick = function () { navigator.share({ title: 'MobilCV', text: t[6], url: url }).catch(function () {}); };
+            btns.appendChild(sh);
+        }
+        var wa = el('a', 'rec-wa', 'WhatsApp'); wa.href = 'https://wa.me/?text=' + encodeURIComponent(msg); wa.target = '_blank'; wa.rel = 'noopener';
+        var li = el('a', 'rec-li', 'LinkedIn'); li.href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url); li.target = '_blank'; li.rel = 'noopener';
+        var cp = el('button', 'rec-copy', t[3]); cp.type = 'button';
+        cp.onclick = function () {
+            function ok() { cp.textContent = t[4]; }
+            if (navigator.clipboard) navigator.clipboard.writeText(url).then(ok, function () {}); else { var i = document.createElement('input'); i.value = url; document.body.appendChild(i); i.select(); try { document.execCommand('copy'); ok(); } catch (e) {} i.remove(); }
+        };
+        btns.appendChild(wa); btns.appendChild(li); btns.appendChild(cp);
+        box.appendChild(btns);
+        document.body.appendChild(box);
+        setTimeout(function () { if (box.parentNode) box.remove(); }, 30000);
+    };
 })();
 </script>
 </body>
