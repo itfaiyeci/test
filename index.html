@@ -2862,6 +2862,7 @@ img {
 /* === SABLON: KLASIK (tek sutun) === */
 /* Sablon secici */
 .template-picker { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 0 12px; font-size: 14px; color: #475569; }
+.template-picker label { white-space: nowrap; flex: 0 0 auto; width: auto; margin: 0; }
 .template-picker select { font-size: 15px; padding: 7px 12px; border: 1px solid #cbd5e1; border-radius: 10px; background: #fff; color: #1e293b; cursor: pointer; }
 
 /* Klasik: ust baslik bandi + tek sutun govde. Ayni DOM, sadece yerlesim. */
@@ -2913,7 +2914,7 @@ img {
 .a4-container.tpl-rirekisho .jp-only.section { display: block !important; }
 .a4-container.tpl-rirekisho .personal-info-item.jp-only { display: flex !important; }
 .a4-container.tpl-rirekisho .jp-notice { display: block !important; margin: 0 0 10px; padding: 8px 10px; border: 1px dashed var(--cv-accent, #3498db); border-radius: 8px; font-size: 12px; color: #334155; background: #f8fafc; }
-.rk-host { position: fixed; left: 0; top: 0; z-index: -9999; pointer-events: none; }
+.rk-host { position: fixed; left: 0; top: 0; z-index: -9999; pointer-events: none; visibility: hidden; }
 .rk-page { width: 210mm; height: 297mm; box-sizing: border-box; padding: 12mm 13mm 10mm; background: #fff; color: #111;
   font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "YuGothic", "Meiryo", "Noto Sans JP", "Noto Sans CJK JP", "Noto Sans CJK", "MS PGothic", sans-serif; font-weight: 400; font-size: 11pt; line-height: 1.35; }
 .rk-page table { width: 100%; border-collapse: collapse; table-layout: fixed; }
@@ -10017,9 +10018,23 @@ function saveCV() {
     }
     window.applyCvTemplate = applyTemplate;
 
-    select.addEventListener('change', function () { applyTemplate(select.value); });
+    // Kullanici sablonu kendisi sectiyse dil degisiminde otomatik degistirme
+    var CH = 'mobilcv_tpl_chosen';
+    function chosen() { try { return localStorage.getItem(CH) === '1'; } catch (e) { return false; } }
+    select.addEventListener('change', function () {
+        try { localStorage.setItem(CH, '1'); } catch (e) {}
+        applyTemplate(select.value);
+    });
+    // Japonca secilince varsayilan sablon Japon ozgecmisi (履歴書); baska dile donunce Modern
+    function autoForLang() {
+        if (chosen()) return;
+        var l = currentLang();
+        if (l === 'ja' && window.currentCvTemplate !== 'tpl-rirekisho') applyTemplate('tpl-rirekisho');
+        else if (l !== 'ja' && window.currentCvTemplate === 'tpl-rirekisho') applyTemplate('');
+    }
     var ls = document.getElementById('language-select');
-    if (ls) ls.addEventListener('change', function () { setTimeout(localize, 0); });
+    if (ls) ls.addEventListener('change', function () { setTimeout(function () { localize(); autoForLang(); }, 0); });
+    setTimeout(autoForLang, 300);
     localize();
 
     // Kayitli CV'de sablon varsa uygula (otomatik kayit bu betikten once yuklenmis olabilir)
@@ -10295,7 +10310,10 @@ function saveCV() {
                 for (var i = 0; i < els.length; i++) {
                     var txt = els[i].textContent;
                     var canvas = await html2canvas(els[i], { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: true,
-                        onclone: function (cd) { return window.jpFontInDoc ? window.jpFontInDoc(cd, txt) : null; } });
+                        onclone: function (cd) {
+                            // Ekranda gizli cizilen form, yalnizca kopya belgede gorunur olsun
+                            var h = cd.querySelector('.rk-host'); if (h) h.style.visibility = 'visible';
+                            return window.jpFontInDoc ? window.jpFontInDoc(cd, txt) : null; } });
                     if (i > 0) doc.addPage();
                     doc.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297, '', 'FAST');
                 }
