@@ -2915,7 +2915,7 @@ img {
 .a4-container.tpl-rirekisho .jp-notice { display: block !important; margin: 0 0 10px; padding: 8px 10px; border: 1px dashed var(--cv-accent, #3498db); border-radius: 8px; font-size: 12px; color: #334155; background: #f8fafc; }
 .rk-host { position: fixed; left: 0; top: 0; z-index: -9999; pointer-events: none; }
 .rk-page { width: 210mm; height: 297mm; box-sizing: border-box; padding: 12mm 13mm 10mm; background: #fff; color: #111;
-  font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", "Noto Serif CJK JP", "MS PMincho", serif; font-size: 11pt; line-height: 1.35; }
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "YuGothic", "Meiryo", "Noto Sans JP", "Noto Sans CJK JP", "Noto Sans CJK", "MS PGothic", sans-serif; font-weight: 400; font-size: 11pt; line-height: 1.35; }
 .rk-page table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 .rk-page td, .rk-page th { border: 1px solid #111; padding: 1.2mm 2mm; vertical-align: middle; font-weight: normal; word-break: break-all; }
 .rk-outer { border: 1.6px solid #111 !important; }
@@ -10055,7 +10055,7 @@ function saveCV() {
         var FIRST = 22;   // 1. sayfadaki gecmis satiri (sayfayi dolduracak kadar)
         var p1 = hist.slice(0, FIRST), rest = hist.slice(FIRST);
 
-        var page1 = '<div class="rk-page">' +
+        var page1 = '<div class="rk-page" lang="ja">' +
             '<div class="rk-title"><h1>履歴書</h1><div class="rk-date">' + now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日現在</div></div>' +
             '<div class="rk-top"><table class="rk-outer">' +
                 '<tr><td class="rk-small" colspan="2" style="height:7mm">ふりがな　' + esc(p.furigana || '') + '</td></tr>' +
@@ -10086,7 +10086,7 @@ function saveCV() {
         var free = Math.max(80, 255 - used - 24);
         var boxH = Math.round(free * 0.6), wishH = Math.round(free * 0.4);
 
-        var page2 = '<div class="rk-page">' +
+        var page2 = '<div class="rk-page" lang="ja">' +
             (rest.length ? histTable('学歴・職歴', rest, Math.max(rest.length, 3)) + '<div style="height:3mm"></div>' : '') +
             histTable('免許・資格', lic, 6) +
             '<table class="rk-box rk-outer" style="margin-top:3mm"><tr><td class="lbl">志望の動機、特技、好きな学科、アピールポイントなど</td></tr>' +
