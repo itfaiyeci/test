@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <script>window.MOBILCV_PAGE_LANG='tr';(function(){var m=location.search.match(/[?&]lang=(en|de|fr|es|it|pt|ru|ar|zh)\b/);if(m&&window.MOBILCV_PAGE_LANG==='tr'){location.replace('/'+m[1]+'/');}})();</script>
+    <script>window.MOBILCV_PAGE_LANG='tr';(function(){var m=location.search.match(/[?&]lang=(en|de|fr|es|it|pt|ru|ar|zh|ja)\b/);if(m&&window.MOBILCV_PAGE_LANG==='tr'){location.replace('/'+m[1]+'/');}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" id="viewport-meta">
     <!-- Not: Varsayılan MOBİL-KOLAY görünüm. Masaüstü görünümü artık aşağıdaki
@@ -2908,6 +2908,36 @@ img {
 .a4-container.tpl-classic.pdf-mode .cv-layout:not(:has(#avatar[src^="data:"])) .right-column,
 .a4-container.tpl-classic.pdf-mode .cv-layout:has(#avatar[src^="data:"]) .right-column { padding-top: 6mm !important; }
 
+/* === SABLON: RIREKISHO === */
+.jp-only { display: none !important; }
+.a4-container.tpl-rirekisho .jp-only.section { display: block !important; }
+.a4-container.tpl-rirekisho .personal-info-item.jp-only { display: flex !important; }
+.a4-container.tpl-rirekisho .jp-notice { display: block !important; margin: 0 0 10px; padding: 8px 10px; border: 1px dashed var(--cv-accent, #3498db); border-radius: 8px; font-size: 12px; color: #334155; background: #f8fafc; }
+.rk-host { position: fixed; left: 0; top: 0; z-index: -9999; pointer-events: none; }
+.rk-page { width: 210mm; height: 297mm; box-sizing: border-box; padding: 12mm 13mm 10mm; background: #fff; color: #111;
+  font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", "Noto Serif CJK JP", "MS PMincho", serif; font-size: 11pt; line-height: 1.35; }
+.rk-page table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.rk-page td, .rk-page th { border: 1px solid #111; padding: 1.2mm 2mm; vertical-align: middle; font-weight: normal; word-break: break-all; }
+.rk-outer { border: 1.6px solid #111 !important; }
+.rk-title { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2mm; }
+.rk-title h1 { font-size: 20pt; letter-spacing: 8mm; margin: 0; font-weight: 600; }
+.rk-title .rk-date { font-size: 10pt; }
+.rk-small { font-size: 8pt; }
+.rk-top { display: flex; gap: 4mm; align-items: flex-start; }
+.rk-top table { flex: 1; }
+.rk-photo { width: 30mm; height: 40mm; flex: 0 0 30mm; border: 1px dashed #111; box-sizing: border-box; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 7.5pt; line-height: 1.5; overflow: hidden; }
+.rk-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.rk-name { font-size: 18pt; height: 15mm; }
+.rk-hist td { height: 7.6mm; }
+.rk-hist .y { width: 15mm; text-align: center; }
+.rk-hist .m { width: 9mm; text-align: center; }
+.rk-hist .c { text-align: center; }
+.rk-hist .r { text-align: right; }
+.rk-hist th { height: 6.5mm; text-align: center; }
+.rk-box td { vertical-align: top; }
+.rk-box .lbl { font-size: 9pt; height: 6mm; }
+.rk-box .txt { white-space: pre-wrap; }
+
 @media (max-width: 480px) {
     .editable:focus,
     .right-column .editable:focus,
@@ -2949,6 +2979,13 @@ img {
         #cookie-consent .cc-reject { background: #fff; color: #2563eb; }
         @media print { #cookie-consent { display: none !important; } }
     </style>
+    <script>
+    /* Japonca mod: dil Japonca ya da sablon rirekisho ise tarih/telefon Japon bicimiyle girilir */
+    window.isJapaneseMode = function () {
+        var s = document.getElementById('language-select');
+        return (s && s.value === 'ja') || window.currentCvTemplate === 'tpl-rirekisho';
+    };
+    </script>
 </head>
 <body>
 <div style="position:fixed;top:0;left:0;z-index:99999;background:#dc2626;color:#fff;font:700 12px sans-serif;padding:4px 10px;border-bottom-right-radius:8px;">TEST SÜRÜMÜ</div>
@@ -2997,6 +3034,7 @@ img {
                         <option value="ru">🇷🇺 Русский</option>
                         <option value="ar">🇸🇦 العربية</option>
                         <option value="zh">🇨🇳 中文</option>
+                        <option value="ja">🇯🇵 日本語</option>
                     </select>
                 </div>
             </section>
@@ -3008,6 +3046,7 @@ img {
                     <select id="template-select">
                         <option value="" id="tpl-opt-modern">Modern</option>
                         <option value="tpl-classic" id="tpl-opt-classic">Klasik (tek sütun)</option>
+                        <option value="tpl-rirekisho" id="tpl-opt-rirekisho">Japon özgeçmişi (履歴書)</option>
                     </select>
                 </div>
                 <div class="theme-dots" id="theme-options" role="radiogroup" aria-label="Renk Teması">
@@ -3078,6 +3117,10 @@ img {
                                 <div class="personal-info-item name-item" data-field="fullname">
                                     <div class="personal-info-label" style="display:none;" data-key="fullName">Ad Soyad</div>
                                     <div class="personal-info-value editable required-field" contenteditable="true" data-placeholder-key="fullNamePlaceholder" data-hint-key="fullNameHint" data-required="true"></div>
+                                </div>
+                                <div class="personal-info-item jp-only" data-field="furigana">
+                                    <div class="personal-info-label">ふりがな</div>
+                                    <div class="personal-info-value editable" contenteditable="true" data-placeholder="例：やまだ はなこ" data-hint="氏名の読み方（ひらがな）"></div>
                                 </div>
                                 
                                 <!-- Meslek/Unvan - Özel stil -->
@@ -3181,6 +3224,7 @@ img {
                         
                         <!-- SAĞ SÜTUN - İçerik -->
                         <div class="right-column" id="right-column">
+                            <div class="jp-notice jp-only">PDFは日本の履歴書の様式で出力されます。「プレビュー」で確認してください。<br><span style="color:#64748b">The PDF is produced as a Japanese rirekisho form – use Preview to check it.</span></div>
                             <!-- Hakkımda - ZORUNLU -->
                             <div class="section" id="about-section">
                                 <div class="section-title" data-key="about">Hakkımda</div>
@@ -3279,6 +3323,15 @@ img {
                                 </div>
                             </div>
                             
+                            <!-- Rirekisho: 本人希望記入欄 -->
+                            <div class="section jp-only" id="jp-wishes-section">
+                                <div class="section-title">本人希望記入欄</div>
+                                <div class="section-description">給料・職種・勤務時間・勤務地などの希望があれば記入してください。空欄の場合は「貴社の規定に従います。」と記載されます。</div>
+                                <div class="personal-info-item" data-field="jp-wishes">
+                                    <div class="personal-info-value editable about-text" contenteditable="true" data-placeholder="例：貴社の規定に従います。"></div>
+                                </div>
+                            </div>
+
                             <!-- Referanslar -->
                             <div class="section" id="references-section">
                                 <div class="section-title" data-key="references">Referanslar</div>
@@ -5305,6 +5358,182 @@ img {
         "sendButton": "发送",
         "feedbackSuccess": "感谢您的反馈！",
         "feedbackError": "请写下您的消息！"
+            },
+            ja: {  /* ja-dil-destegi */
+                "appTitle": "無料の履歴書作成ツール – 登録不要",
+                "appDescription": "スマホで11言語の履歴書を作成し、PDFでダウンロード",
+                "pageTitle": "モバイル履歴書作成 | 11言語対応",
+                "selectLanguage": "言語を選択",
+                "selectTheme": "カラーテーマ",
+                "themeClassic": "クラシックブルー",
+                "themeMono": "ミニマル",
+                "themeEmerald": "エメラルド",
+                "themeExecutive": "エグゼクティブ",
+                "clearAll": "すべてクリア",
+                "confirmRemoveItem": "最後の項目に入力した内容が削除されます。よろしいですか？",
+                "preview": "プレビュー",
+                "savePDF": "PDFをダウンロード",
+                "exportData": "バックアップを保存",
+                "importData": "バックアップを読み込む",
+                "importSuccess": "バックアップを読み込みました！",
+                "importError": "無効なバックアップファイルです！",
+                "shareCV": "共有",
+                "shareFallback": "このブラウザでは直接共有に対応していません。PDFをダウンロードしましたので、メールやメッセージアプリで共有してください。",
+                "shareModalTitle": "履歴書のリンク",
+                "shareLinkNote": "注意：このリンクには写真は含まれません。",
+                "copyLink": "リンクをコピー",
+                "linkCopied": "コピーしました！",
+                "viewModeBanner": "これはMobilCVで作成された履歴書です。",
+                "createOwnCV": "無料で作成する →",
+                "shareLinkCopied": "共有リンクをコピーしました！リンクを開いた人はあなたの履歴書（写真を除く）を閲覧できます。",
+                "shareLinkPrompt": "以下のリンクをコピーして共有できます：",
+                "instructionsTitle": "使い方：",
+                "instructionsText": "A4ページ上の文字を直接クリックして編集し、下のボタンで項目を追加してください。空欄の項目は自動的に非表示になります。",
+                "tip": "ヒント：",
+                "tipText": "日本語モードでは年月を「2018/04-2022/03」の形式で入力できます。在職中・在学中の場合は終了年月を空欄にしてください（例：2023/10-）。",
+                "limitations": "制限：",
+                "limitationsText": "職歴と講座・資格はそれぞれ最大5件まで追加できます。",
+                "phoneFormat": "電話番号の形式：",
+                "phoneFormatText": "電話番号は数字のみ入力してください。ハイフンは自動で入ります（例：090-1234-5678）。",
+                "about": "自己紹介",
+                "education": "学歴",
+                "experience": "職歴",
+                "courses": "講座・資格",
+                "skills": "スキル",
+                "references": "推薦者",
+                "languages": "語学",
+                "aboutDescription": "簡単に自己紹介をしてください。経験、目標、得意分野などを記入します。",
+                "educationDescription": "最終学歴から順に学歴を追加してください",
+                "experienceDescription": "直近の職歴から順に追加してください（最大5件）",
+                "projects": "プロジェクト",
+                "projectsDescription": "担当したプロジェクトを追加してください（最大5件）",
+                "projectTitlePlaceholder": "プロジェクト名",
+                "projectTitleHint": "プロジェクトの名称",
+                "projectTechPlaceholder": "使用技術",
+                "projectTechHint": "例：React、Node.js、MongoDB",
+                "projectDatePlaceholder": "YYYY/MM",
+                "projectDateHint": "例：2024/03",
+                "projectDescriptionPlaceholder": "プロジェクトの内容とあなたの役割",
+                "projectDescriptionHint": "プロジェクトとあなたの貢献を簡潔に説明してください",
+                "projectLinkPlaceholder": "プロジェクトのリンク（GitHub、デモなど）",
+                "projectLinkHint": "プロジェクトのGitHubまたはデモのリンク",
+                "addProject": "+ プロジェクトを追加",
+                "removeProject": "最後のプロジェクトを削除",
+                "coursesDescription": "受講した講座、取得した資格や研修（最大5件）",
+                "skillsDescription": "技術、語学、その他のスキル",
+                "referencesDescription": "採用担当者が連絡できる推薦者",
+                "languagesDescription": "話せる言語とそのレベルを追加してください",
+                "fullName": "氏名",
+                "profession": "職種・肩書き",
+                "phone": "電話",
+                "email": "メール",
+                "address": "住所",
+                "birthDate": "生年月日",
+                "birthPlace": "出生地",
+                "militaryStatus": "兵役",
+                "criminalRecord": "犯罪歴",
+                "drivingLicense": "運転免許",
+                "disabilityStatus": "障害の有無",
+                "fullNamePlaceholder": "氏名",
+                "professionPlaceholder": "職種・肩書き",
+                "phonePlaceholder": "090-0000-0000",
+                "emailPlaceholder": "メールアドレス",
+                "addressPlaceholder": "住所",
+                "birthDatePlaceholder": "DD/MM/YYYY",
+                "birthPlacePlaceholder": "出生地",
+                "militaryStatusPlaceholder": "例：修了、延期、免除",
+                "criminalRecordPlaceholder": "例：なし、または説明",
+                "drivingLicensePlaceholder": "例：普通自動車第一種",
+                "disabilityStatusPlaceholder": "該当する場合は記入",
+                "aboutPlaceholder": "ここに自己紹介を書いてください…",
+                "educationInstitutionPlaceholder": "学校名・学部",
+                "educationDatePlaceholder": "YYYY/MM-YYYY/MM",
+                "experienceTitlePlaceholder": "役職・担当",
+                "experienceCompanyPlaceholder": "会社名・組織名",
+                "experienceDatePlaceholder": "YYYY/MM-YYYY/MM",
+                "experienceDescriptionPlaceholder": "担当業務と実績",
+                "courseTitlePlaceholder": "講座・資格名",
+                "courseInstitutionPlaceholder": "実施機関・講師",
+                "courseDatePlaceholder": "YYYY/MM",
+                "skillPlaceholder": "スキル",
+                "referenceNamePlaceholder": "推薦者の氏名",
+                "referencePositionPlaceholder": "役職と会社名",
+                "referencePhonePlaceholder": "090-0000-0000",
+                "languageNamePlaceholder": "言語",
+                "languageLevelPlaceholder": "レベル",
+                "addPhoto": "クリックして写真を追加",
+                "avatarBiometricSize": "（証明写真サイズ）",
+                "panUp": "上へ移動",
+                "panDown": "下へ移動",
+                "panLeft": "左へ移動",
+                "panRight": "右へ移動",
+                "panReset": "中央に戻す",
+                "visitBlogText": "📝 キャリアのヒント、面接ガイド、履歴書のアドバイスはブログへ",
+                "trustIntroText": "登録不要、データを保存せずに1分で履歴書PDFを作成できます。下の項目から入力を始めてください。",
+                "fullNameHint": "氏名を入力してください",
+                "professionHint": "例：ソフトウェアエンジニア、経理担当",
+                "phoneHint": "数字のみ入力してください。ハイフンは自動で入ります",
+                "emailHint": "連絡用のメールアドレス",
+                "addressHint": "住所（都道府県・市区町村）",
+                "birthDateHint": "生年月日を入力してください",
+                "birthPlaceHint": "出生地の市区町村",
+                "militaryStatusHint": "例：修了、延期、免除",
+                "criminalRecordHint": "例：なし、または説明",
+                "drivingLicenseHint": "例：普通自動車第一種",
+                "disabilityStatusHint": "該当する場合は記入",
+                "aboutHint": "簡潔にまとめてください",
+                "educationInstitutionHint": "例：東京大学 工学部",
+                "educationDateHint": "例：2014/04-2018/03（在学中は 2022/04-）",
+                "experienceTitleHint": "担当した役職",
+                "experienceCompanyHint": "勤務した会社",
+                "experienceDateHint": "例：2019/04-2023/09（在職中は 2023/10-）",
+                "experienceDescriptionHint": "担当業務と実績",
+                "courseTitleHint": "講座または資格の名称",
+                "courseInstitutionHint": "研修を実施した機関",
+                "courseDateHint": "例：2021/06",
+                "skillHint": "スキルを追加",
+                "referenceNameHint": "推薦者の氏名",
+                "referencePositionHint": "推薦者の役職と会社名",
+                "referencePhoneHint": "数字のみ入力してください。ハイフンは自動で入ります",
+                "languageNameHint": "言語名",
+                "languageLevelHint": "レベル：ネイティブ、上級、中級、初級",
+                "addLanguage": "+ 言語を追加",
+                "removeLanguage": "最後の言語を削除",
+                "addEducation": "+ 学歴を追加",
+                "removeEducation": "最後の学歴を削除",
+                "addExperience": "+ 職歴を追加",
+                "removeExperience": "最後の職歴を削除",
+                "addCourse": "+ 講座・資格を追加",
+                "removeCourse": "最後の講座・資格を削除",
+                "addSkill": "+ スキルを追加",
+                "removeSkill": "最後のスキルを削除",
+                "addReference": "+ 推薦者を追加",
+                "removeReference": "最後の推薦者を削除",
+                "previewTitle": "履歴書プレビュー",
+                "selectBirthDate": "生年月日を選択",
+                "previewDescription": "ESCキーを押すか外側をクリックすると閉じます",
+                "warningLine1": "入力した情報はこのブラウザ内にのみ保存され、サーバーには送信されません。",
+                "understandButton": "了解して続ける",
+                "feedbackText": "ご意見・ご要望はこちらからお寄せください：",
+                "feedbackNote": "改善にご協力ください！",
+                "socialMedia": "SNS",
+                "linkedinPlaceholder": "LinkedInプロフィールのリンク",
+                "githubPlaceholder": "GitHubプロフィールのリンク",
+                "twitterPlaceholder": "Twitter/Xプロフィールのリンク",
+                "linkedinHint": "LinkedInプロフィールのURLを追加",
+                "githubHint": "GitHubプロフィールのURLを追加",
+                "twitterHint": "Twitter/XプロフィールのURLを追加",
+                "feedbackPopupTitle": "フィードバックを送る",
+                "feedbackNameLabel": "お名前（任意）",
+                "feedbackNamePlaceholder": "お名前",
+                "feedbackEmailLabel": "メール（任意）",
+                "feedbackEmailPlaceholder": "返信をご希望の場合",
+                "feedbackMessageLabel": "メッセージ *",
+                "feedbackMessagePlaceholder": "ご意見・ご要望をご記入ください…",
+                "cancelButton": "キャンセル",
+                "sendButton": "送信",
+                "feedbackSuccess": "フィードバックありがとうございます！",
+                "feedbackError": "メッセージを入力してください！"
             }
         };
 // ==================== SOSYAL MEDYA YÖNETİCİSİ ====================
@@ -5452,7 +5681,7 @@ class SocialMediaManager {
     const socialMediaManager = new SocialMediaManager();
     socialMediaManager.init();
 			 // 1. TARAYICI DİLİNİ ALGILAMA
-    const SUPPORTED_LANGUAGES = ['tr', 'en', 'de', 'fr', 'es', 'it', 'pt', 'ru', 'ar', 'zh'];
+    const SUPPORTED_LANGUAGES = ['tr', 'en', 'de', 'fr', 'es', 'it', 'pt', 'ru', 'ar', 'zh', 'ja'];
 
     // URL'deki ?lang=xx parametresini oku (hreflang varyantlarının gerçekten
     // o dilde açılması için - böylece arama motorları her dili ayrı içerik olarak görür)
@@ -6244,7 +6473,8 @@ function getMonthNames(lang) {
         pt: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
         ru: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
         ar: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
-        zh: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+        zh: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+        ja: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
     };
     return months[lang] || months['en'];
 }
@@ -6262,7 +6492,8 @@ function getDayNames(lang) {
         pt: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
         ru: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
         ar: ['اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت', 'أحد'],
-        zh: ['一', '二', '三', '四', '五', '六', '日']
+        zh: ['一', '二', '三', '四', '五', '六', '日'],
+        ja: ['月', '火', '水', '木', '金', '土', '日']
     };
     return days[lang] || days['en'];
 }
@@ -6817,6 +7048,7 @@ function hideHintBubble(hintBubble) {
                         // Telefon klavyeleri (IME) tuş olayını 'Unidentified'/229 bildirir; bunları engellemek
                         // harf/rakam atlamasına yol açabiliyordu. Doğrulama 'input' aşamasında yapılır.
                         if (e.isComposing || e.keyCode === 229 || e.key === 'Unidentified' || e.key === 'Process') return;
+                        if (window.isJapaneseMode && window.isJapaneseMode() && /^[\/\.\-]$/.test(e.key)) return;
                         // Sadece rakam, backspace, delete, ok tuşlarına izin ver
                         const allowedKeys = [
                             'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 
@@ -6879,6 +7111,17 @@ function hideHintBubble(hintBubble) {
             
             function validateDateInput(input) {
                 let value = input.textContent.trim();
+                if (window.isJapaneseMode && window.isJapaneseMode()) {
+                    let v = value.replace(/[^\d\/\.\-]/g, '').replace(/\./g, '/').substring(0, 15);
+                    if (input.textContent !== v) {
+                        input.textContent = v;
+                        const r = document.createRange(), sel = window.getSelection();
+                        r.selectNodeContents(input); r.collapse(false); sel.removeAllRanges(); sel.addRange(r);
+                    }
+                    input.classList.toggle('invalid', v !== '' && !/^\d{4}(\/\d{1,2})?(-(\d{4}(\/\d{1,2})?)?)?$/.test(v));
+                    if (v) input.classList.remove('empty-field'); else input.classList.add('empty-field');
+                    return;
+                }
                 
                 // Sadece rakam karakterlerine izin ver
                 value = value.replace(/[^\d]/g, '');
@@ -6959,6 +7202,20 @@ function hideHintBubble(hintBubble) {
             
             function validatePhoneInput(input) {
                 let value = input.textContent.trim();
+                if (window.isJapaneseMode && window.isJapaneseMode()) {
+                    let d = value.replace(/[^\d]/g, '').substring(0, 11);
+                    let f = d;
+                    if (d.length === 11) f = d.substring(0, 3) + '-' + d.substring(3, 7) + '-' + d.substring(7);
+                    else if (d.length === 10) f = /^0[36]/.test(d) ? d.substring(0, 2) + '-' + d.substring(2, 6) + '-' + d.substring(6)
+                                                                 : d.substring(0, 3) + '-' + d.substring(3, 6) + '-' + d.substring(6);
+                    if (input.textContent !== f) {
+                        input.textContent = f;
+                        const r = document.createRange(), sel = window.getSelection();
+                        r.selectNodeContents(input); r.collapse(false); sel.removeAllRanges(); sel.addRange(r);
+                    }
+                    if (f) input.classList.remove('empty-field'); else input.classList.add('empty-field');
+                    return;
+                }
                 
                 // Sadece rakam karakterlerine izin ver
                 value = value.replace(/[^\d]/g, '');
@@ -7310,6 +7567,7 @@ if (socialMediaSection) {
                 // Kişisel bilgiler (ad, unvan, telefon, e-posta, adres, doğum tarihi, ehliyet vb.)
                 document.querySelectorAll('#cv-form .personal-info-item').forEach(item => {
                     if (item.classList.contains('hidden-in-pdf')) return;
+                    if (item.closest('.jp-only') || item.classList.contains('jp-only')) return;
                     const valueEl = item.querySelector('.personal-info-value');
                     if (!valueEl || valueEl.classList.contains('empty-field')) return;
                     // Etiket gorunuyorsa "Telefon: 0555..." seklinde yaz (ad/unvan etiketleri gizli)
@@ -7447,7 +7705,7 @@ if (socialMediaSection) {
                 // PDF'in GÖRÜNEN içeriği (html2canvas ile üretilir) bundan
                 // hiç etkilenmez, sadece ATS/arama motorlarının metni
                 // "okuma" imkanı bu dilde sınırlı kalır.
-                if (currentLang === 'zh') {
+                if (currentLang === 'zh' || currentLang === 'ja') {
                     return;
                 }
 
@@ -7549,6 +7807,10 @@ if (socialMediaSection) {
             });
             
             document.getElementById('preview-cv').addEventListener('click', function() {
+                if (window.currentCvTemplate === 'tpl-rirekisho' && window.showRirekishoPreview) {
+                    window.showRirekishoPreview();
+                    return;
+                }
                 const cvContent = document.getElementById('cv-form').cloneNode(true);
                 
                 // Butonları gizle
@@ -7691,6 +7953,9 @@ if (socialMediaSection) {
             // İçerik bir sayfaya sığmazsa otomatik olarak 2. (ve gerekirse daha
             // fazla) sayfaya geçer; her sayfada fotoğraf/isim sütunu tekrar gösterilir.
             function generateCvPdf() {
+                if (window.currentCvTemplate === 'tpl-rirekisho' && window.buildRirekishoPdf) {
+                    return window.buildRirekishoPdf();
+                }
                 return new Promise((resolve, reject) => {
                     if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined' || typeof html2canvas === 'undefined') {
                         reject(new Error('PDF kütüphanesi yüklenemedi. Lütfen sayfayı yenileyin.'));
@@ -7902,7 +8167,8 @@ document.addEventListener('DOMContentLoaded', function() {
         'pt': 'https://flagcdn.com/w20/pt.png',
         'ru': 'https://flagcdn.com/w20/ru.png',
         'ar': 'https://flagcdn.com/w20/sa.png',
-        'zh': 'https://flagcdn.com/w20/cn.png'
+        'zh': 'https://flagcdn.com/w20/cn.png',
+        'ja': 'https://flagcdn.com/w20/jp.png'
     };
     
     function updateFlag() {
@@ -9326,7 +9592,7 @@ function saveCV() {
         tr: 'CV\'niz %{p} hazır', en: 'Your CV is {p}% ready', de: 'Ihr Lebenslauf ist zu {p}% fertig',
         fr: 'Votre CV est prêt à {p}%', es: 'Su CV está {p}% listo', it: 'Il tuo CV è pronto al {p}%',
         pt: 'Seu CV está {p}% pronto', ru: 'Ваше резюме готово на {p}%', ar: 'سيرتك الذاتية جاهزة بنسبة {p}%',
-        zh: '您的简历已完成 {p}%'
+        zh: '您的简历已完成 {p}%', ja: '履歴書の完成度 {p}%'
     };
 
     function isFilled(el) {
@@ -9443,7 +9709,7 @@ function saveCV() {
         de: 'Bitte füllen Sie das markierte Feld aus', fr: 'Veuillez remplir le champ surligné',
         es: 'Complete el campo resaltado', it: 'Compila il campo evidenziato',
         pt: 'Preencha o campo destacado', ru: 'Пожалуйста, заполните выделенное поле',
-        ar: 'يرجى ملء الحقل المميز', zh: '请填写突出显示的字段'
+        ar: 'يرجى ملء الحقل المميز', zh: '请填写突出显示的字段', ja: '強調表示された項目を入力してください'
     };
 
     function showMissingToast(msg) {
@@ -9548,7 +9814,7 @@ function saveCV() {
         function need() {
             var sel = document.getElementById('language-select');
             var l = sel ? sel.value : (window.MOBILCV_PAGE_LANG || 'tr');
-            if (l === 'zh') return;
+            if (l === 'zh' || l === 'ja') return;
             load(l === 'ar' ? 'pdf-font-arabic.js' : 'pdf-font-latin.js');
         }
         ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
@@ -9565,7 +9831,7 @@ function saveCV() {
     // Google Analytics YALNIZCA ziyaretci "Kabul et" derse yuklenir (KVKK / GDPR).
     (function () {
         var GA = '', KEY = 'mobilcv_consent';
-        var T = {"tr": {"msg": "Ziyaret istatistikleri için Google Analytics çerezlerini kullanmak istiyoruz. CV bilgileriniz bundan etkilenmez ve cihazınızda kalır.", "ok": "Kabul et", "no": "Reddet", "more": "Ayrıntılar", "set": "Çerez ayarları", "url": "https://mobilcv.net/gizlilik-politikasi.html"}, "en": {"msg": "We'd like to use Google Analytics cookies to count visits. Your CV data is not affected and stays on your device.", "ok": "Accept", "no": "Reject", "more": "Details", "set": "Cookie settings", "url": "https://mobilcv.net/en/privacy-policy.html"}, "de": {"msg": "Wir möchten Google-Analytics-Cookies verwenden, um Besuche zu zählen. Ihre Lebenslaufdaten sind davon nicht betroffen und bleiben auf Ihrem Gerät.", "ok": "Akzeptieren", "no": "Ablehnen", "more": "Details", "set": "Cookie-Einstellungen", "url": "https://mobilcv.net/de/privacy-policy.html"}, "fr": {"msg": "Nous souhaitons utiliser des cookies Google Analytics pour mesurer les visites. Les données de votre CV ne sont pas concernées et restent sur votre appareil.", "ok": "Accepter", "no": "Refuser", "more": "Détails", "set": "Paramètres des cookies", "url": "https://mobilcv.net/fr/privacy-policy.html"}, "es": {"msg": "Queremos usar cookies de Google Analytics para contar las visitas. Los datos de tu currículum no se ven afectados y se quedan en tu dispositivo.", "ok": "Aceptar", "no": "Rechazar", "more": "Detalles", "set": "Configuración de cookies", "url": "https://mobilcv.net/es/privacy-policy.html"}, "it": {"msg": "Vorremmo usare i cookie di Google Analytics per contare le visite. I dati del tuo CV non sono coinvolti e restano sul tuo dispositivo.", "ok": "Accetta", "no": "Rifiuta", "more": "Dettagli", "set": "Impostazioni cookie", "url": "https://mobilcv.net/it/privacy-policy.html"}, "pt": {"msg": "Gostaríamos de usar cookies do Google Analytics para contar as visitas. Os dados do seu currículo não são afetados e ficam no seu dispositivo.", "ok": "Aceitar", "no": "Recusar", "more": "Detalhes", "set": "Configurações de cookies", "url": "https://mobilcv.net/pt/privacy-policy.html"}, "ru": {"msg": "Мы хотим использовать файлы cookie Google Analytics для подсчёта посещений. Данные вашего резюме это не затрагивает — они остаются на вашем устройстве.", "ok": "Принять", "no": "Отклонить", "more": "Подробнее", "set": "Настройки cookie", "url": "https://mobilcv.net/ru/privacy-policy.html"}, "ar": {"msg": "نود استخدام ملفات تعريف الارتباط من Google Analytics لإحصاء الزيارات. لا يتأثر محتوى سيرتك الذاتية ويبقى على جهازك.", "ok": "قبول", "no": "رفض", "more": "التفاصيل", "set": "إعدادات ملفات تعريف الارتباط", "url": "https://mobilcv.net/ar/privacy-policy.html"}, "zh": {"msg": "我们希望使用 Google Analytics Cookie 统计访问量。您的简历数据不受影响，仍只保存在您的设备上。", "ok": "接受", "no": "拒绝", "more": "详情", "set": "Cookie 设置", "url": "https://mobilcv.net/zh/privacy-policy.html"}};
+        var T = {"tr": {"msg": "Ziyaret istatistikleri için Google Analytics çerezlerini kullanmak istiyoruz. CV bilgileriniz bundan etkilenmez ve cihazınızda kalır.", "ok": "Kabul et", "no": "Reddet", "more": "Ayrıntılar", "set": "Çerez ayarları", "url": "https://mobilcv.net/gizlilik-politikasi.html"}, "en": {"msg": "We'd like to use Google Analytics cookies to count visits. Your CV data is not affected and stays on your device.", "ok": "Accept", "no": "Reject", "more": "Details", "set": "Cookie settings", "url": "https://mobilcv.net/en/privacy-policy.html"}, "de": {"msg": "Wir möchten Google-Analytics-Cookies verwenden, um Besuche zu zählen. Ihre Lebenslaufdaten sind davon nicht betroffen und bleiben auf Ihrem Gerät.", "ok": "Akzeptieren", "no": "Ablehnen", "more": "Details", "set": "Cookie-Einstellungen", "url": "https://mobilcv.net/de/privacy-policy.html"}, "fr": {"msg": "Nous souhaitons utiliser des cookies Google Analytics pour mesurer les visites. Les données de votre CV ne sont pas concernées et restent sur votre appareil.", "ok": "Accepter", "no": "Refuser", "more": "Détails", "set": "Paramètres des cookies", "url": "https://mobilcv.net/fr/privacy-policy.html"}, "es": {"msg": "Queremos usar cookies de Google Analytics para contar las visitas. Los datos de tu currículum no se ven afectados y se quedan en tu dispositivo.", "ok": "Aceptar", "no": "Rechazar", "more": "Detalles", "set": "Configuración de cookies", "url": "https://mobilcv.net/es/privacy-policy.html"}, "it": {"msg": "Vorremmo usare i cookie di Google Analytics per contare le visite. I dati del tuo CV non sono coinvolti e restano sul tuo dispositivo.", "ok": "Accetta", "no": "Rifiuta", "more": "Dettagli", "set": "Impostazioni cookie", "url": "https://mobilcv.net/it/privacy-policy.html"}, "pt": {"msg": "Gostaríamos de usar cookies do Google Analytics para contar as visitas. Os dados do seu currículo não são afetados e ficam no seu dispositivo.", "ok": "Aceitar", "no": "Recusar", "more": "Detalhes", "set": "Configurações de cookies", "url": "https://mobilcv.net/pt/privacy-policy.html"}, "ru": {"msg": "Мы хотим использовать файлы cookie Google Analytics для подсчёта посещений. Данные вашего резюме это не затрагивает — они остаются на вашем устройстве.", "ok": "Принять", "no": "Отклонить", "more": "Подробнее", "set": "Настройки cookie", "url": "https://mobilcv.net/ru/privacy-policy.html"}, "ar": {"msg": "نود استخدام ملفات تعريف الارتباط من Google Analytics لإحصاء الزيارات. لا يتأثر محتوى سيرتك الذاتية ويبقى على جهازك.", "ok": "قبول", "no": "رفض", "more": "التفاصيل", "set": "إعدادات ملفات تعريف الارتباط", "url": "https://mobilcv.net/ar/privacy-policy.html"}, "zh": {"msg": "我们希望使用 Google Analytics Cookie 统计访问量。您的简历数据不受影响，仍只保存在您的设备上。", "ok": "接受", "no": "拒绝", "more": "详情", "set": "Cookie 设置", "url": "https://mobilcv.net/zh/privacy-policy.html"}, "ja": {"msg": "訪問数を集計するためにGoogle AnalyticsのCookieを使用したいと考えています。履歴書のデータには影響せず、お使いの端末内に保存されたままです。", "ok": "同意する", "no": "拒否する", "more": "詳細", "set": "Cookie設定", "url": "https://mobilcv.net/en/privacy-policy.html"}};
         function get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
         function put(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
         function lang() {
@@ -9625,16 +9891,17 @@ function saveCV() {
 /* === SABLON SECICI (Modern / Klasik) === */
 (function () {
     var L = {
-        tr: ['Şablon', 'Modern', 'Klasik (tek sütun)'],
-        en: ['Template', 'Modern', 'Classic (single column)'],
-        de: ['Vorlage', 'Modern', 'Klassisch (einspaltig)'],
-        fr: ['Modèle', 'Moderne', 'Classique (une colonne)'],
-        es: ['Plantilla', 'Moderna', 'Clásica (una columna)'],
-        it: ['Modello', 'Moderno', 'Classico (una colonna)'],
-        pt: ['Modelo', 'Moderno', 'Clássico (uma coluna)'],
-        ru: ['Шаблон', 'Современный', 'Классический (одна колонка)'],
-        ar: ['القالب', 'عصري', 'كلاسيكي (عمود واحد)'],
-        zh: ['模板', '现代', '经典（单栏）']
+        tr: ['Şablon', 'Modern', 'Klasik (tek sütun)', 'Japon özgeçmişi (履歴書)'],
+        en: ['Template', 'Modern', 'Classic (single column)', 'Japanese résumé (履歴書)'],
+        de: ['Vorlage', 'Modern', 'Klassisch (einspaltig)', 'Japanischer Lebenslauf (履歴書)'],
+        fr: ['Modèle', 'Moderne', 'Classique (une colonne)', 'CV japonais (履歴書)'],
+        es: ['Plantilla', 'Moderna', 'Clásica (una columna)', 'Currículum japonés (履歴書)'],
+        it: ['Modello', 'Moderno', 'Classico (una colonna)', 'CV giapponese (履歴書)'],
+        pt: ['Modelo', 'Moderno', 'Clássico (uma coluna)', 'Currículo japonês (履歴書)'],
+        ru: ['Шаблон', 'Современный', 'Классический (одна колонка)', 'Японское резюме (履歴書)'],
+        ar: ['القالب', 'عصري', 'كلاسيكي (عمود واحد)', 'سيرة ذاتية يابانية (履歴書)'],
+        zh: ['模板', '现代', '经典（单栏）', '日本履历书（履歴書）'],
+        ja: ['テンプレート', 'モダン', 'クラシック（1段組）', '履歴書（日本形式）']
     };
     var form = document.getElementById('cv-form');
     var select = document.getElementById('template-select');
@@ -9649,17 +9916,21 @@ function saveCV() {
         document.getElementById('template-label').textContent = t[0];
         document.getElementById('tpl-opt-modern').textContent = t[1];
         document.getElementById('tpl-opt-classic').textContent = t[2];
+        document.getElementById('tpl-opt-rirekisho').textContent = t[3];
     }
 
     function applyTemplate(name) {
-        name = (name === 'tpl-classic') ? 'tpl-classic' : '';
+        name = (name === 'tpl-classic' || name === 'tpl-rirekisho') ? name : '';
+        // Rirekisho: duzenleyicide klasik yerlesim kullanilir, PDF ayri bir form olarak uretilir
+        var classicLayout = (name === 'tpl-classic' || name === 'tpl-rirekisho');
         var lang = document.getElementById('languages-section');
         var left = form.querySelector('.left-column');
         var right = form.querySelector('.right-column');
-        form.classList.toggle('tpl-classic', name === 'tpl-classic');
+        form.classList.toggle('tpl-classic', classicLayout);
+        form.classList.toggle('tpl-rirekisho', name === 'tpl-rirekisho');
         // Diller bolumu: klasikte govdenin sonuna, modernde kenar cubuguna
         if (lang && left && right) {
-            if (name === 'tpl-classic') { if (lang.parentNode !== right) right.appendChild(lang); }
+            if (classicLayout) { if (lang.parentNode !== right) right.appendChild(lang); }
             else { if (lang.parentNode !== left) left.appendChild(lang); }
         }
         select.value = name;
@@ -9682,6 +9953,181 @@ function saveCV() {
         var saved = JSON.parse(localStorage.getItem(key) || 'null');
         if (saved && typeof saved.template === 'string') applyTemplate(saved.template);
     } catch (e) {}
+})();
+</script>
+<script>
+/* === RIREKISHO (履歴書) PDF FORMU === */
+(function () {
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    function ym(p) {
+        var m = String(p || '').match(/(\d{4})(?:\s*[\/\.年]\s*(\d{1,2}))?/);
+        return m ? { y: +m[1], m: m[2] ? +m[2] : null } : null;
+    }
+    function parseRange(str) {
+        var s = String(str || '').trim(); if (!s) return { start: null, end: null, ongoing: false };
+        var i = s.indexOf('-');
+        if (i < 0) return { start: null, end: ym(s), ongoing: false };
+        var a = ym(s.slice(0, i)), bs = s.slice(i + 1).trim(), b = ym(bs);
+        var now = new Date(), ongoing = !bs || /現在|在職|在学|present|now|devam|halen/i.test(bs);
+        if (b && !ongoing) {
+            if (b.m == null && b.y >= now.getFullYear()) ongoing = true;
+            if (b.m != null && (b.y > now.getFullYear() || (b.y === now.getFullYear() && b.m > now.getMonth() + 1))) ongoing = true;
+        }
+        return { start: a, end: ongoing ? null : b, ongoing: ongoing };
+    }
+    function key(d) { return d ? d.y * 100 + (d.m || 0) : 0; }
+    function row(d, text, cls) { return { y: d ? d.y : '', m: d && d.m ? d.m : '', text: text, cls: cls || '' }; }
+
+    function historyRows(data) {
+        var rows = [row(null, '学　歴', 'c')];
+        var edu = (data.education || []).filter(function (e) { return e && (e.institution || '').trim(); })
+            .map(function (e) { return { n: e.institution.trim(), r: parseRange(e.date) }; })
+            .sort(function (a, b) { return key(a.r.start || a.r.end) - key(b.r.start || b.r.end); });
+        edu.forEach(function (e) {
+            if (e.r.start) rows.push(row(e.r.start, e.n + '　入学'));
+            if (e.r.end) rows.push(row(e.r.end, e.n + '　卒業'));
+            if (e.r.ongoing) rows.push(row(null, e.n + '　在学中'));
+            if (!e.r.start && !e.r.end && !e.r.ongoing) rows.push(row(null, e.n));
+        });
+        rows.push(row(null, '職　歴', 'c'));
+        var exp = (data.experience || []).filter(function (e) { return e && ((e.company || '').trim() || (e.title || '').trim()); })
+            .map(function (e) { return { c: (e.company || '').trim(), t: (e.title || '').trim(), d: (e.description || '').trim(), r: parseRange(e.duration) }; })
+            .sort(function (a, b) { return key(a.r.start || a.r.end) - key(b.r.start || b.r.end); });
+        if (!exp.length) rows.push(row(null, 'なし'));
+        var anyOngoing = false;
+        exp.forEach(function (e) {
+            var name = e.c || e.t;
+            rows.push(row(e.r.start, name + '　入社' + (e.c && e.t ? '（' + e.t + '）' : '')));
+            if (e.d) rows.push(row(null, '　' + e.d));
+            if (e.r.end) rows.push(row(e.r.end, name + '　退社'));
+            if (e.r.ongoing) anyOngoing = true;
+        });
+        if (anyOngoing) rows.push(row(null, '現在に至る'));
+        rows.push(row(null, '以上', 'r'));
+        return rows;
+    }
+    function licenseRows(data) {
+        var rows = [];
+        (data.courses || []).filter(function (c) { return c && (c.title || '').trim(); })
+            .map(function (c) { return { t: c.title.trim(), d: ym(c.date) }; })
+            .sort(function (a, b) { return key(a.d) - key(b.d); })
+            .forEach(function (c) { rows.push(row(c.d, c.t + '　取得')); });
+        var dl = ((data.personalInfo || {})['driving-license'] || '').trim();
+        if (dl) rows.push(row(null, /免許/.test(dl) ? dl : '運転免許（' + dl + '）'));
+        if (!rows.length) rows.push(row(null, '特になし'));
+        return rows;
+    }
+    function histTable(title, rows, min) {
+        var h = '<table class="rk-hist rk-outer"><tr><th class="y">年</th><th class="m">月</th><th>' + title + '</th></tr>';
+        var all = rows.slice(); while (all.length < min) all.push(row(null, ''));
+        all.forEach(function (r) {
+            h += '<tr><td class="y">' + esc(r.y) + '</td><td class="m">' + esc(r.m) + '</td><td class="' + r.cls + '">' + esc(r.text) + '</td></tr>';
+        });
+        return h + '</table>';
+    }
+    function birthText(b) {
+        var m = String(b || '').match(/(\d{1,2})\D(\d{1,2})\D(\d{4})/);
+        if (!m) return '年　　月　　日生（満　　歳）';
+        var d = +m[1], mo = +m[2], y = +m[3], now = new Date();
+        var age = now.getFullYear() - y - ((now.getMonth() + 1 < mo || (now.getMonth() + 1 === mo && now.getDate() < d)) ? 1 : 0);
+        return y + '年 ' + mo + '月 ' + d + '日生（満 ' + age + ' 歳）';
+    }
+
+    window.buildRirekishoPages = function () {
+        var data = window.autoSaveManager.collectData();
+        var p = data.personalInfo || {};
+        var now = new Date();
+        var avatar = document.getElementById('avatar');
+        var photo = (avatar && /^data:/.test(avatar.getAttribute('src') || '')) ? avatar.getAttribute('src') : '';
+        var hist = historyRows(data);
+        var FIRST = 22;   // 1. sayfadaki gecmis satiri (sayfayi dolduracak kadar)
+        var p1 = hist.slice(0, FIRST), rest = hist.slice(FIRST);
+
+        var page1 = '<div class="rk-page">' +
+            '<div class="rk-title"><h1>履歴書</h1><div class="rk-date">' + now.getFullYear() + '年 ' + (now.getMonth() + 1) + '月 ' + now.getDate() + '日現在</div></div>' +
+            '<div class="rk-top"><table class="rk-outer">' +
+                '<tr><td class="rk-small" style="height:6mm">ふりがな　' + esc(p.furigana || '') + '</td></tr>' +
+                '<tr><td class="rk-name"><span class="rk-small">氏名</span>　' + esc(p.fullname || '') + '</td></tr>' +
+                '<tr><td>' + birthText(p['birth-date']) + '</td></tr>' +
+            '</table>' +
+            '<div class="rk-photo">' + (photo ? '<img src="' + photo + '" alt="">' : '写真をはる位置<br>縦 36〜40mm<br>横 24〜30mm') + '</div></div>' +
+            '<table class="rk-outer" style="margin-top:2mm">' +
+                '<tr><td class="rk-small" style="width:72%;height:6mm">ふりがな</td><td class="rk-small" rowspan="2">電話　' + esc(p.phone || '') + '<br><br>E-mail　' + esc(p.email || '') + '</td></tr>' +
+                '<tr><td style="height:14mm"><span class="rk-small">現住所</span>　' + esc(p.address || '') + '</td></tr>' +
+                '<tr><td class="rk-small" style="height:6mm">ふりがな</td><td class="rk-small" rowspan="2">電話<br><br>E-mail</td></tr>' +
+                '<tr><td style="height:11mm"><span class="rk-small">連絡先（現住所以外に連絡を希望する場合のみ記入）</span></td></tr>' +
+            '</table>' +
+            '<div style="margin-top:2mm">' + histTable('学歴・職歴（各別にまとめて書く）', p1, FIRST) + '</div>' +
+            '</div>';
+
+        var aboutParts = [];
+        if ((data.about || '').trim()) aboutParts.push(data.about.trim());
+        var skills = (data.skills || []).filter(function (s) { return (s || '').trim(); });
+        if (skills.length) aboutParts.push('特技：' + skills.join('、'));
+        var langs = (data.languages || []).filter(function (l) { return l && (l.name || '').trim(); })
+            .map(function (l) { return l.name.trim() + (l.level ? '（' + l.level.trim() + '）' : ''); });
+        if (langs.length) aboutParts.push('語学：' + langs.join('、'));
+        var wishes = (p['jp-wishes'] || '').trim() || '貴社の規定に従います。';
+        // 2. sayfa: gecmis devami ve lisans satirlari arttikca kutular kuculur
+        var lic = licenseRows(data), used = (rest.length ? (Math.max(rest.length, 3) + 1) * 7.6 + 3 : 0) + (Math.max(lic.length, 6) + 1) * 7.6;
+        var free = Math.max(80, 255 - used - 24);
+        var boxH = Math.round(free * 0.6), wishH = Math.round(free * 0.4);
+
+        var page2 = '<div class="rk-page">' +
+            (rest.length ? histTable('学歴・職歴', rest, Math.max(rest.length, 3)) + '<div style="height:3mm"></div>' : '') +
+            histTable('免許・資格', lic, 6) +
+            '<table class="rk-box rk-outer" style="margin-top:3mm"><tr><td class="lbl">志望の動機、特技、好きな学科、アピールポイントなど</td></tr>' +
+                '<tr><td class="txt" style="height:' + boxH + 'mm">' + esc(aboutParts.join('\n\n')) + '</td></tr></table>' +
+            '<table class="rk-box rk-outer" style="margin-top:3mm"><tr><td class="lbl">本人希望記入欄（特に給料・職種・勤務時間・勤務地・その他についての希望などがあれば記入）</td></tr>' +
+                '<tr><td class="txt" style="height:' + wishH + 'mm">' + esc(wishes) + '</td></tr></table>' +
+            '</div>';
+        return [page1, page2];
+    };
+
+    function mount(pages) {
+        var host = document.createElement('div'); host.className = 'rk-host';
+        host.innerHTML = pages.join('');
+        document.body.appendChild(host);
+        return host;
+    }
+
+    window.buildRirekishoPdf = function () {
+        return new Promise(function (resolve, reject) {
+            if (!window.jspdf || !window.html2canvas) { reject(new Error('PDF kütüphanesi yüklenemedi. Lütfen sayfayı yenileyin.')); return; }
+            var host = mount(window.buildRirekishoPages());
+            var doc = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            var els = host.querySelectorAll('.rk-page');
+            (async function () {
+                for (var i = 0; i < els.length; i++) {
+                    var canvas = await html2canvas(els[i], { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: true });
+                    if (i > 0) doc.addPage();
+                    doc.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297, '', 'FAST');
+                }
+            })().then(function () { host.remove(); resolve(doc); }, function (e) { host.remove(); reject(e); });
+        });
+    };
+
+    window.showRirekishoPreview = function () {
+        var box = document.getElementById('preview-content');
+        if (!box) return;
+        box.innerHTML = '';
+        var wrap = document.createElement('div');
+        wrap.style.cssText = 'display:flex;flex-direction:column;gap:12px;align-items:center;';
+        wrap.innerHTML = window.buildRirekishoPages().join('');
+        box.appendChild(wrap);
+        var w = Math.min(box.clientWidth || 794, 794);
+        var scale = Math.min(1, (w - 8) / 794);
+        wrap.querySelectorAll('.rk-page').forEach(function (pg) {
+            pg.style.boxShadow = '0 2px 10px rgba(0,0,0,.25)';
+            if (scale < 1) {
+                var holder = document.createElement('div');
+                holder.style.cssText = 'width:' + (794 * scale) + 'px;height:' + (1123 * scale) + 'px;overflow:hidden;';
+                pg.parentNode.insertBefore(holder, pg); holder.appendChild(pg);
+                pg.style.transform = 'scale(' + scale + ')'; pg.style.transformOrigin = 'top left';
+            }
+        });
+        document.getElementById('preview-overlay').style.display = 'flex';
+    };
 })();
 </script>
 </body>
