@@ -3152,6 +3152,10 @@ img {
                                     <div class="personal-info-label" data-key="address">Adres</div>
                                     <div class="personal-info-value editable" contenteditable="true" data-placeholder-key="addressPlaceholder" data-hint-key="addressHint"></div>
                                 </div>
+                                <div class="personal-info-item jp-only" data-field="address-kana">
+                                    <div class="personal-info-label">住所ふりがな</div>
+                                    <div class="personal-info-value editable" contenteditable="true" data-placeholder="例：とうきょうと せたがやく" data-hint="住所の読み方（ひらがな）"></div>
+                                </div>
 
                                 <!-- Doğum Tarihi - Takvim butonu eklendi -->
                                 <div class="personal-info-item" data-field="birth-date">
@@ -5376,7 +5380,7 @@ img {
                 "exportData": "バックアップを保存",
                 "importData": "バックアップを読み込む",
                 "importSuccess": "バックアップを読み込みました！",
-                "importError": "無効なバックアップファイルです！",
+                "importError": "バックアップファイルを読み込めませんでした。",
                 "shareCV": "共有",
                 "shareFallback": "このブラウザでは直接共有に対応していません。PDFをダウンロードしましたので、メールやメッセージアプリで共有してください。",
                 "shareModalTitle": "履歴書のリンク",
@@ -5388,23 +5392,23 @@ img {
                 "shareLinkCopied": "共有リンクをコピーしました！リンクを開いた人はあなたの履歴書（写真を除く）を閲覧できます。",
                 "shareLinkPrompt": "以下のリンクをコピーして共有できます：",
                 "instructionsTitle": "使い方：",
-                "instructionsText": "A4ページ上の文字を直接クリックして編集し、下のボタンで項目を追加してください。空欄の項目は自動的に非表示になります。",
+                "instructionsText": "A4ページ上の文字を直接タップして編集し、下のボタンで項目を追加してください。空欄の項目は自動的に非表示になります。",
                 "tip": "ヒント：",
                 "tipText": "日本語モードでは年月を「2018/04-2022/03」の形式で入力できます。在職中・在学中の場合は終了年月を空欄にしてください（例：2023/10-）。",
                 "limitations": "制限：",
-                "limitationsText": "職歴と講座・資格はそれぞれ最大5件まで追加できます。",
+                "limitationsText": "職歴と免許・資格はそれぞれ最大5件まで追加できます。",
                 "phoneFormat": "電話番号の形式：",
                 "phoneFormatText": "電話番号は数字のみ入力してください。ハイフンは自動で入ります（例：090-1234-5678）。",
-                "about": "自己紹介",
+                "about": "自己PR",
                 "education": "学歴",
                 "experience": "職歴",
-                "courses": "講座・資格",
+                "courses": "免許・資格",
                 "skills": "スキル",
                 "references": "推薦者",
                 "languages": "語学",
                 "aboutDescription": "簡単に自己紹介をしてください。経験、目標、得意分野などを記入します。",
-                "educationDescription": "最終学歴から順に学歴を追加してください",
-                "experienceDescription": "直近の職歴から順に追加してください（最大5件）",
+                "educationDescription": "学歴を追加してください（履歴書PDFでは自動的に古い順に並べ替えられます）",
+                "experienceDescription": "職歴を追加してください（最大5件。履歴書PDFでは自動的に古い順に並べ替えられます）",
                 "projects": "プロジェクト",
                 "projectsDescription": "担当したプロジェクトを追加してください（最大5件）",
                 "projectTitlePlaceholder": "プロジェクト名",
@@ -5419,14 +5423,14 @@ img {
                 "projectLinkHint": "プロジェクトのGitHubまたはデモのリンク",
                 "addProject": "+ プロジェクトを追加",
                 "removeProject": "最後のプロジェクトを削除",
-                "coursesDescription": "受講した講座、取得した資格や研修（最大5件）",
+                "coursesDescription": "取得した免許・資格や受講した研修（最大5件）",
                 "skillsDescription": "技術、語学、その他のスキル",
                 "referencesDescription": "採用担当者が連絡できる推薦者",
                 "languagesDescription": "話せる言語とそのレベルを追加してください",
                 "fullName": "氏名",
                 "profession": "職種・肩書き",
-                "phone": "電話",
-                "email": "メール",
+                "phone": "電話番号",
+                "email": "メールアドレス",
                 "address": "住所",
                 "birthDate": "生年月日",
                 "birthPlace": "出生地",
@@ -5439,11 +5443,11 @@ img {
                 "phonePlaceholder": "090-0000-0000",
                 "emailPlaceholder": "メールアドレス",
                 "addressPlaceholder": "住所",
-                "birthDatePlaceholder": "DD/MM/YYYY",
+                "birthDatePlaceholder": "DD/MM/YYYY（日/月/年）",
                 "birthPlacePlaceholder": "出生地",
-                "militaryStatusPlaceholder": "例：修了、延期、免除",
-                "criminalRecordPlaceholder": "例：なし、または説明",
-                "drivingLicensePlaceholder": "例：普通自動車第一種",
+                "militaryStatusPlaceholder": "例：兵役済み、猶予中、免除",
+                "criminalRecordPlaceholder": "例：なし（ある場合は内容を記入）",
+                "drivingLicensePlaceholder": "例：2015/08 普通自動車第一種運転免許",
                 "disabilityStatusPlaceholder": "該当する場合は記入",
                 "aboutPlaceholder": "ここに自己紹介を書いてください…",
                 "educationInstitutionPlaceholder": "学校名・学部",
@@ -5452,7 +5456,7 @@ img {
                 "experienceCompanyPlaceholder": "会社名・組織名",
                 "experienceDatePlaceholder": "YYYY/MM-YYYY/MM",
                 "experienceDescriptionPlaceholder": "担当業務と実績",
-                "courseTitlePlaceholder": "講座・資格名",
+                "courseTitlePlaceholder": "免許・資格名",
                 "courseInstitutionPlaceholder": "実施機関・講師",
                 "courseDatePlaceholder": "YYYY/MM",
                 "skillPlaceholder": "スキル",
@@ -5461,25 +5465,25 @@ img {
                 "referencePhonePlaceholder": "090-0000-0000",
                 "languageNamePlaceholder": "言語",
                 "languageLevelPlaceholder": "レベル",
-                "addPhoto": "クリックして写真を追加",
-                "avatarBiometricSize": "（証明写真サイズ）",
+                "addPhoto": "タップして写真を追加",
+                "avatarBiometricSize": "（縦40mm×横30mm）",
                 "panUp": "上へ移動",
                 "panDown": "下へ移動",
                 "panLeft": "左へ移動",
                 "panRight": "右へ移動",
                 "panReset": "中央に戻す",
                 "visitBlogText": "📝 キャリアのヒント、面接ガイド、履歴書のアドバイスはブログへ",
-                "trustIntroText": "登録不要、データを保存せずに1分で履歴書PDFを作成できます。下の項目から入力を始めてください。",
+                "trustIntroText": "登録不要・データはサーバーに送信されません。1分で履歴書PDFを作成できます。",
                 "fullNameHint": "氏名を入力してください",
                 "professionHint": "例：ソフトウェアエンジニア、経理担当",
                 "phoneHint": "数字のみ入力してください。ハイフンは自動で入ります",
                 "emailHint": "連絡用のメールアドレス",
-                "addressHint": "住所（都道府県・市区町村）",
+                "addressHint": "都道府県から番地・建物名・部屋番号まで省略せずに記入してください",
                 "birthDateHint": "生年月日を入力してください",
                 "birthPlaceHint": "出生地の市区町村",
-                "militaryStatusHint": "例：修了、延期、免除",
-                "criminalRecordHint": "例：なし、または説明",
-                "drivingLicenseHint": "例：普通自動車第一種",
+                "militaryStatusHint": "例：兵役済み、猶予中、免除",
+                "criminalRecordHint": "例：なし（ある場合は内容を記入）",
+                "drivingLicenseHint": "取得年月から書くと履歴書に年月が入ります（例：2015/08 普通自動車第一種運転免許）",
                 "disabilityStatusHint": "該当する場合は記入",
                 "aboutHint": "簡潔にまとめてください",
                 "educationInstitutionHint": "例：東京大学 工学部",
@@ -5488,8 +5492,8 @@ img {
                 "experienceCompanyHint": "勤務した会社",
                 "experienceDateHint": "例：2019/04-2023/09（在職中は 2023/10-）",
                 "experienceDescriptionHint": "担当業務と実績",
-                "courseTitleHint": "講座または資格の名称",
-                "courseInstitutionHint": "研修を実施した機関",
+                "courseTitleHint": "例：日商簿記検定2級 合格（「合格」「取得」まで書くとそのまま印字されます）",
+                "courseInstitutionHint": "主催団体・実施機関",
                 "courseDateHint": "例：2021/06",
                 "skillHint": "スキルを追加",
                 "referenceNameHint": "推薦者の氏名",
@@ -5503,8 +5507,8 @@ img {
                 "removeEducation": "最後の学歴を削除",
                 "addExperience": "+ 職歴を追加",
                 "removeExperience": "最後の職歴を削除",
-                "addCourse": "+ 講座・資格を追加",
-                "removeCourse": "最後の講座・資格を削除",
+                "addCourse": "+ 免許・資格を追加",
+                "removeCourse": "最後の免許・資格を削除",
                 "addSkill": "+ スキルを追加",
                 "removeSkill": "最後のスキルを削除",
                 "addReference": "+ 推薦者を追加",
@@ -5519,10 +5523,10 @@ img {
                 "socialMedia": "SNS",
                 "linkedinPlaceholder": "LinkedInプロフィールのリンク",
                 "githubPlaceholder": "GitHubプロフィールのリンク",
-                "twitterPlaceholder": "Twitter/Xプロフィールのリンク",
+                "twitterPlaceholder": "X（旧Twitter）プロフィールのリンク",
                 "linkedinHint": "LinkedInプロフィールのURLを追加",
                 "githubHint": "GitHubプロフィールのURLを追加",
-                "twitterHint": "Twitter/XプロフィールのURLを追加",
+                "twitterHint": "X（旧Twitter）プロフィールのURLを追加",
                 "feedbackPopupTitle": "フィードバックを送る",
                 "feedbackNameLabel": "お名前（任意）",
                 "feedbackNamePlaceholder": "お名前",
@@ -5533,7 +5537,7 @@ img {
                 "cancelButton": "キャンセル",
                 "sendButton": "送信",
                 "feedbackSuccess": "フィードバックありがとうございます！",
-                "feedbackError": "メッセージを入力してください！"
+                "feedbackError": "メッセージを入力してください。"
             }
         };
 // ==================== SOSYAL MEDYA YÖNETİCİSİ ====================
@@ -9997,7 +10001,8 @@ function saveCV() {
         var anyOngoing = false;
         exp.forEach(function (e) {
             var name = e.c || e.t;
-            rows.push(row(e.r.start, name + '　入社' + (e.c && e.t ? '（' + e.t + '）' : '')));
+            rows.push(row(e.r.start, name + '　入社'));
+            if (e.c && e.t) rows.push(row(null, '　' + e.t));
             if (e.d) rows.push(row(null, '　' + e.d));
             if (e.r.end) rows.push(row(e.r.end, name + '　退社'));
             if (e.r.ongoing) anyOngoing = true;
@@ -10006,14 +10011,21 @@ function saveCV() {
         rows.push(row(null, '以上', 'r'));
         return rows;
     }
+    function suffix(t) { return /(取得|合格|修了|認定|登録)$/.test(t) ? t : t + '　取得'; }
     function licenseRows(data) {
         var rows = [];
         (data.courses || []).filter(function (c) { return c && (c.title || '').trim(); })
             .map(function (c) { return { t: c.title.trim(), d: ym(c.date) }; })
             .sort(function (a, b) { return key(a.d) - key(b.d); })
-            .forEach(function (c) { rows.push(row(c.d, c.t + '　取得')); });
+            .forEach(function (c) { rows.push(row(c.d, suffix(c.t))); });
         var dl = ((data.personalInfo || {})['driving-license'] || '').trim();
-        if (dl) rows.push(row(null, /免許/.test(dl) ? dl : '運転免許（' + dl + '）'));
+        if (dl) {
+            var dm = dl.match(/^(\d{4})(?:\s*[\/\.年]\s*(\d{1,2}))?\s*月?\s*(.*)$/), dd = null, dt = dl;
+            if (dm) { dd = { y: +dm[1], m: dm[2] ? +dm[2] : null }; dt = dm[3].trim(); }
+            if (!/免許/.test(dt)) dt = '運転免許（' + dt + '）';
+            rows.push(row(dd, suffix(dt)));
+            rows.sort(function (a, b) { return (a.y ? a.y * 100 + (a.m || 0) : 999999) - (b.y ? b.y * 100 + (b.m || 0) : 999999); });
+        }
         if (!rows.length) rows.push(row(null, '特になし'));
         return rows;
     }
@@ -10027,10 +10039,10 @@ function saveCV() {
     }
     function birthText(b) {
         var m = String(b || '').match(/(\d{1,2})\D(\d{1,2})\D(\d{4})/);
-        if (!m) return '年　　月　　日生（満　　歳）';
+        if (!m) return '　　年　　月　　日生（満　　歳）';
         var d = +m[1], mo = +m[2], y = +m[3], now = new Date();
         var age = now.getFullYear() - y - ((now.getMonth() + 1 < mo || (now.getMonth() + 1 === mo && now.getDate() < d)) ? 1 : 0);
-        return y + '年 ' + mo + '月 ' + d + '日生（満 ' + age + ' 歳）';
+        return y + '年' + mo + '月' + d + '日生（満' + age + '歳）';
     }
 
     window.buildRirekishoPages = function () {
@@ -10044,18 +10056,19 @@ function saveCV() {
         var p1 = hist.slice(0, FIRST), rest = hist.slice(FIRST);
 
         var page1 = '<div class="rk-page">' +
-            '<div class="rk-title"><h1>履歴書</h1><div class="rk-date">' + now.getFullYear() + '年 ' + (now.getMonth() + 1) + '月 ' + now.getDate() + '日現在</div></div>' +
+            '<div class="rk-title"><h1>履歴書</h1><div class="rk-date">' + now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日現在</div></div>' +
             '<div class="rk-top"><table class="rk-outer">' +
-                '<tr><td class="rk-small" style="height:6mm">ふりがな　' + esc(p.furigana || '') + '</td></tr>' +
-                '<tr><td class="rk-name"><span class="rk-small">氏名</span>　' + esc(p.fullname || '') + '</td></tr>' +
-                '<tr><td>' + birthText(p['birth-date']) + '</td></tr>' +
+                '<tr><td class="rk-small" colspan="2" style="height:7mm">ふりがな　' + esc(p.furigana || '') + '</td></tr>' +
+                '<tr><td class="rk-name" colspan="2" style="height:20mm"><span class="rk-small">氏名</span>　' + esc(p.fullname || '') + '</td></tr>' +
+                '<tr><td style="height:9mm">' + birthText(p['birth-date']) + '</td><td class="rk-small" style="width:22mm">※性別</td></tr>' +
             '</table>' +
-            '<div class="rk-photo">' + (photo ? '<img src="' + photo + '" alt="">' : '写真をはる位置<br>縦 36〜40mm<br>横 24〜30mm') + '</div></div>' +
+            '<div class="rk-photo">' + (photo ? '<img src="' + photo + '" alt="">' : '写真をはる位置<br><br>写真をはる必要が<br>ある場合<br>1. 縦 36〜40mm<br>　横 24〜30mm<br>2. 本人単身胸から上<br>3. 裏面のりづけ') + '</div></div>' +
+            '<div class="rk-small" style="margin-top:1mm">※「性別」欄：記載は任意です。未記載とすることも可能です。</div>' +
             '<table class="rk-outer" style="margin-top:2mm">' +
-                '<tr><td class="rk-small" style="width:72%;height:6mm">ふりがな</td><td class="rk-small" rowspan="2">電話　' + esc(p.phone || '') + '<br><br>E-mail　' + esc(p.email || '') + '</td></tr>' +
+                '<tr><td class="rk-small" style="width:68%;height:6mm">ふりがな　' + esc(p['address-kana'] || '') + '</td><td class="rk-small" rowspan="2" style="word-break:normal;overflow-wrap:anywhere">電話　' + esc(p.phone || '') + '<br><br>E-mail<br>' + esc(p.email || '') + '</td></tr>' +
                 '<tr><td style="height:14mm"><span class="rk-small">現住所</span>　' + esc(p.address || '') + '</td></tr>' +
                 '<tr><td class="rk-small" style="height:6mm">ふりがな</td><td class="rk-small" rowspan="2">電話<br><br>E-mail</td></tr>' +
-                '<tr><td style="height:11mm"><span class="rk-small">連絡先（現住所以外に連絡を希望する場合のみ記入）</span></td></tr>' +
+                '<tr><td style="height:11mm"><span class="rk-small">連絡先　〒　　　　（現住所以外に連絡を希望する場合のみ記入）</span></td></tr>' +
             '</table>' +
             '<div style="margin-top:2mm">' + histTable('学歴・職歴（各別にまとめて書く）', p1, FIRST) + '</div>' +
             '</div>';
@@ -10064,7 +10077,7 @@ function saveCV() {
         if ((data.about || '').trim()) aboutParts.push(data.about.trim());
         var skills = (data.skills || []).filter(function (s) { return (s || '').trim(); });
         if (skills.length) aboutParts.push('特技：' + skills.join('、'));
-        var langs = (data.languages || []).filter(function (l) { return l && (l.name || '').trim(); })
+        var langs = (data.languages || []).filter(function (l) { return l && (l.name || '').trim() && !/^(日本語|japanese|japonca)$/i.test(l.name.trim()); })
             .map(function (l) { return l.name.trim() + (l.level ? '（' + l.level.trim() + '）' : ''); });
         if (langs.length) aboutParts.push('語学：' + langs.join('、'));
         var wishes = (p['jp-wishes'] || '').trim() || '貴社の規定に従います。';
