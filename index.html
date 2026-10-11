@@ -2911,6 +2911,30 @@ img {
 .a4-container.tpl-classic.pdf-mode .cv-layout:not(:has(#avatar[src^="data:"])) .right-column,
 .a4-container.tpl-classic.pdf-mode .cv-layout:has(#avatar[src^="data:"]) .right-column { padding-top: 6mm !important; }
 
+/* === SABLON: ORTALI BASLIK (fotograf ve isim ustte, diger bilgiler altta) ===
+   Klasik sablonun tek sutun govdesini kullanir (form'da tpl-classic de vardir).
+   #cv-form on eki, klasik kurallarin uzerine binmek icin. */
+#cv-form.tpl-top .left-column { display: flex !important; flex-direction: column !important; align-items: center !important; text-align: center; padding: 9mm 14mm 6mm !important; row-gap: 4mm; }
+#cv-form.tpl-top .personal-header { display: flex !important; flex-direction: column; align-items: center; margin: 0 !important; padding: 0 !important; }
+#cv-form.tpl-top #avatarBox { width: 34mm !important; height: 34mm !important; min-width: 34mm !important; min-height: 34mm !important; max-width: 34mm !important; max-height: 34mm !important; border-radius: 50% !important; border-width: 2px !important; margin: 0 auto !important; }
+#cv-form.tpl-top #avatarText { font-size: 10px; padding: 0 3mm; }
+#cv-form.tpl-top #avatarSizeHint { display: none !important; }
+#cv-form.tpl-top .personal-info { display: flex !important; flex-direction: row !important; flex-wrap: wrap !important; justify-content: center !important; align-items: baseline !important; gap: 3px 8mm; width: 100% !important; max-width: 100% !important; box-sizing: border-box; margin: 0 !important; padding: 0 !important; }
+#cv-form.tpl-top .personal-info-item.name-item,
+#cv-form.tpl-top .personal-info-item.title-item { flex: 0 0 100% !important; display: block !important; margin: 0 !important; }
+#cv-form.tpl-top .personal-info-item.name-item .personal-info-value { font-size: 30px !important; line-height: 1.15; text-align: center !important; letter-spacing: 0.3px; }
+#cv-form.tpl-top .personal-info-item.title-item .personal-info-value { font-size: 16px !important; text-align: center !important; margin: 2px 0 3mm !important; }
+#cv-form.tpl-top .personal-info-item:not(.name-item):not(.title-item):not([data-field="social-media"]):not(.hidden-in-pdf):not(.jp-only) { display: inline-flex !important; flex: 0 1 auto !important; width: auto !important; max-width: 100%; justify-content: center !important; }
+#cv-form.tpl-top .personal-info-item:not(.name-item):not(.title-item) .personal-info-label { min-width: 0 !important; }
+#cv-form.tpl-top .personal-info-item:not(.name-item):not(.title-item) .personal-info-value { flex: 0 1 auto !important; min-width: 28mm; }
+#cv-form.tpl-top .personal-info-item[data-field="social-media"]:not(.hidden-in-pdf) { flex: 0 0 100% !important; display: flex !important; justify-content: center !important; margin: 3px 0 0 !important; }
+#cv-form.tpl-top .personal-info-item[data-field="social-media"] .social-media-container { justify-content: center; }
+/* PDF: bos alanlar ve fotograf yoksa foto alani gizli kalsin (yukaridaki kurallar bunlari ezmesin) */
+#cv-form.tpl-top.pdf-mode .personal-info-item:not(.name-item):not(.title-item) .personal-info-value { min-width: 0; }
+#cv-form.tpl-top.pdf-mode .personal-info-item:has(> .personal-info-value.empty-field) { display: none !important; }
+#cv-form.tpl-top.pdf-mode .personal-info-item[data-field="social-media"]:not(:has(.social-media-value:not(.empty-field))) { display: none !important; }
+#cv-form.tpl-top.pdf-mode .cv-layout:not(:has(#avatar[src^="data:"])) .personal-header { display: none !important; }
+
 /* === SABLON: RIREKISHO === */
 .jp-only { display: none !important; }
 .a4-container.tpl-rirekisho .jp-only.section { display: block !important; }
@@ -3129,6 +3153,7 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
                     <select id="template-select">
                         <option value="" id="tpl-opt-modern">Modern</option>
                         <option value="tpl-classic" id="tpl-opt-classic">Klasik (tek sütun)</option>
+                        <option value="tpl-top" id="tpl-opt-top">Ortalı başlık (fotoğraf üstte)</option>
                         <option value="tpl-rirekisho" id="tpl-opt-rirekisho">Japon tipi özgeçmiş (履歴書)</option>
                     </select>
                 </div>
@@ -3465,6 +3490,7 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             <a href="https://mobilcv.net" target="_blank" rel="noopener">
                 <span data-key="visitBlogText">📝 Kariyer ipuçları, mülakat rehberleri ve CV tavsiyeleri için blogumuzu ziyaret edin</span>
             </a>
+            <br><span data-guides style="display:inline-block;margin-top:8px;font-size:13px;">📘 Rehberler: <a href="https://mobilcv.net/ulkelere-gore-cv-kurallari.html" target="_blank" rel="noopener">Ülkelere göre CV kuralları</a> · <a href="https://mobilcv.net/motivasyon-mektubu-nasil-yazilir.html" target="_blank" rel="noopener">Motivasyon mektubu nasıl yazılır?</a></span>
             <br><a href="https://mobilcv.net/hakkimizda.html" data-about-link target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-size:12px;">Hakkımızda</a> · <a href="https://mobilcv.net/kullanim-kosullari.html" data-terms-link target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-size:12px;">Kullanım Koşulları</a> · <a href="https://mobilcv.net/gizlilik-politikasi.html" data-privacy-link target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-size:12px;">Gizlilik Politikası</a> · <a href="https://www.instagram.com/mobilcvcom/" data-social-link target="_blank" rel="noopener me" style="font-size:12px;">Instagram</a> · <a href="https://www.threads.com/@mobilcvcom" target="_blank" rel="noopener me" style="font-size:12px;">Threads</a> · <a href="#" data-cookie-settings style="font-size:12px;">Çerez ayarları</a>
         </footer>
 
@@ -8206,6 +8232,7 @@ if (socialMediaSection) {
             document.getElementById('save-pdf').addEventListener('click', function() {
                 generateCvPdf().then(doc => {
                     doc.save('CV.pdf');
+                    if (window.mcvTrackPdf) window.mcvTrackPdf();
                     if (window.mobilcvRecommend) setTimeout(window.mobilcvRecommend, 1500);
                 }).catch(error => {
                     console.error('PDF oluşturma hatası:', error);
@@ -10001,17 +10028,17 @@ function saveCV() {
 /* === SABLON SECICI (Modern / Klasik) === */
 (function () {
     var L = {
-        tr: ['Şablon', 'Modern', 'Klasik (tek sütun)', 'Japon tipi özgeçmiş (履歴書)'],
-        en: ['Template', 'Modern', 'Classic (single column)', 'Japanese résumé (履歴書)'],
-        de: ['Vorlage', 'Modern', 'Klassisch (einspaltig)', 'Japanischer Lebenslauf (履歴書)'],
-        fr: ['Modèle', 'Moderne', 'Classique (une colonne)', 'CV japonais (履歴書)'],
-        es: ['Plantilla', 'Moderna', 'Clásica (una columna)', 'Currículum japonés (履歴書)'],
-        it: ['Modello', 'Moderno', 'Classico (una colonna)', 'CV giapponese (履歴書)'],
-        pt: ['Modelo', 'Moderno', 'Clássico (uma coluna)', 'Currículo japonês (履歴書)'],
-        ru: ['Шаблон', 'Современный', 'Классический (в одну колонку)', 'Японское резюме (履歴書)'],
-        ar: ['القالب', 'عصري', 'كلاسيكي (عمود واحد)', 'سيرة ذاتية يابانية (履歴書)'],
-        zh: ['模板', '现代', '经典（单栏）', '日式履历书（履歴書）'],
-        ja: ['テンプレート', 'モダン', 'クラシック（1カラム）', '履歴書']
+        tr: ['Şablon', 'Modern', 'Klasik (tek sütun)', 'Japon tipi özgeçmiş (履歴書)', 'Ortalı başlık (fotoğraf üstte)'],
+        en: ['Template', 'Modern', 'Classic (single column)', 'Japanese résumé (履歴書)', 'Centered header (photo on top)'],
+        de: ['Vorlage', 'Modern', 'Klassisch (einspaltig)', 'Japanischer Lebenslauf (履歴書)', 'Zentrierter Kopfbereich (Foto oben)'],
+        fr: ['Modèle', 'Moderne', 'Classique (une colonne)', 'CV japonais (履歴書)', 'En-tête centré (photo en haut)'],
+        es: ['Plantilla', 'Moderna', 'Clásica (una columna)', 'Currículum japonés (履歴書)', 'Encabezado centrado (foto arriba)'],
+        it: ['Modello', 'Moderno', 'Classico (una colonna)', 'CV giapponese (履歴書)', 'Intestazione centrata (foto in alto)'],
+        pt: ['Modelo', 'Moderno', 'Clássico (uma coluna)', 'Currículo japonês (履歴書)', 'Cabeçalho centralizado (foto no topo)'],
+        ru: ['Шаблон', 'Современный', 'Классический (в одну колонку)', 'Японское резюме (履歴書)', 'Шапка по центру (фото сверху)'],
+        ar: ['القالب', 'عصري', 'كلاسيكي (عمود واحد)', 'سيرة ذاتية يابانية (履歴書)', 'ترويسة في المنتصف (الصورة في الأعلى)'],
+        zh: ['模板', '现代', '经典（单栏）', '日式履历书（履歴書）', '居中页眉（照片在上方）'],
+        ja: ['テンプレート', 'モダン', 'クラシック（1カラム）', '履歴書', '中央ヘッダー（写真が上）']
     };
     var form = document.getElementById('cv-form');
     var select = document.getElementById('template-select');
@@ -10027,17 +10054,19 @@ function saveCV() {
         document.getElementById('tpl-opt-modern').textContent = t[1];
         document.getElementById('tpl-opt-classic').textContent = t[2];
         document.getElementById('tpl-opt-rirekisho').textContent = t[3];
+        document.getElementById('tpl-opt-top').textContent = t[4];
     }
 
     function applyTemplate(name) {
-        name = (name === 'tpl-classic' || name === 'tpl-rirekisho') ? name : '';
+        name = (name === 'tpl-classic' || name === 'tpl-rirekisho' || name === 'tpl-top') ? name : '';
         // Rirekisho: duzenleyicide klasik yerlesim kullanilir, PDF ayri bir form olarak uretilir
-        var classicLayout = (name === 'tpl-classic' || name === 'tpl-rirekisho');
+        var classicLayout = (name === 'tpl-classic' || name === 'tpl-rirekisho' || name === 'tpl-top');
         var lang = document.getElementById('languages-section');
         var left = form.querySelector('.left-column');
         var right = form.querySelector('.right-column');
         form.classList.toggle('tpl-classic', classicLayout);
         form.classList.toggle('tpl-rirekisho', name === 'tpl-rirekisho');
+        form.classList.toggle('tpl-top', name === 'tpl-top');
         // Diller bolumu: klasikte govdenin sonuna, modernde kenar cubuguna
         if (lang && left && right) {
             if (classicLayout) { if (lang.parentNode !== right) right.appendChild(lang); }
@@ -10393,6 +10422,55 @@ function saveCV() {
         document.body.appendChild(host);
         return host;
     }
+    /* === RK METIN KATMANI === */
+    function rkTextLines(page) {
+        var out = [];
+        function push(t) { t = String(t || '').replace(/[\u2068\u2069]/g, '').replace(/\s+/g, ' ').trim(); if (t) out.push(t); }
+        function walk(n) {
+            if (!n || n.nodeType !== 1) return;
+            if (n.tagName === 'TR') {
+                push([].map.call(n.children, function (c) { return c.textContent.replace(/\s+/g, ' ').trim(); }).filter(Boolean).join('  '));
+                return;
+            }
+            if (!n.querySelector('tr')) { push(n.textContent); return; }
+            [].forEach.call(n.children, walk);
+        }
+        [].forEach.call(page.children, walk);
+        return out;
+    }
+    function rkFontReady(ar) {
+        var key = ar ? 'CV_PDF_FONT_ARABIC_BASE64' : 'CV_PDF_FONT_BASE64';
+        if (window[key]) return Promise.resolve(true);
+        var src = ar ? 'pdf-font-arabic.js' : 'pdf-font-latin.js';
+        if (window.MOBILCV_PDF_FONT_BASE) src = window.MOBILCV_PDF_FONT_BASE + src.slice(1);
+        if (!document.querySelector('script[src="' + src + '"]')) { var s = document.createElement('script'); s.src = src; s.async = true; document.head.appendChild(s); }
+        return new Promise(function (res) { var n = 0; (function w() { if (window[key]) res(true); else if (++n > 40) res(false); else setTimeout(w, 100); })(); });
+    }
+    async function rkAddText(doc, els) {
+        var lg = rkLang();
+        if (lg === 'ja' || lg === 'zh') return;   // CJK font cok buyuk: ana sablonlardaki gibi atla
+        var ar = lg === 'ar';
+        if (!(await rkFontReady(ar))) return;      // Font yoksa bozuk karakter basmaktansa katmani atla
+        try {
+            if (ar) { doc.addFileToVFS('NotoSansArabicSubset.ttf', window.CV_PDF_FONT_ARABIC_BASE64); doc.addFont('NotoSansArabicSubset.ttf', 'NotoSansArabicSubset', 'normal'); doc.setFont('NotoSansArabicSubset'); }
+            else { doc.addFileToVFS('NotoSansSubset.ttf', window.CV_PDF_FONT_BASE64); doc.addFont('NotoSansSubset.ttf', 'NotoSansSubset', 'normal'); doc.setFont('NotoSansSubset'); }
+        } catch (e) { return; }
+        for (var i = 0; i < els.length; i++) {
+            var lines = rkTextLines(els[i]); if (!lines.length) continue;
+            doc.setPage(i + 1);
+            var fs = 8, lh = 4;
+            for (var k = 0; k < 6; k++) {
+                var cnt = 0; lines.forEach(function (l) { cnt += doc.setFontSize(fs).splitTextToSize(l, 190).length; });
+                if (cnt * lh <= 275) break; fs = Math.max(3, fs * 0.8); lh = Math.max(1.5, lh * 0.8);
+            }
+            doc.setFontSize(fs);
+            var y = 10;
+            for (var j = 0; j < lines.length; j++) {
+                var parts = doc.splitTextToSize(lines[j], 190);
+                for (var q = 0; q < parts.length && y <= 290; q++) { doc.text(parts[q], 10, y, { renderingMode: 'invisible' }); y += lh; }
+            }
+        }
+    }
     window.buildRirekishoPdf = function () {
         return new Promise(function (resolve, reject) {
             if (!window.jspdf || !window.html2canvas) { reject(new Error('PDF kütüphanesi yüklenemedi. Lütfen sayfayı yenileyin.')); return; }
@@ -10411,7 +10489,7 @@ function saveCV() {
                     if (i > 0) doc.addPage();
                     doc.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297, '', 'FAST');
                 }
-            })().then(function () { host.remove(); resolve(doc); }, function (e) { host.remove(); reject(e); });
+            })().then(function () { return rkAddText(doc, els).catch(function () {}); }).then(function () { host.remove(); resolve(doc); }, function (e) { host.remove(); reject(e); });
         });
     };
     window.showRirekishoPreview = function () {
@@ -10482,6 +10560,31 @@ function saveCV() {
         document.body.appendChild(box);
         setTimeout(function () { if (box.parentNode) box.remove(); }, 30000);
     };
+})();
+</script>
+<script>
+/* === OLAY SAYIMI === */
+(function () {
+    function lang() { var s = document.getElementById('language-select'); return (s && s.value) || window.MOBILCV_PAGE_LANG || 'tr'; }
+    function tpl() { return window.currentCvTemplate || 'modern'; }
+    // Yalnizca izin verilmis ve GA yuklenmisse; parametrelerde CV icerigi YOK
+    window.mcvTrack = function (name, p) {
+        try { if (window.__gaLoaded && typeof window.gtag === 'function') window.gtag('event', name, p || {}); } catch (e) {}
+    };
+    document.addEventListener('change', function (e) {
+        if (!e.isTrusted) return;
+        var t = e.target;
+        if (t.id === 'language-select') window.mcvTrack('language_select', { cv_language: t.value });
+        else if (t.closest && t.closest('.template-picker')) window.mcvTrack('template_select', { cv_template: t.value || 'modern', cv_language: lang() });
+    }, true);
+    document.addEventListener('click', function (e) {
+        if (!e.isTrusted) return;
+        var t = e.target;
+        if (t.closest('#preview-cv')) window.mcvTrack('cv_preview', { cv_template: tpl(), cv_language: lang() });
+        var r = t.closest('.rec-box a, .rec-box button');
+        if (r && !r.classList.contains('rec-x')) window.mcvTrack('recommend_click', { method: r.className.replace('rec-', '') });
+    }, true);
+    window.mcvTrackPdf = function () { window.mcvTrack('pdf_download', { cv_template: tpl(), cv_language: lang() }); };
 })();
 </script>
 </body>
