@@ -2934,6 +2934,15 @@ img {
 #cv-form.tpl-top:not(.pdf-mode) .social-media-item .social-media-value { min-width: 50mm !important; flex: 1 1 auto !important; }
 #cv-form.tpl-top.pdf-mode .social-media-item .social-media-value { border: 0 !important; width: auto !important; min-width: 0 !important; padding: 0 !important; }
 #cv-form.tpl-top.pdf-mode .social-media-item:has(.social-media-value.empty-field) { display: none !important; }
+/* Govde sonu: Diller (sol yari) + Sosyal Medya (sag yari) ayni satirda.
+   #tpl-top-row JS ile olusturulur; display'de !important YOK (PDF sayfa bolme satir ici display:none kullanir). */
+#tpl-top-row { display: flex; gap: 10mm; align-items: flex-start; margin-top: 12px; }
+#tpl-top-row > * { flex: 1 1 0; min-width: 0; }
+#cv-form.tpl-top #tpl-top-row .languages-section { margin-top: 0 !important; }
+#cv-form.tpl-top #tpl-top-row .personal-info-item[data-field="social-media"]:not(.hidden-in-pdf) { display: block !important; margin: 0 !important; padding: 0 !important; border: 0 !important; }
+#cv-form.tpl-top #tpl-top-row .personal-info-item[data-field="social-media"] > .personal-info-label { display: block !important; width: auto !important; min-width: 0 !important; font-size: 15px !important; font-weight: 700 !important; color: var(--cv-text-primary) !important; border-bottom: 2px solid var(--cv-accent, #3498db) !important; padding: 0 0 5px !important; margin: 0 0 10px !important; text-align: start; white-space: normal; }
+#cv-form.tpl-top #tpl-top-row .personal-info-item[data-field="social-media"] .social-media-container { flex-direction: column !important; align-items: stretch !important; gap: 4px !important; }
+#cv-form.tpl-top.pdf-mode #tpl-top-row .personal-info-item[data-field="social-media"]:not(:has(.social-media-value:not(.empty-field))) { display: none !important; }
 /* PDF: fotograf yoksa ad ve meslek tam genislik */
 #cv-form.tpl-top.pdf-mode .cv-layout:not(:has(#avatar[src^="data:"])) .personal-info-item.name-item,
 #cv-form.tpl-top.pdf-mode .cv-layout:not(:has(#avatar[src^="data:"])) .personal-info-item.title-item { grid-column: 1 / -1 !important; }
@@ -7989,7 +7998,7 @@ if (socialMediaSection) {
                 ];
                 // Klasik sablonda diller govdenin (sag sutun) sonunda: sayfa bolmeye dahil et
                 const langSec = document.getElementById('languages-section');
-                if (langSec && langSec.closest('.right-column')) {
+                if (langSec && langSec.closest('.right-column') && !langSec.closest('#tpl-top-row')) {
                     sectionsConfig.push({ sectionId: 'languages-section', itemSelector: '.language-item' });
                 }
 
@@ -8016,6 +8025,10 @@ if (socialMediaSection) {
                         blocks.push({ elements: [items[i]], sectionId: cfg.sectionId, titleEl: title, isHeaderBlock: false });
                     }
                 });
+                const topRow = document.getElementById('tpl-top-row');
+                if (topRow && topRow.closest('.right-column') && getComputedStyle(topRow).display !== 'none') {
+                    blocks.push({ elements: [topRow], sectionId: 'tpl-top-row', titleEl: null, isHeaderBlock: false });
+                }
 
                 return blocks;
             }
@@ -10076,6 +10089,23 @@ function saveCV() {
             if (classicLayout) { if (lang.parentNode !== right) right.appendChild(lang); }
             else { if (lang.parentNode !== left) left.appendChild(lang); }
         }
+        // Ust baslik sablonu: Diller ve Sosyal Medya govdenin sonunda yan yana
+        (function (on) {
+            var soc = form.querySelector('.personal-info-item[data-field="social-media"]');
+            var pi = document.getElementById('personal-info-section');
+            var row = document.getElementById('tpl-top-row');
+            if (!lang || !right || !soc || !pi) return;
+            if (on) {
+                if (!row) { row = document.createElement('div'); row.id = 'tpl-top-row'; }
+                if (row.parentNode !== right || row.nextSibling) right.appendChild(row);
+                if (lang.parentNode !== row) row.appendChild(lang);
+                if (soc.parentNode !== row) row.appendChild(soc);
+            } else if (row) {
+                if (soc.parentNode === row) pi.appendChild(soc);
+                if (lang.parentNode === row) (classicLayout ? right : left).appendChild(lang);
+                row.parentNode && row.parentNode.removeChild(row);
+            }
+        })(name === 'tpl-top');
         if (window.rkShow) window.rkShow(name === 'tpl-rirekisho');
         select.value = name;
         var changed = (window.currentCvTemplate || '') !== name;
