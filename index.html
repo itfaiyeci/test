@@ -3165,6 +3165,77 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
         });
     };
     </script>
+    <style data-buton-kompakt>
+    /* Telefonda üst kontrol kartı sıkılaştırılır:
+       - Önizleme ve PDF İndir üstte gizlenir; alttaki sabit çubuk (sticky-action-bar) her zaman görünür olur ve aynı düğmeleri tetikler.
+       - Paylaş, Yedekle, Yedeği Yükle, Temizle tek satır: simge üstte, yazı altta.
+       - Şablon düğmeleri ve renk şeridi alçaltılır.
+       HTML ve JS değişmez; geri almak için bu blok silinir. */
+    @media (max-width: 768px) {
+        .controls { grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px; }
+        .controls > #preview-cv, .controls > #save-pdf { display: none !important; }
+        .controls > #share-cv   { order: 1; grid-column: span 1; }
+        .controls > #export-data{ order: 2; grid-column: span 1; }
+        .controls > #import-data{ order: 3; grid-column: span 1; }
+        .controls > #clear-all  { order: 4; grid-column: span 1; }
+        .controls > #share-cv, .controls > #export-data, .controls > #import-data, .controls > #clear-all {
+            flex-direction: column; gap: 2px; min-height: 50px; padding: 5px 2px;
+            font-size: 12px !important; font-weight: 600; line-height: 1.15; border-radius: 8px;
+        }
+        .controls > #share-cv > span:first-child, .controls > #export-data > span:first-child,
+        .controls > #import-data > span:first-child, .controls > #clear-all > span:first-child { font-size: 18px; }
+        .controls > #clear-all { border-width: 1px; }
+        /* Alt sabit çubuk her zaman görünür; altındaki içerik örtülmesin */
+        #sticky-action-bar { transform: translateY(0) !important; }
+        body { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; }
+    }
+    </style>
+    <style data-mobil-secici>
+    /* Telefonda şablon ve renk seçimi: kartta iki küçük seçici düğme, dokununca alttan panel açılır.
+       Paneldeki düğmeler sayfadaki asıl şablon/renk düğmeleridir (taşınmaz, kopyalanmaz);
+       bu yüzden kayıt, yedek ve paylaşım linki aynen çalışır. Masaüstünde hiçbir şey değişmez. */
+    .mp-row, .mp-backdrop, .mp-head { display: none; }
+    @media (max-width: 768px) {
+        .mp-row { display: flex; gap: 8px; grid-column: 1 / -1; order: 0; }
+        .mp-chip { flex: 1 1 0; min-width: 0; min-height: 48px; padding: 6px 10px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px;
+            background: #fff; background-image: none; color: #1e293b; border: 1.5px solid #cbd5e1; border-radius: 10px; box-shadow: none; text-align: start; position: relative; padding-inline-end: 26px; }
+        .mp-chip:hover, .mp-chip:active { transform: none; filter: none; background: #f8fafc; box-shadow: none; }
+        .mp-chip::after { content: '▾'; position: absolute; inset-inline-end: 10px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 14px; }
+        .mp-cap { font-size: 11px; font-weight: 600; color: #64748b; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .mp-val { font-size: 14px; font-weight: 700; line-height: 1.25; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+        .mp-dot { width: 14px; height: 14px; border-radius: 50%; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+        .mp-val > span:last-child { overflow: hidden; text-overflow: ellipsis; }
+
+        /* Paneller kapalıyken gizli */
+        .controls > #template-picker, .controls > #theme-options { display: none; }
+
+        /* Açık panel: alttan gelen yarım sayfa */
+        body.mp-open-tpl .controls > #template-picker, body.mp-open-theme .controls > #theme-options {
+            display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 2; height: auto; margin: 0;
+            background: #fff; border-radius: 16px 16px 0 0; box-shadow: 0 -8px 30px rgba(15,23,42,.18); overflow: visible;
+            padding: 8px 14px calc(16px + env(safe-area-inset-bottom, 0px)); animation: mpUp .2s ease; }
+        @keyframes mpUp { from { transform: translateY(100%); } to { transform: none; } }
+        .mp-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 0 10px; }
+        .mp-head strong { font-size: 15px; color: #1e293b; }
+        .mp-close { flex: none; width: 40px; height: 40px; min-height: 40px; min-width: 0; padding: 0; line-height: 1; display: flex; align-items: center; justify-content: center; background: #f1f5f9; background-image: none; color: #334155; border: none; border-radius: 50%; font-size: 18px; box-shadow: none; }
+        #template-picker:focus, #theme-options:focus { outline: none; }
+        .mp-backdrop { position: fixed; inset: 0; z-index: 1; background: rgba(15,23,42,.25); }
+        /* Panel açıkken kart, alt çubuk dahil her şeyin üstüne çıkar */
+        body.mp-open-tpl .controls, body.mp-open-theme .controls { z-index: 10001; }
+        body.mp-open-tpl .mp-backdrop, body.mp-open-theme .mp-backdrop { display: block; }
+
+        /* Şablon paneli: 2x2, büyük dokunma alanı */
+        body.mp-open-tpl #template-picker .tpl-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; box-shadow: none; overflow: visible; background: none; }
+        body.mp-open-tpl #template-picker .tpl-btn { min-height: 52px; font-size: 14px !important; border: 1.5px solid #e2e8f0 !important; border-radius: 10px; white-space: normal; }
+        body.mp-open-tpl #template-picker .tpl-btn.active { border-color: #1e293b !important; }
+
+        /* Renk paneli: 4 büyük kare, adları altında */
+        body.mp-open-theme #theme-options .mp-swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding-bottom: 22px; }
+        body.mp-open-theme #theme-options .theme-swatch { height: 56px; border-radius: 12px; overflow: visible; }
+        body.mp-open-theme #theme-options .theme-swatch.active { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--dot-color); }
+        body.mp-open-theme #theme-options .theme-swatch::before { content: attr(title); position: absolute; top: 100%; left: -4px; right: -4px; margin-top: 6px; font-size: 11px; font-weight: 600; color: #475569; line-height: 1.15; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    }
+    </style>
 </head>
 <body>
 <div style="position:fixed;top:0;left:0;z-index:99999;background:#dc2626;color:#fff;font:700 12px sans-serif;padding:4px 10px;border-bottom-right-radius:8px;">TEST SÜRÜMÜ</div>
@@ -3220,6 +3291,11 @@ html[lang="ja"] #cv-form, html[lang="ja"] #cv-form *, html[lang="ja"] #preview-c
             
             <section aria-labelledby="controls-title" class="controls">
                 <h2 id="controls-title" class="sr-only">CV Kontrolleri</h2>
+                <div class="mp-backdrop"></div>
+                <div class="mp-row">
+                    <button type="button" class="mp-chip" id="mp-chip-tpl" aria-haspopup="dialog" aria-expanded="false" aria-controls="template-picker"><span class="mp-cap">Şablon</span><span class="mp-val"><span>Modern</span></span></button>
+                    <button type="button" class="mp-chip" id="mp-chip-theme" aria-haspopup="dialog" aria-expanded="false" aria-controls="theme-options"><span class="mp-cap">Renk Teması</span><span class="mp-val"><span class="mp-dot" style="background:#3498db"></span><span>Klasik Mavi</span></span></button>
+                </div>
                 <div class="template-picker" id="template-picker">
                     <span id="template-label">Şablon</span>
                     <div class="tpl-buttons" id="tpl-buttons" role="radiogroup" aria-labelledby="template-label">
@@ -10122,84 +10198,13 @@ function saveCV() {
     /* Bilgisayarda düğme yazıları 13px (15px düğmeleri gereksiz genişletiyordu) */
     @media (min-width: 769px) { .controls > button { font-size: 13px !important; gap: 5px; padding-left: 8px; padding-right: 8px; } .controls > button > span:first-child { font-size: 1.25em; } }
     </style>
-    <style data-buton-kompakt>
-    /* Telefonda üst kontrol kartı sıkılaştırılır:
-       - Önizleme ve PDF İndir üstte gizlenir; alttaki sabit çubuk (sticky-action-bar) her zaman görünür olur ve aynı düğmeleri tetikler.
-       - Paylaş, Yedekle, Yedeği Yükle, Temizle tek satır: simge üstte, yazı altta.
-       - Şablon düğmeleri ve renk şeridi alçaltılır.
-       HTML ve JS değişmez; geri almak için bu blok silinir. */
-    @media (max-width: 768px) {
-        .controls { grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px; }
-        .controls > #preview-cv, .controls > #save-pdf { display: none !important; }
-        .controls > #share-cv   { order: 1; grid-column: span 1; }
-        .controls > #export-data{ order: 2; grid-column: span 1; }
-        .controls > #import-data{ order: 3; grid-column: span 1; }
-        .controls > #clear-all  { order: 4; grid-column: span 1; }
-        .controls > #share-cv, .controls > #export-data, .controls > #import-data, .controls > #clear-all {
-            flex-direction: column; gap: 2px; min-height: 50px; padding: 5px 2px;
-            font-size: 12px !important; font-weight: 600; line-height: 1.15; border-radius: 8px;
-        }
-        .controls > #share-cv > span:first-child, .controls > #export-data > span:first-child,
-        .controls > #import-data > span:first-child, .controls > #clear-all > span:first-child { font-size: 18px; }
-        .controls > #clear-all { border-width: 1px; }
-        /* Alt sabit çubuk her zaman görünür; altındaki içerik örtülmesin */
-        #sticky-action-bar { transform: translateY(0) !important; }
-        body { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; }
-    }
-    </style>
-    <style data-mobil-secici>
-    /* Telefonda şablon ve renk seçimi: kartta iki küçük seçici düğme, dokununca alttan panel açılır.
-       Paneldeki düğmeler sayfadaki asıl şablon/renk düğmeleridir (taşınmaz, kopyalanmaz);
-       bu yüzden kayıt, yedek ve paylaşım linki aynen çalışır. Masaüstünde hiçbir şey değişmez. */
-    .mp-row, .mp-backdrop, .mp-head { display: none; }
-    @media (max-width: 768px) {
-        .mp-row { display: flex; gap: 8px; grid-column: 1 / -1; order: 0; }
-        .mp-chip { flex: 1 1 0; min-width: 0; min-height: 48px; padding: 6px 10px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px;
-            background: #fff; background-image: none; color: #1e293b; border: 1.5px solid #cbd5e1; border-radius: 10px; box-shadow: none; text-align: start; position: relative; padding-inline-end: 26px; }
-        .mp-chip:hover, .mp-chip:active { transform: none; filter: none; background: #f8fafc; box-shadow: none; }
-        .mp-chip::after { content: '▾'; position: absolute; inset-inline-end: 10px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 14px; }
-        .mp-cap { font-size: 11px; font-weight: 600; color: #64748b; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .mp-val { font-size: 14px; font-weight: 700; line-height: 1.25; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
-        .mp-dot { width: 14px; height: 14px; border-radius: 50%; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
-        .mp-val > span:last-child { overflow: hidden; text-overflow: ellipsis; }
-
-        /* Paneller kapalıyken gizli */
-        .controls > #template-picker, .controls > #theme-options { display: none; }
-
-        /* Açık panel: alttan gelen yarım sayfa */
-        body.mp-open-tpl .controls > #template-picker, body.mp-open-theme .controls > #theme-options {
-            display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 2; height: auto; margin: 0;
-            background: #fff; border-radius: 16px 16px 0 0; box-shadow: 0 -8px 30px rgba(15,23,42,.18); overflow: visible;
-            padding: 8px 14px calc(16px + env(safe-area-inset-bottom, 0px)); animation: mpUp .2s ease; }
-        @keyframes mpUp { from { transform: translateY(100%); } to { transform: none; } }
-        .mp-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 0 10px; }
-        .mp-head strong { font-size: 15px; color: #1e293b; }
-        .mp-close { flex: none; width: 40px; height: 40px; min-height: 40px; min-width: 0; padding: 0; line-height: 1; display: flex; align-items: center; justify-content: center; background: #f1f5f9; background-image: none; color: #334155; border: none; border-radius: 50%; font-size: 18px; box-shadow: none; }
-        #template-picker:focus, #theme-options:focus { outline: none; }
-        .mp-backdrop { position: fixed; inset: 0; z-index: 1; background: rgba(15,23,42,.25); }
-        /* Panel açıkken kart, alt çubuk dahil her şeyin üstüne çıkar */
-        body.mp-open-tpl .controls, body.mp-open-theme .controls { z-index: 10001; }
-        body.mp-open-tpl .mp-backdrop, body.mp-open-theme .mp-backdrop { display: block; }
-
-        /* Şablon paneli: 2x2, büyük dokunma alanı */
-        body.mp-open-tpl #template-picker .tpl-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; box-shadow: none; overflow: visible; background: none; }
-        body.mp-open-tpl #template-picker .tpl-btn { min-height: 52px; font-size: 14px !important; border: 1.5px solid #e2e8f0 !important; border-radius: 10px; white-space: normal; }
-        body.mp-open-tpl #template-picker .tpl-btn.active { border-color: #1e293b !important; }
-
-        /* Renk paneli: 4 büyük kare, adları altında */
-        body.mp-open-theme #theme-options .mp-swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding-bottom: 22px; }
-        body.mp-open-theme #theme-options .theme-swatch { height: 56px; border-radius: 12px; overflow: visible; }
-        body.mp-open-theme #theme-options .theme-swatch.active { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--dot-color); }
-        body.mp-open-theme #theme-options .theme-swatch::before { content: attr(title); position: absolute; top: 100%; left: -4px; right: -4px; margin-top: 6px; font-size: 11px; font-weight: 600; color: #475569; line-height: 1.15; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    }
-    </style>
     <script data-mobil-secici>
     (function () {
         function init() {
             var controls = document.querySelector('.controls');
             var tp = document.getElementById('template-picker');
             var th = document.getElementById('theme-options');
-            if (!controls || !tp || !th || document.querySelector('.mp-row')) return;
+            if (!controls || !tp || !th || th.querySelector('.mp-swatches')) return;
 
             // Renk düğmelerini panel ızgarası için bir sarmalayıcıya al (aynı düğmeler)
             var sw = document.createElement('div'); sw.className = 'mp-swatches';
@@ -10215,14 +10220,17 @@ function saveCV() {
             }
             var tplTitle = head(tp), thTitle = head(th);
 
-            var row = document.createElement('div'); row.className = 'mp-row';
-            row.innerHTML =
-                '<button type="button" class="mp-chip" id="mp-chip-tpl" aria-haspopup="dialog" aria-expanded="false" aria-controls="template-picker"><span class="mp-cap"></span><span class="mp-val"><span></span></span></button>' +
-                '<button type="button" class="mp-chip" id="mp-chip-theme" aria-haspopup="dialog" aria-expanded="false" aria-controls="theme-options"><span class="mp-cap"></span><span class="mp-val"><span class="mp-dot"></span><span></span></span></button>';
-            controls.insertBefore(row, tp);
-            var bd = document.createElement('div'); bd.className = 'mp-backdrop';
+            var row = controls.querySelector('.mp-row');
+            if (!row) {
+                row = document.createElement('div'); row.className = 'mp-row';
+                row.innerHTML =
+                    '<button type="button" class="mp-chip" id="mp-chip-tpl" aria-haspopup="dialog" aria-expanded="false" aria-controls="template-picker"><span class="mp-cap"></span><span class="mp-val"><span></span></span></button>' +
+                    '<button type="button" class="mp-chip" id="mp-chip-theme" aria-haspopup="dialog" aria-expanded="false" aria-controls="theme-options"><span class="mp-cap"></span><span class="mp-val"><span class="mp-dot"></span><span></span></span></button>';
+                controls.insertBefore(row, tp);
+            }
+            var bd = controls.querySelector('.mp-backdrop');
+            if (!bd) { bd = document.createElement('div'); bd.className = 'mp-backdrop'; controls.insertBefore(bd, row); }
             bd.addEventListener('click', close);
-            controls.insertBefore(bd, row); // kartın içinde: kart kendi katmanını oluşturduğu için
 
             var chipTpl = row.querySelector('#mp-chip-tpl'), chipTh = row.querySelector('#mp-chip-theme');
 
