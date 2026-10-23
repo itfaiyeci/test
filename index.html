@@ -10123,26 +10123,34 @@ function saveCV() {
     @media (min-width: 769px) { .controls > button { font-size: 13px !important; gap: 5px; padding-left: 8px; padding-right: 8px; } .controls > button > span:first-child { font-size: 1.25em; } }
     </style>
     <style data-buton-kompakt>
-    /* Telefonda kontrol düğmeleri 4 satır yerine 2 satır:
-       1. satır: Önizleme (1/3) + PDF İndir (2/3) — ana işler büyük kalır.
-       2. satır: Paylaş, Yedekle, Yedeği Yükle, Temizle — simge üstte, yazı altta, küçük.
-       Sıralama CSS "order" ile yapılır; HTML ve JS değişmez. */
+    /* Telefonda üst kontrol kartı sıkılaştırılır:
+       - Önizleme ve PDF İndir üstte gizlenir; alttaki sabit çubuk (sticky-action-bar) her zaman görünür olur ve aynı düğmeleri tetikler.
+       - Paylaş, Yedekle, Yedeği Yükle, Temizle tek satır: simge üstte, yazı altta.
+       - Şablon düğmeleri ve renk şeridi alçaltılır.
+       HTML ve JS değişmez; geri almak için bu blok silinir. */
     @media (max-width: 768px) {
-        .controls { grid-template-columns: repeat(12, 1fr); gap: 8px; }
-        .controls > #preview-cv { order: 1; grid-column: span 5; }
-        .controls > #save-pdf   { order: 2; grid-column: span 7; }
-        .controls > #share-cv   { order: 3; grid-column: span 3; }
-        .controls > #export-data{ order: 4; grid-column: span 3; }
-        .controls > #import-data{ order: 5; grid-column: span 3; }
-        .controls > #clear-all  { order: 6; grid-column: span 3; }
-        .controls > #preview-cv, .controls > #save-pdf { min-height: 46px; font-size: 15px !important; }
+        .controls { grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px; }
+        .controls > #preview-cv, .controls > #save-pdf { display: none !important; }
+        .controls > #share-cv   { order: 1; grid-column: span 1; }
+        .controls > #export-data{ order: 2; grid-column: span 1; }
+        .controls > #import-data{ order: 3; grid-column: span 1; }
+        .controls > #clear-all  { order: 4; grid-column: span 1; }
         .controls > #share-cv, .controls > #export-data, .controls > #import-data, .controls > #clear-all {
-            flex-direction: column; gap: 2px; min-height: 52px; padding: 5px 2px;
+            flex-direction: column; gap: 2px; min-height: 50px; padding: 5px 2px;
             font-size: 12px !important; font-weight: 600; line-height: 1.15; border-radius: 8px;
         }
         .controls > #share-cv > span:first-child, .controls > #export-data > span:first-child,
         .controls > #import-data > span:first-child, .controls > #clear-all > span:first-child { font-size: 18px; }
         .controls > #clear-all { border-width: 1px; }
+        /* Şablon düğmeleri: 44px -> 34px */
+        .template-picker { margin: 0 0 6px; }
+        .controls .tpl-buttons .tpl-btn { min-height: 34px; padding: 5px 4px; font-size: 13px !important; }
+        /* Renk şeridi: 32px -> 24px */
+        .theme-dots { height: 24px; border-radius: 12px; margin-bottom: 0; }
+        .theme-swatch.active::after { font-size: 13px; }
+        /* Alt sabit çubuk her zaman görünür; altındaki içerik örtülmesin */
+        #sticky-action-bar { transform: translateY(0) !important; }
+        body { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; }
     }
     </style>
     <script data-buton-sigdir>
