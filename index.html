@@ -5887,7 +5887,7 @@ class SocialMediaManager {
         const platformConfig = this.platforms[platform];
         if (!platformConfig) return;
         
-        const isValid = platformConfig.regex.test(value);
+        const isValid = platformConfig.regex.test(value) || !!this.toCanonical(platform, value);
         
         if (isValid) {
             input.classList.add('valid');
@@ -5910,9 +5910,12 @@ class SocialMediaManager {
         const platformConfig = this.platforms[platform];
         if (!platformConfig || !platformConfig.format) return;
         
-        const formattedUrl = platformConfig.format(value);
+        // Önce temiz profil linkine çevirmeyi dene; olmazsa eski biçimlendirme yalnızca link gibi görünen girdiye uygulanır
+        const canonical = this.toCanonical(platform, value);
+        const formattedUrl = canonical || (/\./.test(value) ? platformConfig.format(value) : value);
         if (input.textContent !== formattedUrl) {
             input.textContent = formattedUrl;
+            input.dispatchEvent(new Event('input', { bubbles: true })); // doğrulama ve otomatik kayıt güncellensin
             
             const range = document.createRange();
             const selection = window.getSelection();
@@ -5923,6 +5926,33 @@ class SocialMediaManager {
         }
     }
     
+    // Kullanıcı adını, "@kullanici"yı ya da uygulamadan kopyalanmış linki temiz profil linkine çevirir.
+    // Tanınmayan girdide null döner (o zaman eski davranış sürer).
+    toCanonical(platform, raw) {
+        var v = (raw || '').trim();
+        if (!v || /\s/.test(v)) return null;
+        var rules = {
+            linkedin: { host: /^([a-z]{2,3}\.)?linkedin\.com$/i, base: 'https://linkedin.com/in/', user: /^[A-Za-z0-9-]{3,100}$/, path: 'in' },
+            github:   { host: /^github\.com$/i, base: 'https://github.com/', user: /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/ },
+            twitter:  { host: /^(twitter|x)\.com$/i, base: 'https://x.com/', user: /^[A-Za-z0-9_]{1,15}$/ }
+        };
+        var r = rules[platform]; if (!r) return null;
+        v = v.replace(/^@/, '');
+        if (/[.\/]/.test(v)) {
+            var str = v.replace(/^https?:\/\//i, '').replace(/^(www|m|mobile)\./i, '').split(/[?#]/)[0];
+            var parts = str.split('/').filter(Boolean);
+            var host = (parts.shift() || '').toLowerCase();
+            if (!r.host.test(host)) return null;
+            var user;
+            if (r.path) { if ((parts[0] || '').toLowerCase() !== r.path) return null; user = parts[1]; }
+            else user = parts[0];
+            if (!user) return null;
+            try { user = decodeURIComponent(user); } catch (e) {}
+            return r.user.test(user) ? r.base + user : null;
+        }
+        return r.user.test(v) ? r.base + v : null;
+    }
+
     formatLinkedIn(url) {
         return this.ensureHttps(url.replace(/\/$/, ''));
     }
@@ -5950,6 +5980,7 @@ class SocialMediaManager {
             // SOSYAL MEDYA YÖNETİCİSİNİ BAŞLAT
     const socialMediaManager = new SocialMediaManager();
     socialMediaManager.init();
+    window.socialMediaManager = socialMediaManager; // sosyal medya öneri kutusu kullanır
 			 // 1. TARAYICI DİLİNİ ALGILAMA
     const SUPPORTED_LANGUAGES = ['tr', 'en', 'de', 'fr', 'es', 'it', 'pt', 'ru', 'ar', 'zh', 'ja'];
 
@@ -10293,6 +10324,64 @@ function saveCV() {
             refresh();
         }
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+    })();
+    </script>
+    <style data-sosyal-oneri>
+    .social-media-item { position: relative; }
+    .social-suggest { position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; display: none; background: #fff;
+        border: 1px solid #3498db; border-top: none; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,.1); }
+    .social-suggest div { padding: 10px 12px; font-size: 13px; color: #2c3e50; cursor: pointer; overflow-wrap: anywhere; }
+    .social-suggest div:hover, .social-suggest div:active { background: #3498db; color: #fff; }
+    .pdf-mode .social-suggest { display: none !important; }
+    @media print { .social-suggest { display: none !important; } }
+    </style>
+    <script data-sosyal-oneri>
+    // E-postadaki gibi: kullanıcı adı ya da kopyalanmış link yazılınca altında temiz profil linki önerilir; dokununca yerleşir.
+    (function () {
+        function mgr() { return window.socialMediaManager; }
+        function boxFor(input) {
+            var item = input.closest('.social-media-item'); if (!item) return null;
+            var b = item.querySelector('.social-suggest');
+            if (!b) {
+                b = document.createElement('div'); b.className = 'social-suggest'; b.setAttribute('role', 'listbox');
+                item.appendChild(b);
+                // Dokunma sırasında alan odağını kaybetmesin
+                b.addEventListener('mousedown', function (e) { e.preventDefault(); });
+                b.addEventListener('click', function () { accept(input); });
+            }
+            return b;
+        }
+        function hide(input) { var b = input && input.closest('.social-media-item') && input.closest('.social-media-item').querySelector('.social-suggest'); if (b) b.style.display = 'none'; }
+        function update(input) {
+            var m = mgr(); if (!m) return;
+            var b = boxFor(input); if (!b) return;
+            if (input.classList.contains('empty-field')) { b.style.display = 'none'; return; }
+            var v = input.textContent.trim(), c = m.toCanonical(input.getAttribute('data-type'), v);
+            if (!c || c === v) { b.style.display = 'none'; b.removeAttribute('data-value'); return; }
+            b.setAttribute('data-value', c);
+            b.innerHTML = '';
+            var row = document.createElement('div'); row.setAttribute('role', 'option');
+            row.textContent = c.replace(/^https:\/\//, '');
+            b.appendChild(row);
+            b.style.display = 'block';
+        }
+        function accept(input) {
+            var b = boxFor(input); var c = b && b.getAttribute('data-value'); if (!c) return;
+            input.textContent = c; input.classList.remove('empty-field');
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            b.style.display = 'none';
+            try { var r = document.createRange(); r.selectNodeContents(input); r.collapse(false); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); } catch (e) {}
+        }
+        function isSocial(t) { return t && t.classList && t.classList.contains('social-media-value'); }
+        document.addEventListener('input', function (e) { if (isSocial(e.target)) update(e.target); });
+        document.addEventListener('focusin', function (e) { if (isSocial(e.target)) update(e.target); });
+        document.addEventListener('focusout', function (e) { if (isSocial(e.target)) { var t = e.target; setTimeout(function () { hide(t); }, 150); } });
+        document.addEventListener('keydown', function (e) {
+            if (!isSocial(e.target)) return;
+            var b = e.target.closest('.social-media-item') && e.target.closest('.social-media-item').querySelector('.social-suggest');
+            if (e.key === 'Enter' && b && b.style.display === 'block') { e.preventDefault(); accept(e.target); }
+            else if (e.key === 'Escape') hide(e.target);
+        });
     })();
     </script>
     <script data-buton-sigdir>
