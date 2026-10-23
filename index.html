@@ -10122,6 +10122,29 @@ function saveCV() {
     /* Bilgisayarda düğme yazıları 13px (15px düğmeleri gereksiz genişletiyordu) */
     @media (min-width: 769px) { .controls > button { font-size: 13px !important; gap: 5px; padding-left: 8px; padding-right: 8px; } .controls > button > span:first-child { font-size: 1.25em; } }
     </style>
+    <style data-buton-kompakt>
+    /* Telefonda kontrol düğmeleri 4 satır yerine 2 satır:
+       1. satır: Önizleme (1/3) + PDF İndir (2/3) — ana işler büyük kalır.
+       2. satır: Paylaş, Yedekle, Yedeği Yükle, Temizle — simge üstte, yazı altta, küçük.
+       Sıralama CSS "order" ile yapılır; HTML ve JS değişmez. */
+    @media (max-width: 768px) {
+        .controls { grid-template-columns: repeat(12, 1fr); gap: 8px; }
+        .controls > #preview-cv { order: 1; grid-column: span 5; }
+        .controls > #save-pdf   { order: 2; grid-column: span 7; }
+        .controls > #share-cv   { order: 3; grid-column: span 3; }
+        .controls > #export-data{ order: 4; grid-column: span 3; }
+        .controls > #import-data{ order: 5; grid-column: span 3; }
+        .controls > #clear-all  { order: 6; grid-column: span 3; }
+        .controls > #preview-cv, .controls > #save-pdf { min-height: 46px; font-size: 15px !important; }
+        .controls > #share-cv, .controls > #export-data, .controls > #import-data, .controls > #clear-all {
+            flex-direction: column; gap: 2px; min-height: 52px; padding: 5px 2px;
+            font-size: 12px !important; font-weight: 600; line-height: 1.15; border-radius: 8px;
+        }
+        .controls > #share-cv > span:first-child, .controls > #export-data > span:first-child,
+        .controls > #import-data > span:first-child, .controls > #clear-all > span:first-child { font-size: 18px; }
+        .controls > #clear-all { border-width: 1px; }
+    }
+    </style>
     <script data-buton-sigdir>
     // Kelimeler bölünmez; bir düğmede en uzun kelime sığmıyorsa yalnızca o düğmenin yazısı 15px'ten 11px'e kadar küçültülür.
     (function () {
