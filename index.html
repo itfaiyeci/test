@@ -80,10 +80,10 @@
     <link rel="alternate" hreflang="x-default" href="https://www.mobilcv.com/">
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
+    <link rel="manifest" href="./site.webmanifest">
     
     <!-- Schema.org JSON-LD -->
     <script type="application/ld+json">
@@ -11696,6 +11696,95 @@ body.mcv-klavye #sticky-action-bar { display: none !important; }
         cubukDurumu();
     });
     window.addEventListener('orientationchange', function () { setTimeout(function () { tamYukseklik = vv ? vv.height : window.innerHeight; }, 500); });
+})();
+</script>
+<style data-ana-ekran>
+.mcv-a2hs { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%); z-index: 10050; width: min(420px, calc(100vw - 24px)); background: #fff; color: #0f172a; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,.25); padding: 16px 16px 12px; font: 400 15px/1.45 system-ui, sans-serif; }
+.mcv-a2hs h3 { margin: 0 0 6px; font-size: 17px; line-height: 1.3; }
+.mcv-a2hs p { margin: 0 0 10px; font-size: 14px; color: #475569; }
+.mcv-a2hs .mcv-a2hs-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.mcv-a2hs button { flex: 1 1 auto; min-height: 44px; border-radius: 10px; border: 0; padding: 10px 12px; font: 600 15px system-ui, sans-serif; cursor: pointer; }
+.mcv-a2hs .mcv-a2hs-ana { background: #2563eb; color: #fff; }
+.mcv-a2hs .mcv-a2hs-hafif { background: #e2e8f0; color: #0f172a; }
+</style>
+<script data-ana-ekran>
+/* === ANA EKRANA EKLE: yalniz PDF indirildikten sonra, kapatilabilir. Uygulama ici tarayicida ve zaten
+   ana ekrandan acildiysa gosterilmez. Android: tarayicinin kendi kurulum penceresi (beforeinstallprompt).
+   iPhone/iPad Safari: kisa yonerge (Safari'de bu pencere yok). Hicbir CV verisi gonderilmez. === */
+(function () {
+    var UA = navigator.userAgent || '';
+    var IAB = /Instagram|FBAN|FBAV|FB_IAB|FBIOS|musical_ly|BytedanceWebview|TikTok|trill_|Snapchat|LinkedInApp|Line\//i.test(UA);
+    var IOS = /iPhone|iPad|iPod/i.test(UA) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var IOS_SAFARI = IOS && /Safari/i.test(UA) && !/CriOS|FxiOS|EdgiOS|OPiOS|GSA\/|YaBrowser/i.test(UA);
+    var KEY = 'mobilcv_a2hs', GAP = 30 * 24 * 3600 * 1000;
+    var S = {"tr":{"t":"MobilCV'yi ana ekranınıza ekleyin","a":"Bir dahaki sefere MobilCV'yi simgesine dokunarak açabilirsiniz.","i":"Safari'de Paylaş düğmesine dokunun ve menüden ana ekrana ekleme seçeneğini seçin.","in":"Not: Ana ekrandan açılan MobilCV'de, Safari'de yazdıklarınız görünmeyebilir. Gerekirse \"{y}\" ve \"{g}\" ile taşıyabilirsiniz.","b":"Ana ekrana ekle","n":"Şimdi değil","ok":"Anladım"},"en":{"t":"Add MobilCV to your home screen","a":"Next time, you can open MobilCV by tapping its icon.","i":"In Safari, tap the Share button and choose the option to add it to your home screen.","in":"Note: when you open MobilCV from the home screen, what you wrote in Safari may not appear. If needed, you can move it with \"{y}\" and \"{g}\".","b":"Add to home screen","n":"Not now","ok":"Got it"},"de":{"t":"MobilCV zum Startbildschirm hinzufügen","a":"Beim nächsten Mal öffnen Sie MobilCV einfach über das Symbol.","i":"Tippen Sie in Safari auf die Teilen-Taste und wählen Sie im Menü die Option zum Hinzufügen zum Startbildschirm.","in":"Hinweis: Wenn Sie MobilCV über den Startbildschirm öffnen, sind Ihre Eingaben aus Safari möglicherweise nicht sichtbar. Bei Bedarf können Sie sie mit „{y}“ und „{g}“ übertragen.","b":"Zum Startbildschirm hinzufügen","n":"Nicht jetzt","ok":"Verstanden"},"fr":{"t":"Ajoutez MobilCV à votre écran d'accueil","a":"La prochaine fois, il vous suffira de toucher son icône pour ouvrir MobilCV.","i":"Dans Safari, touchez le bouton Partager, puis choisissez l'option d'ajout à l'écran d'accueil.","in":"Remarque : en ouvrant MobilCV depuis l'écran d'accueil, ce que vous avez saisi dans Safari peut ne pas apparaître. Si besoin, vous pouvez le transférer avec « {y} » et « {g} ».","b":"Ajouter à l'écran d'accueil","n":"Plus tard","ok":"J'ai compris"},"es":{"t":"Añade MobilCV a tu pantalla de inicio","a":"La próxima vez podrás abrir MobilCV tocando su icono.","i":"En Safari, toca el botón Compartir y elige la opción para añadirlo a la pantalla de inicio.","in":"Nota: al abrir MobilCV desde la pantalla de inicio, puede que no aparezca lo que escribiste en Safari. Si hace falta, puedes pasarlo con «{y}» y «{g}».","b":"Añadir a la pantalla de inicio","n":"Ahora no","ok":"Entendido"},"it":{"t":"Aggiungi MobilCV alla schermata Home","a":"La prossima volta potrai aprire MobilCV toccando la sua icona.","i":"In Safari tocca il pulsante Condividi e scegli l'opzione per aggiungerlo alla schermata Home.","in":"Nota: aprendo MobilCV dalla schermata Home, quello che hai scritto in Safari potrebbe non comparire. Se serve, puoi trasferirlo con «{y}» e «{g}».","b":"Aggiungi alla schermata Home","n":"Non ora","ok":"Ho capito"},"pt":{"t":"Adicione o MobilCV ao ecrã principal","a":"Da próxima vez, basta tocar no ícone para abrir o MobilCV.","i":"No Safari, toque no botão Partilhar e escolha a opção para o adicionar ao ecrã principal.","in":"Nota: ao abrir o MobilCV a partir do ecrã principal, o que escreveu no Safari pode não aparecer. Se for preciso, pode passá-lo com «{y}» e «{g}».","b":"Adicionar ao ecrã principal","n":"Agora não","ok":"Percebi"},"ru":{"t":"Добавьте MobilCV на главный экран","a":"В следующий раз MobilCV можно будет открыть одним касанием значка.","i":"В Safari нажмите кнопку «Поделиться» и выберите в меню пункт добавления на главный экран.","in":"Примечание: при открытии MobilCV с главного экрана данные, введённые в Safari, могут не отображаться. При необходимости перенесите их с помощью «{y}» и «{g}».","b":"Добавить на главный экран","n":"Не сейчас","ok":"Понятно"},"ar":{"t":"أضف MobilCV إلى الشاشة الرئيسية","a":"في المرة القادمة يمكنك فتح MobilCV بلمسة على أيقونته.","i":"في Safari، اضغط على زر المشاركة ثم اختر خيار الإضافة إلى الشاشة الرئيسية.","in":"ملاحظة: عند فتح MobilCV من الشاشة الرئيسية قد لا تظهر البيانات التي كتبتها في Safari. ويمكنك عند الحاجة نقلها باستخدام «{y}» و«{g}».","b":"إضافة إلى الشاشة الرئيسية","n":"ليس الآن","ok":"حسنًا"},"zh":{"t":"将 MobilCV 添加到主屏幕","a":"下次只需轻点图标即可打开 MobilCV。","i":"在 Safari 中轻点“分享”按钮，然后在菜单中选择添加到主屏幕的选项。","in":"注意：从主屏幕打开 MobilCV 时，您在 Safari 中填写的内容可能不会显示。如有需要，可使用“{y}”和“{g}”转移。","b":"添加到主屏幕","n":"以后再说","ok":"知道了"},"ja":{"t":"MobilCVをホーム画面に追加","a":"次回からはアイコンをタップするだけでMobilCVを開けます。","i":"Safariで共有ボタンをタップし、メニューからホーム画面に追加する項目を選んでください。","in":"注意：ホーム画面からMobilCVを開くと、Safariで入力した内容が表示されない場合があります。必要に応じて「{y}」と「{g}」で移せます。","b":"ホーム画面に追加","n":"今はしない","ok":"わかりました"}};
+    function dil() { var s = document.getElementById('language-select'); var l = (s && s.value) || window.MOBILCV_PAGE_LANG || 'tr'; return S[l] ? l : 'en'; }
+    function t(k) { return S[dil()][k]; }
+    function dugme(k) { var e = document.querySelector('[data-key="' + k + '"]'); return e ? e.textContent.trim() : ''; }
+    function kurulu() { try { return (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true; } catch (e) { return false; } }
+    function iz(ad, p) { try { if (window.mcvTrack) window.mcvTrack(ad, p || {}); } catch (e) {} }
+    function oku() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
+    function yaz(o) { try { var d = oku(); for (var k in o) d[k] = o[k]; localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }
+    var bekleyen = null;
+    window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); bekleyen = e; });
+    window.addEventListener('appinstalled', function () { bekleyen = null; yaz({ k: 1 }); kapat(); iz('pwa_install', {}); });
+    function uygun() {
+        if (IAB || kurulu()) return false;
+        var d = oku();
+        if (d.k || (d.r || 0) >= 2) return false;
+        if (d.ts && Date.now() - d.ts < GAP) return false;
+        return !!bekleyen || IOS_SAFARI;
+    }
+    function kapat() { var o = document.querySelector('.mcv-a2hs'); if (o) o.remove(); }
+    function el(par, tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; par.appendChild(e); return e; }
+    function goster() {
+        if (!uygun() || document.querySelector('.mcv-a2hs')) return;
+        var android = !!bekleyen;
+        var box = document.createElement('div'); box.className = 'mcv-a2hs';
+        box.setAttribute('role', 'dialog'); box.setAttribute('aria-live', 'polite');
+        if (dil() === 'ar') box.setAttribute('dir', 'rtl');
+        el(box, 'h3', '', t('t'));
+        el(box, 'p', '', android ? t('a') : t('i'));
+        if (!android) {
+            var y = dugme('exportData'), g = dugme('importData');
+            if (y && g) el(box, 'p', '', t('in').replace('{y}', y).replace('{g}', g));
+        }
+        var btns = el(box, 'div', 'mcv-a2hs-btns');
+        if (android) {
+            var ana = el(btns, 'button', 'mcv-a2hs-ana', t('b')); ana.type = 'button';
+            ana.addEventListener('click', function () {
+                var e = bekleyen; bekleyen = null; kapat();
+                iz('pwa_prompt_click', {});
+                if (!e) return;
+                try {
+                    e.prompt();
+                    e.userChoice.then(function (c) { var o = (c && c.outcome) || ''; iz('pwa_prompt_result', { outcome: o }); if (o === 'accepted') yaz({ k: 1 }); }, function () {});
+                } catch (err) {}
+            });
+        }
+        var hayir = el(btns, 'button', 'mcv-a2hs-hafif', android ? t('n') : t('ok')); hayir.type = 'button';
+        hayir.addEventListener('click', function () { kapat(); var d = oku(); yaz({ r: (d.r || 0) + 1 }); });
+        document.body.appendChild(box);
+        yaz({ ts: Date.now() });
+        iz('pwa_prompt_shown', { method: android ? 'android' : 'ios' });
+    }
+    // Tavsiye kutusu, cerez bandi ya da baska pencere acikken ust uste binmesin: kapanana kadar bekle (en fazla ~60 sn)
+    function acikPencere() {
+        var l = document.querySelectorAll('.rec-box, .mcv-iab-ov, .mcv-check-ov, #cookie-consent.show, #warning-popup, #preview-overlay, .date-picker-modal');
+        for (var i = 0; i < l.length; i++) { try { if (getComputedStyle(l[i]).display !== 'none' && l[i].getClientRects().length) return true; } catch (e) {} }
+        return false;
+    }
+    function dene(n) {
+        if (!uygun()) return;
+        if (acikPencere()) { if (n < 40) setTimeout(function () { dene(n + 1); }, 1500); return; }
+        goster();
+    }
+    window.mcvAnaEkranGoster = goster;
+    window.addEventListener('load', function () {
+        if (kurulu()) iz('pwa_open', {});
+        var eski = window.mcvTrackPdf;
+        window.mcvTrackPdf = function () { if (typeof eski === 'function') eski.apply(this, arguments); setTimeout(function () { dene(0); }, 2500); };
+    });
 })();
 </script>
 </body>
