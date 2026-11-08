@@ -2085,6 +2085,10 @@
     direction: ltr; /* E-posta ve telefon için soldan sağa yön */
 }
 
+/* MCV_TEL_SATIR (08.11): telefon numarası bölünmez; sığmazsa etiketin altına tek parça iner */
+.personal-info-item[data-field="phone"] { flex-wrap: wrap; }
+.personal-info-item[data-field="phone"] .personal-info-value { white-space: nowrap; }
+
 /* Arapça gibi RTL diller için destek - TÜM metin alanlarını kapsar.
    Sadece METİN AKIŞ YÖNÜNÜ (dir/text-align) değiştirir; sayfa
    düzeni (grid/flex sütun sırası, ikon/buton konumları) ve PDF
