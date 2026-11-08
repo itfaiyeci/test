@@ -6216,11 +6216,20 @@ class SocialMediaManager {
         });
     }
 
-            // Sayfadan ayrılırken uyarı göster
+            // MCV_CIKIS_UYARI (08.11): Sayfadan ayrılırken uyarı yalnız bu ziyarette CV'de değişiklik yapıldıysa
+            // ve ondan sonra PDF, Word ya da yedek alınmadıysa çıkar. Boş formda ve yalnız bakan ziyaretçide çıkmaz.
+            // (Veri zaten tarayıcıya otomatik kaydediliyor; uyarı yalnızca dosya almayı hatırlatır.)
+    var __mcvDegisti = false;
+    document.addEventListener('input', function (e) {
+        if (e.target && e.target.closest && e.target.closest('#cv-form')) __mcvDegisti = true;
+    }, true);
+    document.addEventListener('click', function (e) {
+        if (e.target && e.target.closest && e.target.closest('#save-pdf, #export-data, #mcv-docx-btn')) __mcvDegisti = false;
+    }, true);
     window.addEventListener('beforeunload', function(e) {
-        if (!localStorage.getItem('pdfDownloaded')) {
+        if (__mcvDegisti) {
             e.preventDefault();
-            e.returnValue = 'CV\'nizi kaydetmediniz! Sayfadan ayrılmak istediğinizden emin misiniz?';
+            e.returnValue = '';
         }
     });
           
