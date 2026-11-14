@@ -12788,5 +12788,40 @@ body.mcv-klavye #sticky-action-bar { display: none !important; }
     });
 })();
 </script>
+<script id="mcv-aria">
+/* MCV_ARIA (14.11): ekran okuyucu için düzenlenebilir CV alanlarına rol, ad, açıklama. Görünüm ve PDF değişmez. */
+(function(){
+  var ML=/(^|\s)(about-text|item-description|project-description)(\s|$)/;
+  function ad(el){
+    var row=el.closest('.personal-info-item');
+    var lab=row&&row.querySelector('.personal-info-label');
+    var t=lab?lab.textContent:'';
+    t=(t||'').replace(/[*:]/g,'').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]/gu,'').replace(/\s+/g,' ').trim();
+    var ph=(el.getAttribute('data-placeholder')||'').trim();
+    if(!/\p{L}/u.test(ph)||/^X+$/i.test(ph)) ph='';
+    if(t) return (ph&&ph!==t)? t+': '+ph : t;
+    return ph||(el.getAttribute('data-hint')||'').trim();
+  }
+  function uygula(){
+    var els=document.querySelectorAll('[contenteditable="true"]');
+    for(var i=0;i<els.length;i++){
+      var el=els[i];
+      if(el.getAttribute('role')!=='textbox') el.setAttribute('role','textbox');
+      var a=ad(el); if(a&&el.getAttribute('aria-label')!==a) el.setAttribute('aria-label',a);
+      var h=(el.getAttribute('data-hint')||'').trim();
+      if(h&&el.getAttribute('aria-description')!==h) el.setAttribute('aria-description',h);
+      if(el.getAttribute('data-required')==='true'&&el.getAttribute('aria-required')!=='true') el.setAttribute('aria-required','true');
+      if(ML.test(el.className)&&el.getAttribute('aria-multiline')!=='true') el.setAttribute('aria-multiline','true');
+    }
+  }
+  var bekle=0;
+  function planla(){ if(bekle) return; bekle=setTimeout(function(){bekle=0;uygula();},150); }
+  function basla(){
+    uygula();
+    try{ new MutationObserver(planla).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-placeholder','data-hint','contenteditable']}); }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',basla); else basla();
+})();
+</script>
 </body>
 </html>
