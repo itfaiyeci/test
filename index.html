@@ -11795,7 +11795,8 @@ function saveCV() {
                 // virgullu uzun adlarin ("Genel Müdür-Eğlence, Lokanta, Otel (...)") kisa ara parcalari da sayilmaz
                 var yan = pi > (m.__ak || 0);   // parantez/egik cizgi sonrasi yan ad (es anlamlilar ana ad sayilir)
                 if (yan && (GENEL_PARCA.test(p) || (p.length < 6 && mParca(m).length > 2))) return;
-                var ceza = (yan ? 60 : 0) + (m.resmi ? 0 : -15), i = -1;
+                // yan ad (parantez ici "(Konfeksiyon)") tam eslesmede ana addan/es anlamlidan one gecmesin: "overlokçu konfeksiyon" -> Konfeksiyon İşçisi
+                var ceza = (yan ? 400 : 0) + (m.resmi ? 0 : -15), i = -1;
                 // meslek adi kelime basinda gecmeli ("muhasebe" icindeki "ebe" sayilmaz); sonrasinda ek olabilir ("kaynakçılık")
                 // kisa parantez parcasi ("Gece Müdürü (otel)" -> "otel") tam eslesme sayilmaz, yalniz kok eslesmesine girer
                 while (!(yan && p.length < 6) && (i = tx.indexOf(p, i + 1)) >= 0) {
