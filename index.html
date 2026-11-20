@@ -11734,6 +11734,8 @@ function saveCV() {
         uzun: 'Mesleğinizi kısaca yazın (ör. Kaynakçı, Garson, Muhasebeci).',
         baska: 'Başka bir meslek mi?',
         benzer: 'Benzer meslekler:',
+        benzerZengin: 'Hazır becerileri olan benzer meslek:',
+        kaynak: 'Meslek adı: İŞKUR Türk Meslekler Sözlüğü.',
         genelBas: '{x} için başlangıç',
         genelBilgi: 'Yeni bir CV açılır. Unvanınız hazır gelir; örnek özet ve deneyim satırı köşeli parantezle işaretlidir, kendi bilginizle doldurun. Becerilerinizi sonra Yetenekler bölümüne ekleyebilirsiniz. Şu anki CV\'niz silinmez, CV\'lerim\'de kalır.',
         genelCumle: 'Yaptığınız işleri ve elde ettiğiniz sonuçları kısa cümlelerle yazın.',
@@ -11763,33 +11765,72 @@ function saveCV() {
     // Turkce harfsiz yazimi da tanimak icin katlama: "hemsire" = "hemşire", "asci" = "aşçı"
     function katla(x) { return kucuk(x || '', true).replace(/[çğıöşüâî]/g, function (c) { return { 'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u', 'â': 'a', 'î': 'i' }[c]; }); }
     function mParca(m) {
-        return m.n.split(/\s*[\/(),]\s*/).map(function (x) { return katla(x).trim(); }).filter(function (x) { return x.length >= 3; });
+        if (m.__parca) return m.__parca;
+        return (m.__parca = m.n.split(/\s*[\/(),]\s*/).map(function (x) { return katla(x).replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); })
+            .filter(function (x) { return x.length >= 3; }));
     }
-    // Metinde en once gecen meslek; kisa girdide kok eslesmesi de ("kaynak" -> Kaynakci)
-    // Yazilan metinle eslesen meslekler: once tam ad gecenler (metinde en once gecen), sonra kok eslesmesi
+    // Puan (dusuk = iyi). <50000 "tam": meslek adi yazilanin icinde kelime basinda geciyor ya da yazilan, adin basi.
+    // Ana ad (parantez/egik cizgi oncesi) once; 139 zengin meslek az farkla one gecer. __tt: yazilanin neredeyse tamami.
     function mAdaylar(d, metin) {
-        var tx = katla(metin).replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(), puan = {};
+        var tx = katla(metin).replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(), puan = {}, tt = {};
         if (tx.length < 3) return [];
-        function ekle(m, p) { if (puan[m.s] == null || p < puan[m.s]) puan[m.s] = p; }
-        // meslek adi kelime basinda gecmeli ("muhasebe" icindeki "ebe" sayilmaz); sonrasinda ek olabilir ("kaynakçılık")
-        d.forEach(function (m) { mParca(m).forEach(function (p) {
-            var i = -1;
-            while ((i = tx.indexOf(p, i + 1)) >= 0) { if (i === 0 || tx.charAt(i - 1) === ' ') { ekle(m, i * 100 - p.length); break; } }
-        }); });
-        if (tx.length <= 40) {
-            var sozler = tx.split(' ').filter(function (w) { return w.length >= 4; });
-            d.forEach(function (m) {
-                mParca(m).forEach(function (p) {
-                    // ilk kelimesi eslesen meslek once ("satış" -> Satış Danışmanı, sonra Saha Satış Temsilcisi); kisa ad once
-                    p.split(' ').forEach(function (pw, sira) {
-                        sozler.forEach(function (w) { var n = Math.min(5, w.length); if (pw.length >= n && pw.slice(0, n) === w.slice(0, n)) ekle(m, 100000 - n * 100 + sira * 50 + p.length); });
+        var sozler = tx.length <= 40 ? tx.split(' ').filter(function (w) { return w.length >= 4; }) : [];
+        // "kaynak ustası", "dikiş elemanı": genel unvan kelimeleri baska kelime varsa kok eslesmesinde aranmaz
+        var GENEL_SOZ = /^(usta|ustasi|kalfa|kalfasi|cirak|ciragi|eleman|elemani|isci|iscisi|personel|personeli|calisan|calisani)$/;
+        var GENEL_PARCA = /^(usta|ustasi|eleman|elemani|isci|iscisi|personel|personeli|operator|operatoru|teknisyen|teknisyeni|teknikeri|uzman|uzmani|gorevli|gorevlisi|memur|memuru|sef|sefi|mudur|muduru|yardimcisi|ozel|genel|diger|elle|makine|metal|ahsap|tekstil)$/;
+        if (sozler.some(function (w) { return !GENEL_SOZ.test(w); })) sozler = sozler.filter(function (w) { return !GENEL_SOZ.test(w); });
+        function ekle(m, p, tam) { if (puan[m.s] == null || p < puan[m.s]) puan[m.s] = p; if (tam) tt[m.s] = 1; }
+        d.forEach(function (m) {
+            mParca(m).forEach(function (p, pi) {
+                // parantez/egik cizgi sonrasi tek genel kelime ("(Yapılandırmacı) Elemanı" -> "elemani") eslesme sayilmaz
+                if (pi > 0 && GENEL_PARCA.test(p)) return;
+                var ceza = (pi > 0 ? 60 : 0) + (m.resmi ? 0 : -15), i = -1;
+                // meslek adi kelime basinda gecmeli ("muhasebe" icindeki "ebe" sayilmaz); sonrasinda ek olabilir ("kaynakçılık")
+                while ((i = tx.indexOf(p, i + 1)) >= 0) {
+                    // Turkce tamlamada asil ad sondadir ("tır şoförü" -> şoför): sonda kalan yazi, bastakinden cok cezalandirilir
+                    if (i === 0 || tx.charAt(i - 1) === ' ') { ekle(m, (tx.length - i - p.length) * 30 + i * 5 + ceza, i === 0 && pi === 0 && tx.length - p.length <= 4); break; }
+                }
+                // yazilan, meslek adinin basi ya da bir kelimesinin basi ("market elemanı", "muhasebe" -> Ön Muhasebe Elemanı)
+                if (tx.length >= 5) {
+                    if (p.indexOf(tx) === 0) ekle(m, 40 + (p.length - tx.length) + ceza);
+                    // kelime ortasinda gecen yazi: resmi uzun adlarda ("Otomotiv Sac ve Gövde Kaynak Ustası") zengin kok eslesmesinden sonra gelir
+                    else if (p.indexOf(' ' + tx) >= 0) ekle(m, (m.resmi ? 150000 : 70) + (p.length - tx.length) + ceza);
+                }
+                // kok eslesmesi: yazilan her kelime (4+ harf) adin bir kelimesiyle eslesmeli ("kaynak ustası" -> Kaynakçı degil, ikisi de gerekir)
+                if (sozler.length) {
+                    var pws = p.split(' '), tutan = 0, ilk = 1e9;
+                    sozler.forEach(function (w) {
+                        for (var j = 0; j < pws.length; j++) {
+                            var pw = pws[j], hit = w.length < 5 ? pw === w : (pw.length >= 5 && pw.slice(0, 5) === w.slice(0, 5));
+                            if (hit) { tutan++; ilk = Math.min(ilk, j); break; }
+                        }
                     });
-                });
+                    if (tutan === sozler.length) ekle(m, 100000 + ilk * 50 + p.length + (pi > 0 ? 60 : 0) + (m.resmi ? 0 : -15));
+                }
             });
-        }
-        return d.filter(function (m) { return puan[m.s] != null; }).sort(function (a, b) { return puan[a.s] - puan[b.s]; }).slice(0, 4);
+        });
+        return d.filter(function (m) { return puan[m.s] != null; }).sort(function (a, b) { return puan[a.s] - puan[b.s]; })
+            .slice(0, 8).map(function (m) { m.__p = puan[m.s]; m.__tt = !!tt[m.s]; return m; });
     }
     function mBul(d, metin) { return mAdaylar(d, metin)[0] || null; }
+    // Tam eslesme: meslek adi yazilanin icinde kelime basinda geciyor (kok/onek eslesmesi degil)
+    function tamMi(m) { return m && m.__p != null && m.__p < 50000; }
+    // İŞKUR Türk Meslekler Sözlüğü adları (oneri/tr-iskur.json, ~7.400): 139 zengin meslekte tam karşılığı olmayan
+    // unvanlar için. Yalnız ad ve ISCO birim grubu; beceri/görev yok.
+    var RV = null, RVP = null;
+    function rYukle() {
+        if (RV) return Promise.resolve(RV);
+        if (!RVP) RVP = fetch('oneri/tr-iskur.json').then(function (r) { if (!r.ok) throw 0; return r.json(); })
+            .then(function (l) {
+                RV = l.map(function (x) {
+                    var sade = x[1].replace(/\s*\([^)]*\)/g, '').trim() || x[1];
+                    return { s: 'iskur:' + x[0], n: x[1], t: x[1], k: [], c: [MT.genelCumle], b: [], genel: true, resmi: true,
+                        g: x[0].slice(0, 4), a: '… yıllık deneyime sahip ' + kucuk(sade, true) + '.' };
+                });
+                return RV;
+            }, function (e) { RVP = null; throw e; });
+        return RVP;
+    }
     // Listede olmayan meslek: kullanicinin yazdigi unvanla genel baslangic (beceri ve ornek CV yok)
     function genelMeslek(metin) {
         var ad = String(metin || '').replace(/\s+/g, ' ').trim().slice(0, 60);
@@ -11801,7 +11842,7 @@ function saveCV() {
         h += '<h3 class="mcv-alt">' + esc((m.genel ? MT.genelBas : MT.bas).replace('{x}', m.n)) + '</h3>';
         h += '<p class="mcv-bilgi">' + esc(m.genel ? MT.genelBilgi : MT.bilgi) + '</p>';
         if (digerleri && digerleri.length) {
-            h += '<p class="mcv-meslek-diger"><span>' + esc(m.genel ? MT.benzer : MT.baska) + '</span> ';
+            h += '<p class="mcv-meslek-diger"><span>' + esc(m.resmi ? MT.benzerZengin : (m.genel ? MT.benzer : MT.baska)) + '</span> ';
             digerleri.forEach(function (o) { h += '<button type="button" class="mcv-cip mcv-meslek-alt" data-s="' + esc(o.s) + '">' + esc(o.n) + '</button> '; });
             h += '</p>';
         }
@@ -11818,6 +11859,7 @@ function saveCV() {
         if (m.u) h += '<button type="button" class="mcv-ikincil mcv-meslek-ornek">' + esc(MT.ornekGor) + '</button><div class="mcv-meslek-gorsel" hidden></div>';
         h += '<p class="mcv-hata mcv-meslek-hata" role="alert" hidden></p>';
         h += '<button type="button" class="mcv-birincil mcv-meslek-basla">' + esc(MT.basla) + '</button>';
+        if (m.resmi) h += '<p class="mcv-not mcv-meslek-kaynak">' + esc(MT.kaynak) + '</p>';
         return h + '</div>';
     }
     function meslekGoster(p, r, metin) {
@@ -11826,12 +11868,35 @@ function saveCV() {
         if (!temiz) { kutu.innerHTML = '<p class="mcv-uyari">' + esc(MT.bos) + '</p>'; try { p.querySelector('#mcv-ilan-metin').focus(); } catch (e) {} return; }
         mYukle().then(function (d) {
             if (!kutu.isConnected) return;
-            var adaylar = mAdaylar(d, temiz), m = adaylar[0] || null, digerleri = adaylar.slice(1, 4);
-            if (!m) {
-                // Uzun metin (ilan vb.) unvan olarak kullanilmaz; kisa yazilmasi istenir
-                if (temiz.length > 60 || temiz.split(' ').length > 6) { kutu.innerHTML = '<p class="mcv-uyari">' + esc(MT.uzun) + '</p>'; iz('meslek_uzun', { cv_language: 'tr' }); return; }
-                m = genelMeslek(temiz);
-            }
+            var adaylar = mAdaylar(d, temiz);
+            if (adaylar[0] && adaylar[0].__tt) { goster(adaylar[0], alternatif(adaylar[0], adaylar)); return; }
+            // uzun metin (ilan vb.): resmi listedeki kisa adlar rastgele kelimelerle eslesir; yalniz 139'a bakilir
+            if (temiz.length > 60 || temiz.split(' ').length > 6) { sec(adaylar, []); return; }
+            // 139'da yazilanin tamamini karsilayan meslek yok: İŞKUR resmi adlariyla karsilastir
+            rYukle().then(function (resmi) { sec(adaylar, mAdaylar(resmi, temiz)); }, function () { sec(adaylar, []); });
+        }, function () {
+            if (kutu.isConnected) kutu.insertAdjacentHTML('beforeend', '<p class="mcv-uyari">' + esc(MT.hata) + '</p>');
+        });
+        // Alternatif dugmeleri: yalniz tam eslesenler ve ayni ISCO birim grubundaki zengin meslekler
+        // (kok eslesmesi "Kaynakçı" icin "İnsan Kaynakları Uzmanı" gibi alakasiz sonuc veriyordu)
+        function alternatif(m, adaylar) {
+            var d = MV || [], l = adaylar.filter(function (o) { return o !== m && !o.resmi && o.__p < 50000; })
+                .concat(m.g ? d.filter(function (o) { return o.g === m.g && o !== m; }) : []);
+            var out = [], gor = {}; gor[m.s] = 1;
+            l.forEach(function (o) { if (!gor[o.s] && out.length < 3) { gor[o.s] = 1; out.push(o); } }); return out;
+        }
+        function sec(adaylar, resmiler) {
+            if (!kutu.isConnected) return;
+            var a0 = adaylar[0], r0 = resmiler[0];
+            var en = [a0, r0].filter(Boolean).sort(function (x, y) { return x.__p - y.__p; })[0];
+            if (en && en.__p < 200000) { goster(en, alternatif(en, adaylar)); return; }
+            // Uzun metin (ilan vb.) unvan olarak kullanilmaz; kisa yazilmasi istenir
+            if (temiz.length > 60 || temiz.split(' ').length > 6) { kutu.innerHTML = '<p class="mcv-uyari">' + esc(MT.uzun) + '</p>'; iz('meslek_uzun', { cv_language: 'tr' }); return; }
+            goster(genelMeslek(temiz), alternatif({ s: '', g: '' }, adaylar));
+        }
+        function goster(m, digerleri) {
+            if (!kutu.isConnected) return;
+            var d = MV || [];
             var yer = document.createElement('div');
             function ciz(mm, dg) {
                 yer.innerHTML = mPanelHtml(mm, dg);
@@ -11869,10 +11934,9 @@ function saveCV() {
             kutu.innerHTML = '';
             ciz(m, digerleri);
             kutu.appendChild(yer);
-            iz('meslek_taslak_goster', { cv_language: 'tr', meslek: m.s, kaynak: 'yazi' }); // genelde meslek: 'genel' (yazilan metin gonderilmez)
-        }, function () {
-            if (kutu.isConnected) kutu.insertAdjacentHTML('beforeend', '<p class="mcv-uyari">' + esc(MT.hata) + '</p>');
-        });
+            // meslek: zengin meslek kodu, 'iskur:<ISCO kodu>' ya da 'genel' (yazilan metin gonderilmez)
+            iz('meslek_taslak_goster', { cv_language: 'tr', meslek: m.s, kaynak: 'yazi' });
+        }
     }
     function bosMu(x) {
         var parca = [x.personalInfo, x.about, x.education, x.experience, x.projects, x.courses, x.skills, x.references, x.languages, x.socialMedia];
