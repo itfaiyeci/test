@@ -10798,13 +10798,32 @@ function saveCV() {
         }
         function nrm(t) { return (t || '').toLocaleLowerCase(lang() === 'tr' ? 'tr' : 'en').replace(/\s+/g, ' ').trim(); }
         function meslekBul(d, metin) {
-            var m = nrm(metin); if (m.length < 3) return null;
-            for (var i = 0; i < d.length; i++) {
-                var parcalar = d[i].n.split(/\s*[\/(),]\s*/).map(nrm).filter(function (x) { return x.length >= 3; });
-                for (var j = 0; j < parcalar.length; j++) { if (m.indexOf(parcalar[j]) >= 0 || parcalar[j].indexOf(m) >= 0) return d[i]; }
+            // 20.11: en iyi eslesme (ilk bulunan degil); meslek adi kelime basinda gecmeli ("muhasebe" -> Muhasebeci, "Ebe" degil);
+            // Turkce harfsiz yazim ("hemsire"); yazilan metin adin basiysa ("muhase"); kok eslesmesi ("kaynak ustasi" -> Kaynakci)
+            function katla(t) {
+                return nrm(t).replace(/[çğıöşüâî]/g, function (c) { return { 'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u', 'â': 'a', 'î': 'i' }[c]; })
+                    .replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
             }
-            return null;
+            var m = katla(metin); if (m.length < 3) return null;
+            var en = null, enP = 1e12;
+            function aday(o, p) { if (p < enP) { en = o; enP = p; } }
+            d.forEach(function (o) {
+                o.n.split(/\s*[\/(),]\s*/).map(katla).filter(function (x) { return x.length >= 3; }).forEach(function (p) {
+                    var i = -1;
+                    while ((i = m.indexOf(p, i + 1)) >= 0) { if (i === 0 || m.charAt(i - 1) === ' ') { aday(o, i * 100 - p.length); break; } }
+                    if (m.length >= 4 && (p.indexOf(m) === 0 || p.indexOf(' ' + m) >= 0)) aday(o, 50000 + p.length);
+                    if (m.length <= 40) p.split(' ').forEach(function (pw, sira) {
+                        m.split(' ').forEach(function (w) {
+                            if (w.length < 4) return;
+                            var n = Math.min(5, w.length);
+                            if (pw.length >= n && pw.slice(0, n) === w.slice(0, n)) aday(o, 100000 - n * 100 + sira * 50 + p.length);
+                        });
+                    });
+                });
+            });
+            return en;
         }
+        window.mcvEskiMeslekBul = meslekBul; // otomatik test icin
         function yazVeBildir(hedef, metin) {
             hedef.textContent = metin; hedef.classList.remove('empty-field');
             hedef.dispatchEvent(new Event('input', { bubbles: true }));
