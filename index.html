@@ -10920,10 +10920,12 @@ function saveCV() {
                         });
                         govde.appendChild(cipler);
                     }
+                    if (m.u) {
                     var a = document.createElement('a'); a.href = m.u; a.target = '_blank'; a.rel = 'noopener'; a.className = 'mcv-oneri-link';
                     a.textContent = '📄 ' + ot('ornek').replace('{x}', m.n); engelle(a);
                     a.addEventListener('click', function (e) { e.preventDefault(); ornekAc(m); });
                     govde.appendChild(a);
+                    }
                 }
                 if (on) sec.value = on.s;
                 ciz(on);
@@ -11766,8 +11768,11 @@ function saveCV() {
     function katla(x) { return kucuk(x || '', true).replace(/[çğıöşüâî]/g, function (c) { return { 'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u', 'â': 'a', 'î': 'i' }[c]; }); }
     function mParca(m) {
         if (m.__parca) return m.__parca;
-        return (m.__parca = m.n.split(/\s*[\/(),]\s*/).map(function (x) { return katla(x).replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); })
-            .filter(function (x) { return x.length >= 3; }));
+        // ilk parca ana ad; ardindan es anlamlilar ("e": "dikiş elemanı" -> Konfeksiyon İşçisi) ana ad gibi sayilir
+        function n(x) { return katla(x).replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+        var p = m.n.split(/\s*[\/(),]\s*/).map(n), es = (m.e || []).map(n);
+        m.__ak = es.length;
+        return (m.__parca = [p[0]].concat(es, p.slice(1)).filter(function (x) { return x.length >= 3; }));
     }
     // Puan (dusuk = iyi). <50000 "tam": meslek adi yazilanin icinde kelime basinda geciyor ya da yazilan, adin basi.
     // Ana ad (parantez/egik cizgi oncesi) once; 139 zengin meslek az farkla one gecer. __tt: yazilanin neredeyse tamami.
@@ -11778,17 +11783,24 @@ function saveCV() {
         // "kaynak ustası", "dikiş elemanı": genel unvan kelimeleri baska kelime varsa kok eslesmesinde aranmaz
         var GENEL_SOZ = /^(usta|ustasi|kalfa|kalfasi|cirak|ciragi|eleman|elemani|isci|iscisi|personel|personeli|calisan|calisani)$/;
         var GENEL_PARCA = /^(usta|ustasi|eleman|elemani|isci|iscisi|personel|personeli|operator|operatoru|teknisyen|teknisyeni|teknikeri|uzman|uzmani|gorevli|gorevlisi|memur|memuru|sef|sefi|mudur|muduru|yardimcisi|ozel|genel|diger|elle|makine|metal|ahsap|tekstil)$/;
-        if (sozler.some(function (w) { return !GENEL_SOZ.test(w); })) sozler = sozler.filter(function (w) { return !GENEL_SOZ.test(w); });
+        var atilan = [];
+        if (sozler.some(function (w) { return !GENEL_SOZ.test(w); })) {
+            atilan = sozler.filter(function (w) { return GENEL_SOZ.test(w); }).map(function (w) { return w.slice(0, 5); });
+            sozler = sozler.filter(function (w) { return !GENEL_SOZ.test(w); });
+        }
         function ekle(m, p, tam) { if (puan[m.s] == null || p < puan[m.s]) puan[m.s] = p; if (tam) tt[m.s] = 1; }
         d.forEach(function (m) {
             mParca(m).forEach(function (p, pi) {
                 // parantez/egik cizgi sonrasi tek genel kelime ("(Yapılandırmacı) Elemanı" -> "elemani") eslesme sayilmaz
-                if (pi > 0 && GENEL_PARCA.test(p)) return;
-                var ceza = (pi > 0 ? 60 : 0) + (m.resmi ? 0 : -15), i = -1;
+                // virgullu uzun adlarin ("Genel Müdür-Eğlence, Lokanta, Otel (...)") kisa ara parcalari da sayilmaz
+                var yan = pi > (m.__ak || 0);   // parantez/egik cizgi sonrasi yan ad (es anlamlilar ana ad sayilir)
+                if (yan && (GENEL_PARCA.test(p) || (p.length < 6 && mParca(m).length > 2))) return;
+                var ceza = (yan ? 60 : 0) + (m.resmi ? 0 : -15), i = -1;
                 // meslek adi kelime basinda gecmeli ("muhasebe" icindeki "ebe" sayilmaz); sonrasinda ek olabilir ("kaynakçılık")
-                while ((i = tx.indexOf(p, i + 1)) >= 0) {
+                // kisa parantez parcasi ("Gece Müdürü (otel)" -> "otel") tam eslesme sayilmaz, yalniz kok eslesmesine girer
+                while (!(yan && p.length < 6) && (i = tx.indexOf(p, i + 1)) >= 0) {
                     // Turkce tamlamada asil ad sondadir ("tır şoförü" -> şoför): sonda kalan yazi, bastakinden cok cezalandirilir
-                    if (i === 0 || tx.charAt(i - 1) === ' ') { ekle(m, (tx.length - i - p.length) * 30 + i * 5 + ceza, i === 0 && pi === 0 && tx.length - p.length <= 4); break; }
+                    if (i === 0 || tx.charAt(i - 1) === ' ') { ekle(m, (tx.length - i - p.length) * 30 + i * 5 + ceza, i === 0 && !yan && tx.length - p.length <= 4); break; }
                 }
                 // yazilan, meslek adinin basi ya da bir kelimesinin basi ("market elemanı", "muhasebe" -> Ön Muhasebe Elemanı)
                 if (tx.length >= 5) {
@@ -11801,11 +11813,16 @@ function saveCV() {
                     var pws = p.split(' '), tutan = 0, ilk = 1e9;
                     sozler.forEach(function (w) {
                         for (var j = 0; j < pws.length; j++) {
-                            var pw = pws[j], hit = w.length < 5 ? pw === w : (pw.length >= 5 && pw.slice(0, 5) === w.slice(0, 5));
+                            // 4 harfli kelime: tam ya da belirgin uzun turev ("otel" -> otelcilik; "kasa" -> kasap degil)
+                            var pw = pws[j], hit = w.length < 5 ? (pw === w || (pw.indexOf(w) === 0 && pw.length >= w.length + 3)) : (pw.length >= 5 && pw.slice(0, 5) === w.slice(0, 5));
+                            // olumsuz turev sayilmaz: "dikiş" -> "dikişsiz"
+                            if (hit && pw.length > w.length && /^(siz|suz|sız|süz)/.test(pw.slice(Math.min(w.length, pw.length)))) hit = false;
                             if (hit) { tutan++; ilk = Math.min(ilk, j); break; }
                         }
                     });
-                    if (tutan === sozler.length) ekle(m, 100000 + ilk * 50 + p.length + (pi > 0 ? 60 : 0) + (m.resmi ? 0 : -15));
+                    // yazilan genel unvan kelimesi ("elemanı", "ustası") adda da geciyorsa one gec: "otel elemanı" -> Turizm ve Otelcilik Elemanı
+                    var unvanUyar = atilan.some(function (a) { return pws.some(function (pw) { return pw.slice(0, 5) === a; }); }) ? -150 : 0;
+                    if (tutan === sozler.length) ekle(m, 100000 + ilk * 50 + p.length + (yan ? 60 : 0) + (m.resmi ? 0 : -15) + unvanUyar);
                 }
             });
         });
