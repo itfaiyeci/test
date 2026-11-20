@@ -11709,6 +11709,11 @@ function saveCV() {
         iBas: 'İlanda geçen, CV\'nizde olmayan (sahipseniz işaretleyin)',
         bBas: 'Bu meslekte işverenlerin sık baktığı (varsa CV\'nize ekleyin)',
         basla: 'Bu taslakla yeni CV aç',
+        ornekGor: 'Örnek CV\'yi gör',
+        ornekGizle: 'Örneği gizle',
+        ornekAlt: '{x} örnek CV',
+        ornekYok: 'Örnek görsel açılamadı. ',
+        ornekSayfa: 'Örnek sayfasını aç',
         cok: 'En fazla 10 beceri eklenebilir; ilk 10 tanesi eklenecek.',
         firma: '[Firma adı, şehir]',
         ornek: '[Örnek – kendinize göre değiştirin] ',
@@ -11753,19 +11758,12 @@ function saveCV() {
             h += '<h4 class="mcv-meslek-bas">' + esc(MT.kBas) + '</h4><div class="mcv-secimler">';
             (m.k || []).forEach(function (k) { h += '<label class="mcv-sec"><input type="checkbox" data-y="' + esc(k) + '"> ' + esc(k) + '</label>'; });
             h += '</div>';
-            // Secili meslegin becerilerinde zaten gecen kelimeler ("teknik", "resim") ve yan haklar tekrar sorulmaz
-            var bec = { sgk: 1, ssk: 1 }; (m.k || []).forEach(function (k) { bec[kucuk(k, true)] = 1; kelimeler(k, true).forEach(function (x) { bec[kok(x.w)] = 1; }); });
-            var ek = (ilanSoz || []).filter(function (w) { var lw = kucuk(w, true); return !bec[lw] && !bec[kok(lw)]; }).slice(0, 10);
-            if (ek.length) {
-                h += '<h4 class="mcv-meslek-bas">' + esc(MT.iBas) + '</h4><div class="mcv-secimler">';
-                ek.forEach(function (w) { h += '<label class="mcv-sec"><input type="checkbox" data-y="' + esc(w) + '"> ' + esc(w) + '</label>'; });
-                h += '</div>';
-            }
             if (m.b && m.b.length) {
                 h += '<h4 class="mcv-meslek-bas">' + esc(MT.bBas) + '</h4><ul class="mcv-meslek-b">';
                 m.b.forEach(function (b) { h += '<li>' + esc(b) + '</li>'; });
                 h += '</ul>';
             }
+            if (m.u) h += '<button type="button" class="mcv-ikincil mcv-meslek-ornek">' + esc(MT.ornekGor) + '</button><div class="mcv-meslek-gorsel" hidden></div>';
             h += '<p class="mcv-hata mcv-meslek-hata" role="alert" hidden></p>';
             h += '<button type="button" class="mcv-birincil mcv-meslek-basla">' + esc(MT.basla) + '</button>';
         }
@@ -11776,11 +11774,7 @@ function saveCV() {
         mYukle().then(function (d) {
             if (!kutu.isConnected) return;
             var kisa = r.durum === 'kisa';
-            // Ilandaki eksik kelimelerden yalniz beceriye benzeyenler: kisaltma/arac (MYK, SAP) ya da
-            // meslek verisindeki beceri ve belgelerde gecen kelimeler (sehir, "ikamet" gibi kelimeler elenir)
-            var sozluk = {};
-            d.forEach(function (o) { (o.k || []).concat(o.b || []).forEach(function (x) { kelimeler(x, true).forEach(function (k) { if (k.w.length >= 4) sozluk[kok(k.w)] = 1; }); }); });
-            var ilanSoz = r.durum === 'tamam' ? r.eksik.filter(function (x) { return x.k || sozluk[kok(x.w)]; }).map(function (x) { return x.asil; }) : [];
+            var ilanSoz = []; // ilan kelimeleri gurultulu cikiyordu (20.11 kurucu); simdilik panelde gosterilmez
             var m = mBul(d, metin);
             var yer = document.createElement('div');
             function ciz(mm) {
@@ -11790,6 +11784,22 @@ function saveCV() {
                     var s = sec.value, yeni = d.filter(function (o) { return o.s === s; })[0] || null;
                     ciz(yeni);
                     if (yeni) iz('meslek_taslak_goster', { cv_language: 'tr', meslek: yeni.s, kaynak: 'liste' });
+                });
+                var og = yer.querySelector('.mcv-meslek-ornek');
+                if (og) og.addEventListener('click', function () {
+                    var g = yer.querySelector('.mcv-meslek-gorsel');
+                    if (!g.hidden) { g.hidden = true; og.textContent = MT.ornekGor; return; }
+                    if (!g.firstChild) {
+                        var img = document.createElement('img');
+                        img.alt = MT.ornekAlt.replace('{x}', mm.n); img.src = mm.u.replace(/\.html$/, '.png'); img.loading = 'lazy';
+                        img.addEventListener('error', function () {
+                            g.textContent = MT.ornekYok;
+                            var a = document.createElement('a'); a.href = mm.u; a.target = '_blank'; a.rel = 'noopener'; a.textContent = MT.ornekSayfa; g.appendChild(a);
+                        });
+                        g.appendChild(img);
+                    }
+                    g.hidden = false; og.textContent = MT.ornekGizle;
+                    iz('meslek_ornek_gor', { cv_language: 'tr', meslek: mm.s });
                 });
                 var b = yer.querySelector('.mcv-meslek-basla');
                 if (b) b.addEventListener('click', function () {
@@ -11870,7 +11880,9 @@ function saveCV() {
             '.mcv-sec input{width:18px;height:18px;margin:0}' +
             '.mcv-sec:has(input:checked){background:#e0f2fe;border-color:#0284c7}' +
             '.mcv-meslek-b{margin:0 0 8px 18px;padding:0;font-size:15px;line-height:1.5}' +
-            '.mcv-meslek .mcv-birincil{margin-top:12px}';
+            '.mcv-meslek .mcv-birincil{margin-top:12px}' +
+            '.mcv-meslek-ornek{margin-top:12px;width:100%}' +
+            '.mcv-meslek-gorsel{margin-top:8px}.mcv-meslek-gorsel img{width:100%;height:auto;border:1px solid #e5e7eb;border-radius:6px}';
         document.head.appendChild(st);
     })();
     window.mcvMeslekBul = mBul; // otomatik test icin
