@@ -6234,7 +6234,7 @@ class SocialMediaManager {
     var __mcvDegisti = false;
     window.mcvCikisUyariKapat = function () { __mcvDegisti = false; };
     document.addEventListener('input', function (e) {
-        if (e.target && e.target.closest && e.target.closest('#cv-form')) __mcvDegisti = true;
+        if (e.target && e.target.closest && e.target.closest('#cv-form') && !e.target.closest('#mcv-ilan-metin, #mcv-ilan-sonuc')) __mcvDegisti = true;
     }, true);
     document.addEventListener('click', function (e) {
         if (e.target && e.target.closest && e.target.closest('#save-pdf, #export-data, #mcv-docx-btn')) __mcvDegisti = false;
@@ -11755,6 +11755,7 @@ function saveCV() {
         ornek: '[Örnek – kendinize göre değiştirin] ',
         acildi: 'Taslak açıldı. Köşeli parantezli yerleri kendi bilginizle değiştirin.',
         pdfQ: 'CV\'nizde doldurulmamış yerler var:\n{x}\n\nYine de indirilsin mi?',
+        esas: 'Beceriler ve örnekler: {x}',
         hata: 'Meslek listesi yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.'
     };
     var MV = null, MVP = null;
@@ -11858,6 +11859,7 @@ function saveCV() {
     function mPanelHtml(m, digerleri) {
         var h = '<div class="mcv-meslek">';
         h += '<h3 class="mcv-alt">' + esc((m.genel ? MT.genelBas : MT.bas).replace('{x}', m.n)) + '</h3>';
+        if (m.__asil) h += '<p class="mcv-bilgi mcv-meslek-esas">' + esc(MT.esas.replace('{x}', m.__asil)) + '</p>';
         h += '<p class="mcv-bilgi">' + esc(m.genel ? MT.genelBilgi : MT.bilgi) + '</p>';
         if (digerleri && digerleri.length) {
             h += '<p class="mcv-meslek-diger"><span>' + esc(m.resmi ? MT.benzerZengin : (m.genel ? MT.benzer : MT.baska)) + '</span> ';
@@ -11880,6 +11882,20 @@ function saveCV() {
         if (m.resmi) h += '<p class="mcv-not mcv-meslek-kaynak">' + esc(MT.kaynak) + '</p>';
         return h + '</div>';
     }
+    // Yazilan, zengin meslegin es anlamlisiyla birebir ayniysa ("overlokçu") unvan o ad olur; beceri ve ornekler
+    // zengin meslekten gelir (kurucu onayi 20.11; ilanlarda ve ATS aramalarinda adayin kullandigi unvan aranir).
+    function esAd(m, metin) {
+        if (!m || m.resmi || m.genel || !m.e || !m.e.length) return m;
+        function n(x) { return katla(x).replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+        var tx = n(metin), es = m.e.filter(function (x) { return n(x) === tx; })[0];
+        if (!es) return m;
+        var ad = es.split(' ').map(function (w) { return w ? w.charAt(0).toLocaleUpperCase('tr') + w.slice(1) : w; }).join(' ');
+        var v = Object.create(m); v.n = ad; v.t = ad; v.__asil = m.n;
+        var eski = kucuk(m.t || m.n, true) + '.';
+        if (m.a && m.a.slice(-eski.length) === eski) v.a = m.a.slice(0, -eski.length) + kucuk(es, true) + '.';
+        return v;
+    }
+    window.mcvEsAd = esAd; // otomatik test icin
     function meslekGoster(p, r, metin) {
         var kutu = p.querySelector('#mcv-ilan-sonuc');
         var temiz = String(metin || '').replace(/\s+/g, ' ').trim();
@@ -11915,6 +11931,7 @@ function saveCV() {
         }
         function goster(m, digerleri) {
             if (!kutu.isConnected) return;
+            m = esAd(m, temiz);
             var d = MV || [];
             var yer = document.createElement('div');
             function ciz(mm, dg) {
