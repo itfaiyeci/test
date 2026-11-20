@@ -8514,7 +8514,7 @@ if (socialMediaSection) {
                         const clonedSectionDescriptions = clonedDoc.querySelectorAll('.section-description');
                         clonedSectionDescriptions.forEach(desc => { desc.style.display = 'none'; });
                         // Yazarken yardim / oneri kutulari CV icerigi degildir; odak alanda kalsa bile PDF'e basilmasin
-                        clonedDoc.querySelectorAll('#cv-form .mcv-help, #cv-form .mcv-oneri, #cv-form .social-suggest').forEach(el => { el.style.display = 'none'; });
+                        clonedDoc.querySelectorAll('#cv-form .mcv-help, #cv-form .mcv-oneri, #cv-form .social-suggest, #cv-form .mcv-taslak-balon').forEach(el => { el.style.display = 'none'; });
 
                         const clonedCV = clonedDoc.getElementById('cv-form');
                         if (clonedCV) clonedCV.classList.add('pdf-mode');
@@ -11882,9 +11882,66 @@ function saveCV() {
             '.mcv-meslek-b{margin:0 0 8px 18px;padding:0;font-size:15px;line-height:1.5}' +
             '.mcv-meslek .mcv-birincil{margin-top:12px}' +
             '.mcv-meslek-ornek{margin-top:12px;width:100%}' +
+            '.mcv-taslak-alan{outline:2px dashed #f59e0b;outline-offset:2px;border-radius:4px}' +
+            '.mcv-taslak-balon{display:block;width:100%;margin:6px 0 8px;padding:8px 10px;border:1px solid #f59e0b;border-radius:8px;background:#fffbeb;color:#92400e;font-size:13px;line-height:1.4;text-align:start;cursor:pointer;font-family:inherit;font-weight:400;white-space:normal}' +
+            '.pdf-mode .mcv-taslak-balon{display:none!important}.pdf-mode .mcv-taslak-alan{outline:none!important}' +
             '.mcv-meslek-gorsel{margin-top:8px}.mcv-meslek-gorsel img{width:100%;height:auto;border:1px solid #e5e7eb;border-radius:6px}';
         document.head.appendChild(st);
     })();
+    // Taslaktan gelen (ya da oneriyle eklenen) yer tutuculu alanlara "duzenle" balonu (kurucu 20.11)
+    var YT_TEK = /\[(?:Firma adı, şehir|Örnek – kendinize göre değiştirin)\]|…/;
+    function balonMetni(tx) {
+        var ornek = /\[(?:Firma adı, şehir|Örnek – kendinize göre değiştirin)\]/.test(tx), nokta = tx.indexOf('…') >= 0;
+        if (ornek && nokta) return '✏️ Taslaktan eklendi: [ ] ve … olan yerleri kendi bilginizle değiştirin.';
+        if (ornek) return '✏️ Taslaktan eklendi: [ ] olan yeri kendi bilginizle değiştirin.';
+        return '✏️ … yerine kendi bilginizi yazın.';
+    }
+    function balonYeri(el) { return el.closest('.experience-subtitle-container') || el; }
+    function yerTutucuSec(el) {
+        try {
+            el.focus();
+            var n = el.firstChild; if (!n || n.nodeType !== 3) return;
+            var m = n.data.match(YT_TEK); if (!m) return;
+            var r = document.createRange(); r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length);
+            var sl = window.getSelection(); sl.removeAllRanges(); sl.addRange(r);
+        } catch (e) {}
+    }
+    function balonGuncelle(el) {
+        if (!el || !el.isConnected) return;
+        var yer = balonYeri(el), b = yer.nextElementSibling;
+        if (b && !(b.classList.contains('mcv-taslak-balon') && b.__alan === el)) b = null;
+        var tx = el.classList.contains('empty-field') ? '' : (el.textContent || '');
+        if (lang() !== 'tr' || !YT_TEK.test(tx)) {
+            el.classList.remove('mcv-taslak-alan');
+            if (b) b.parentNode.removeChild(b);
+            return;
+        }
+        el.classList.add('mcv-taslak-alan');
+        if (!b) {
+            b = document.createElement('button');
+            b.type = 'button'; b.className = 'mcv-taslak-balon'; b.__alan = el;
+            b.setAttribute('contenteditable', 'false');
+            b.addEventListener('mousedown', function (e) { e.preventDefault(); });
+            b.addEventListener('click', function () { yerTutucuSec(el); iz('taslak_balon_tik'); });
+            yer.parentNode.insertBefore(b, yer.nextSibling);
+        }
+        b.textContent = balonMetni(tx);
+    }
+    var BALON_ALAN = '#about-text, #experience-container .experience-company, #experience-container .item-description, #experience-container .item-title, #projects-container .item-description';
+    function balonTara() { [].forEach.call(document.querySelectorAll(BALON_ALAN), balonGuncelle); }
+    document.addEventListener('input', function (e) {
+        var el = e.target && e.target.closest && e.target.closest(BALON_ALAN);
+        if (el) balonGuncelle(el);
+    });
+    document.addEventListener('focusout', function (e) {
+        var el = e.target && e.target.closest && e.target.closest(BALON_ALAN);
+        if (el) setTimeout(function () { balonGuncelle(el); }, 0);
+    });
+    // Dil degisince ve sayfa yuklenip CV verisi yazildiktan sonra tara
+    var dilSec = document.getElementById('language-select');
+    if (dilSec) dilSec.addEventListener('change', function () { setTimeout(balonTara, 300); });
+    setTimeout(balonTara, 1200); setTimeout(balonTara, 3000);
+    window.mcvBalonTara = balonTara; // otomatik test icin
     window.mcvMeslekBul = mBul; // otomatik test icin
     bIlan.addEventListener('click', function () { ilanAc(bIlan); });
     window.mcvIlanAnaliz = analiz; // otomatik test icin
