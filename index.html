@@ -6232,6 +6232,7 @@ class SocialMediaManager {
             // ve ondan sonra PDF, Word ya da yedek alınmadıysa çıkar. Boş formda ve yalnız bakan ziyaretçide çıkmaz.
             // (Veri zaten tarayıcıya otomatik kaydediliyor; uyarı yalnızca dosya almayı hatırlatır.)
     var __mcvDegisti = false;
+    window.mcvCikisUyariKapat = function () { __mcvDegisti = false; };
     document.addEventListener('input', function (e) {
         if (e.target && e.target.closest && e.target.closest('#cv-form')) __mcvDegisti = true;
     }, true);
@@ -11470,6 +11471,7 @@ function saveCV() {
         if (data && data.language) { try { localStorage.setItem('mobilcv_lang_chosen', '1'); } catch (e) {} }
         try { if (mesaj) sessionStorage.setItem('mcv_bildirim', mesaj); } catch (e) {}
         if (m) { if (m.saveTimeout) clearTimeout(m.saveTimeout); m.saveAllData = function () {}; }
+        if (window.mcvCikisUyariKapat) window.mcvCikisUyariKapat();
         window.addEventListener('beforeunload', function (e) { e.stopImmediatePropagation(); }, true);
         location.reload();
     };
@@ -11688,10 +11690,190 @@ function saveCV() {
             try { ta.blur(); } catch (e) {}
             var r = analiz(sonIlan);
             p.querySelector('#mcv-ilan-sonuc').innerHTML = sonucHtml(r);
+            if (lang() === 'tr') meslekGoster(p, r, sonIlan);
             iz('ilan_kontrol');
             try { p.querySelector('#mcv-ilan-sonuc').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
         });
     }
+    /* === MESLEK TASLAK (deneme) === */
+    // Yalniz Turkce. Veri: oneri/tr.json (k: beceriler, c: ornek cumleler, t: unvan, a: ozet kalibi, b: sik istenenler).
+    // Hazir deneyim uydurmaz: firma, yil ve ornek cumleler koseli parantezle isaretli gelir; PDF/Word'de uyarilir.
+    var MT = {
+        bas: '{x} için hazır başlangıç',
+        bilgi: 'Yeni bir CV açılır. Meslek unvanı ve seçtiğiniz beceriler hazır gelir; örnek özet ve örnek deneyim cümlesi köşeli parantezle işaretlidir, kendi bilginizle değiştirin. Şu anki CV\'niz silinmez, CV\'lerim\'de kalır.',
+        kisa: 'İlan metnini yapıştırırsanız ilanda geçip CV\'nizde olmayan kelimeleri de gösteririz.',
+        secIlk: 'Mesleğinizi seçin…',
+        sec: 'Başka meslek seçin…',
+        secBas: 'İsterseniz mesleğinizi seçin, hazır bir başlangıçla yeni CV açalım:',
+        kBas: 'Sahip olduğunuz becerileri işaretleyin',
+        iBas: 'İlanda geçen, CV\'nizde olmayan (sahipseniz işaretleyin)',
+        bBas: 'Bu meslekte işverenlerin sık baktığı (varsa CV\'nize ekleyin)',
+        basla: 'Bu taslakla yeni CV aç',
+        cok: 'En fazla 10 beceri eklenebilir; ilk 10 tanesi eklenecek.',
+        firma: '[Firma adı, şehir]',
+        ornek: '[Örnek – kendinize göre değiştirin] ',
+        acildi: 'Taslak açıldı. Köşeli parantezli yerleri kendi bilginizle değiştirin.',
+        pdfQ: 'CV\'nizde doldurulmamış yerler var:\n{x}\n\nYine de indirilsin mi?',
+        hata: 'Meslek listesi yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.'
+    };
+    var MV = null, MVP = null;
+    function mYukle() {
+        if (MV) return Promise.resolve(MV);
+        if (!MVP) MVP = fetch('oneri/tr.json').then(function (r) { if (!r.ok) throw 0; return r.json(); })
+            .then(function (d) { MV = d; return d; }, function (e) { MVP = null; throw e; });
+        return MVP;
+    }
+    function mParca(m) {
+        return m.n.split(/\s*[\/(),]\s*/).map(function (x) { return kucuk(x, true).trim(); }).filter(function (x) { return x.length >= 3; });
+    }
+    // Metinde en once gecen meslek; kisa girdide kok eslesmesi de ("kaynak" -> Kaynakci)
+    function mBul(d, metin) {
+        var tx = kucuk(metin || '', true).replace(/\s+/g, ' ').trim(), en = null, enI = 1e9, enL = 0;
+        if (tx.length < 3) return null;
+        function aday(m, i, l) { if (i < enI || (i === enI && l > enL)) { en = m; enI = i; enL = l; } }
+        d.forEach(function (m) { mParca(m).forEach(function (p) { var i = tx.indexOf(p); if (i >= 0) aday(m, i, p.length); }); });
+        if (en || tx.length > 40) return en;
+        var sozler = tx.split(' ').filter(function (w) { return w.length >= 5; });
+        d.forEach(function (m) {
+            mParca(m).forEach(function (p) {
+                sozler.forEach(function (w) { if (p.indexOf(w.slice(0, 5)) === 0) aday(m, 0, Math.min(w.length, p.length)); });
+            });
+        });
+        return en;
+    }
+    function mPanelHtml(d, m, ilanSoz, kisa) {
+        var h = '<div class="mcv-meslek">';
+        if (kisa && m) h += '<p class="mcv-bilgi">' + esc(MT.kisa) + '</p>';
+        if (m) h += '<h3 class="mcv-alt">' + esc(MT.bas.replace('{x}', m.n)) + '</h3><p class="mcv-bilgi">' + esc(MT.bilgi) + '</p>';
+        else h += '<p class="mcv-bilgi">' + esc(MT.secBas) + '</p>';
+        h += '<select class="mcv-meslek-sec" aria-label="' + esc(MT.secIlk) + '"><option value="">' + esc(m ? MT.sec : MT.secIlk) + '</option>';
+        d.forEach(function (o) { h += '<option value="' + esc(o.s) + '"' + (m && o.s === m.s ? ' selected' : '') + '>' + esc(o.n) + '</option>'; });
+        h += '</select>';
+        if (m) {
+            h += '<h4 class="mcv-meslek-bas">' + esc(MT.kBas) + '</h4><div class="mcv-secimler">';
+            (m.k || []).forEach(function (k) { h += '<label class="mcv-sec"><input type="checkbox" data-y="' + esc(k) + '"> ' + esc(k) + '</label>'; });
+            h += '</div>';
+            // Secili meslegin becerilerinde zaten gecen kelimeler ("teknik", "resim") ve yan haklar tekrar sorulmaz
+            var bec = { sgk: 1, ssk: 1 }; (m.k || []).forEach(function (k) { bec[kucuk(k, true)] = 1; kelimeler(k, true).forEach(function (x) { bec[kok(x.w)] = 1; }); });
+            var ek = (ilanSoz || []).filter(function (w) { var lw = kucuk(w, true); return !bec[lw] && !bec[kok(lw)]; }).slice(0, 10);
+            if (ek.length) {
+                h += '<h4 class="mcv-meslek-bas">' + esc(MT.iBas) + '</h4><div class="mcv-secimler">';
+                ek.forEach(function (w) { h += '<label class="mcv-sec"><input type="checkbox" data-y="' + esc(w) + '"> ' + esc(w) + '</label>'; });
+                h += '</div>';
+            }
+            if (m.b && m.b.length) {
+                h += '<h4 class="mcv-meslek-bas">' + esc(MT.bBas) + '</h4><ul class="mcv-meslek-b">';
+                m.b.forEach(function (b) { h += '<li>' + esc(b) + '</li>'; });
+                h += '</ul>';
+            }
+            h += '<p class="mcv-hata mcv-meslek-hata" role="alert" hidden></p>';
+            h += '<button type="button" class="mcv-birincil mcv-meslek-basla">' + esc(MT.basla) + '</button>';
+        }
+        return h + '</div>';
+    }
+    function meslekGoster(p, r, metin) {
+        var kutu = p.querySelector('#mcv-ilan-sonuc');
+        mYukle().then(function (d) {
+            if (!kutu.isConnected) return;
+            var kisa = r.durum === 'kisa';
+            // Ilandaki eksik kelimelerden yalniz beceriye benzeyenler: kisaltma/arac (MYK, SAP) ya da
+            // meslek verisindeki beceri ve belgelerde gecen kelimeler (sehir, "ikamet" gibi kelimeler elenir)
+            var sozluk = {};
+            d.forEach(function (o) { (o.k || []).concat(o.b || []).forEach(function (x) { kelimeler(x, true).forEach(function (k) { if (k.w.length >= 4) sozluk[kok(k.w)] = 1; }); }); });
+            var ilanSoz = r.durum === 'tamam' ? r.eksik.filter(function (x) { return x.k || sozluk[kok(x.w)]; }).map(function (x) { return x.asil; }) : [];
+            var m = mBul(d, metin);
+            var yer = document.createElement('div');
+            function ciz(mm) {
+                yer.innerHTML = mPanelHtml(d, mm, ilanSoz, kisa && !!mm);
+                var sec = yer.querySelector('.mcv-meslek-sec');
+                sec.addEventListener('change', function () {
+                    var s = sec.value, yeni = d.filter(function (o) { return o.s === s; })[0] || null;
+                    ciz(yeni);
+                    if (yeni) iz('meslek_taslak_goster', { cv_language: 'tr', meslek: yeni.s, kaynak: 'liste' });
+                });
+                var b = yer.querySelector('.mcv-meslek-basla');
+                if (b) b.addEventListener('click', function () {
+                    var secili = [].map.call(yer.querySelectorAll('input[type=checkbox]:checked'), function (c) { return c.getAttribute('data-y'); });
+                    taslakBaslat(mm, secili, yer);
+                });
+            }
+            // Kisa girdi meslek adiysa "metin cok kisa" uyarisi yerine panel gosterilir
+            if (kisa && m) kutu.innerHTML = '';
+            ciz(m);
+            kutu.appendChild(yer);
+            if (m) iz('meslek_taslak_goster', { cv_language: 'tr', meslek: m.s, kaynak: kisa ? 'kisa' : 'ilan' });
+        }, function () {
+            if (kutu.isConnected) kutu.insertAdjacentHTML('beforeend', '<p class="mcv-uyari">' + esc(MT.hata) + '</p>');
+        });
+    }
+    function bosMu(x) {
+        var parca = [x.personalInfo, x.about, x.education, x.experience, x.projects, x.courses, x.skills, x.references, x.languages, x.socialMedia];
+        return !/[\p{L}\p{N}]/u.test(JSON.stringify(parca).replace(/"(?:[^"\\]|\\.)*":/g, ''));
+    }
+    function taslak(m, secili, cur) {
+        var ex = (m.c && m.c[0]) || '';
+        return {
+            timestamp: new Date().toISOString(),
+            personalInfo: { profession: m.t || m.n },
+            about: m.a ? MT.ornek + m.a : '',
+            education: [],
+            experience: [{ title: m.t || m.n, company: MT.firma, duration: '', description: ex ? MT.ornek + ex : '' }],
+            projects: [], courses: [], skills: secili.slice(0, 10), references: [], languages: [], socialMedia: {},
+            language: cur.language || 'tr', theme: cur.theme || '', template: cur.template || '', paper: cur.paper || 'a4'
+        };
+    }
+    function taslakBaslat(m, secili, yer) {
+        function mHata(x) { var e = yer.querySelector('.mcv-meslek-hata'); if (e) { e.textContent = x; e.hidden = false; } }
+        if (secili.length > 10) { if (!confirm(MT.cok)) return; }
+        var cur = veri(), d = taslak(m, secili, cur), o = durum(), geriAl = null;
+        if (!bosMu(cur)) {
+            if (o.liste.length >= MAX) { mHata(t('limit')); return; }
+            var akt = bul(o, o.aktif), eskiAd = akt.ad, eskiElle = akt.elle;
+            if (!akt.elle) { akt.ad = otoAd(cur); akt.elle = true; }
+            akt.veri = cur; akt.tarih = Date.now();
+            o.sayac = (o.sayac || o.liste.length) + 1;
+            var yeni = { id: 'c' + o.sayac, ad: m.n + ' – taslak', elle: true, tarih: Date.now(), veri: null };
+            o.liste.push(yeni); o.aktif = yeni.id;
+            try { yaz(o); } catch (er) { mHata(t('full')); return; }
+            geriAl = function () {
+                o.liste = o.liste.filter(function (e) { return e.id !== yeni.id; });
+                o.aktif = akt.id; akt.veri = null; akt.ad = eskiAd; akt.elle = eskiElle;
+                try { yaz(o); } catch (e2) {}
+            };
+        }
+        iz('meslek_taslak_ac', { cv_language: 'tr', meslek: m.s, beceri: secili.length });
+        try { window.mcvVeriyleYenile(d, MT.acildi); }
+        catch (er) { if (geriAl) geriAl(); mHata(t('full')); }
+    }
+    // PDF / Word indirilirken taslaktaki isaretli yerler (ve onerilerdeki "…") doldurulmamissa sor
+    var YER_TUTUCU = /\[(?:Firma adı, şehir|Örnek – kendinize göre değiştirin)\]|…/g;
+    var sonOnay = 0;
+    function indirmeKoru(e) {
+        if (lang() !== 'tr' || Date.now() - sonOnay < 3000) return;
+        var bul_ = cvMetni().match(YER_TUTUCU);
+        if (!bul_) return;
+        var tekil = []; bul_.forEach(function (x) { if (tekil.indexOf(x) < 0) tekil.push(x); });
+        var liste = tekil.slice(0, 4).map(function (x) { return '• ' + (x === '…' ? '… (sayı / bilgi)' : x); }).join('\n');
+        if (confirm(MT.pdfQ.replace('{x}', liste))) { sonOnay = Date.now(); iz('taslak_indir_onay'); return; }
+        e.preventDefault(); e.stopImmediatePropagation(); iz('taslak_indir_vazgec');
+    }
+    ['save-pdf', 'sticky-pdf-btn', 'mcv-docx-btn'].forEach(function (id) {
+        document.addEventListener('click', function (e) { if (e.target && e.target.closest && e.target.closest('#' + id)) indirmeKoru(e); }, true);
+    });
+    (function () {
+        var st = document.createElement('style');
+        st.textContent = '.mcv-meslek{margin-top:16px;padding-top:12px;border-top:1px solid #e5e7eb}' +
+            '.mcv-meslek-sec{width:100%;padding:10px;font-size:16px;border:1px solid #cbd5e1;border-radius:8px;margin:6px 0 4px;background:#fff;color:#111827}' +
+            '.mcv-meslek-bas{font-size:15px;margin:14px 0 6px}' +
+            '.mcv-secimler{display:flex;flex-wrap:wrap;gap:8px}' +
+            '.mcv-sec{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid #cbd5e1;border-radius:999px;font-size:15px;cursor:pointer;background:#fff;color:#111827}' +
+            '.mcv-sec input{width:18px;height:18px;margin:0}' +
+            '.mcv-sec:has(input:checked){background:#e0f2fe;border-color:#0284c7}' +
+            '.mcv-meslek-b{margin:0 0 8px 18px;padding:0;font-size:15px;line-height:1.5}' +
+            '.mcv-meslek .mcv-birincil{margin-top:12px}';
+        document.head.appendChild(st);
+    })();
+    window.mcvMeslekBul = mBul; // otomatik test icin
     bIlan.addEventListener('click', function () { ilanAc(bIlan); });
     window.mcvIlanAnaliz = analiz; // otomatik test icin
 
