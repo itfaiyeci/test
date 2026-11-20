@@ -11791,7 +11791,7 @@ function saveCV() {
                     if (!g.hidden) { g.hidden = true; og.textContent = MT.ornekGor; return; }
                     if (!g.firstChild) {
                         var img = document.createElement('img');
-                        img.alt = MT.ornekAlt.replace('{x}', mm.n); img.src = mm.u.replace(/\.html$/, '.png'); img.loading = 'lazy';
+                        img.alt = MT.ornekAlt.replace('{x}', mm.n); img.loading = 'eager'; img.src = mm.u.replace(/\.html$/, '.png');
                         img.addEventListener('error', function () {
                             g.textContent = MT.ornekYok;
                             var a = document.createElement('a'); a.href = mm.u; a.target = '_blank'; a.rel = 'noopener'; a.textContent = MT.ornekSayfa; g.appendChild(a);
