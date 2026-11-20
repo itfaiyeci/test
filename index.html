@@ -11883,7 +11883,7 @@ function saveCV() {
             '.mcv-meslek .mcv-birincil{margin-top:12px}' +
             '.mcv-meslek-ornek{margin-top:12px;width:100%}' +
             '.mcv-taslak-alan{outline:2px dashed #f59e0b;outline-offset:2px;border-radius:4px}' +
-            '.mcv-taslak-balon{display:block;width:100%;margin:6px 0 8px;padding:8px 10px;border:1px solid #f59e0b;border-radius:8px;background:#fffbeb;color:#92400e;font-size:13px;line-height:1.4;text-align:start;cursor:pointer;font-family:inherit;font-weight:400;white-space:normal}' +
+            '.mcv-taslak-balon{display:block;width:100%;max-width:min(100%, calc(100vw - 56px));margin:6px 0 8px;padding:8px 10px;border:1px solid #f59e0b;border-radius:8px;background:#fffbeb;color:#92400e;font-size:13px;line-height:1.4;text-align:start;cursor:pointer;font-family:inherit;font-weight:400;white-space:normal}' +
             '.pdf-mode .mcv-taslak-balon{display:none!important}.pdf-mode .mcv-taslak-alan{outline:none!important}' +
             '.mcv-meslek-gorsel{margin-top:8px}.mcv-meslek-gorsel img{width:100%;height:auto;border:1px solid #e5e7eb;border-radius:6px}';
         document.head.appendChild(st);
@@ -11892,8 +11892,8 @@ function saveCV() {
     var YT_TEK = /\[(?:Firma adı, şehir|Örnek – kendinize göre değiştirin)\]|…/;
     function balonMetni(tx) {
         var ornek = /\[(?:Firma adı, şehir|Örnek – kendinize göre değiştirin)\]/.test(tx), nokta = tx.indexOf('…') >= 0;
-        if (ornek && nokta) return '✏️ Taslaktan eklendi: [ ] ve … olan yerleri kendi bilginizle değiştirin.';
-        if (ornek) return '✏️ Taslaktan eklendi: [ ] olan yeri kendi bilginizle değiştirin.';
+        if (ornek && nokta) return '✏️ Taslaktan eklendi: [ ] ve … yerlerini düzenleyin.';
+        if (ornek) return '✏️ Taslaktan eklendi, kendinize göre düzenleyin.';
         return '✏️ … yerine kendi bilginizi yazın.';
     }
     function balonYeri(el) { return el.closest('.experience-subtitle-container') || el; }
