@@ -12154,7 +12154,7 @@ function saveCV() {
                     p = p.replace(/ /g, ''); if (p.length < 2) return;
                     var ceza = (pi > (m.__ak || 0) ? 400 : 0) + (m.resmi ? 0 : -15), i;
                     if (tz === p) ekle(m, ceza, true);
-                    else if ((i = tz.lastIndexOf(p)) >= 0) ekle(m, 1000 + (tz.length - p.length) * 30 + (tz.length - i - p.length) * 200 + ceza);
+                    else if ((i = tz.lastIndexOf(p)) >= 0) ekle(m, 50000 + (tz.length - p.length) * 30 + (tz.length - i - p.length) * 200 + ceza);
                     else if (p.indexOf(tz) === 0) ekle(m, 60000 + (p.length - tz.length) + ceza);
                     else if (p.indexOf(tz) > 0) ekle(m, 70000 + (p.length - tz.length) + ceza);
                 });
