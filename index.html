@@ -11882,7 +11882,8 @@ function saveCV() {
     function meslekGoster(p, r, metin) {
         var kutu = p.querySelector('#mcv-ilan-sonuc');
         var temiz = String(metin || '').replace(/\s+/g, ' ').trim();
-        if (!temiz) { kutu.innerHTML = '<p class="mcv-uyari">' + esc(MT.bos) + '</p>'; try { p.querySelector('#mcv-ilan-metin').focus(); } catch (e) {} return; }
+        // bos ya da 3 harften kisa girdi ("Ç") unvan olarak kullanilmaz
+        if ((temiz.match(/\p{L}/gu) || []).length < 3) { kutu.innerHTML = '<p class="mcv-uyari">' + esc(MT.bos) + '</p>'; try { p.querySelector('#mcv-ilan-metin').focus(); } catch (e) {} return; }
         mYukle().then(function (d) {
             if (!kutu.isConnected) return;
             var adaylar = mAdaylar(d, temiz);
