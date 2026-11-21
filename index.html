@@ -11479,6 +11479,7 @@ function saveCV() {
         donus = kaynak || null;
         ov = document.createElement('div');
         ov.className = 'mcv-modal'; ov.id = id;
+        if (lang() === 'ar') ov.setAttribute('dir', 'rtl'); // Arapca: pencere sagdan sola
         ov.innerHTML = '<div class="mcv-modal-kutu" role="dialog" aria-modal="true" aria-labelledby="' + id + '-bas" tabindex="-1">' +
             '<div class="mcv-modal-bas"><strong id="' + id + '-bas">' + esc(baslik) + '</strong>' +
             '<button type="button" class="mcv-modal-kapat" aria-label="' + esc(t('close')) + '">✕</button></div>' +
