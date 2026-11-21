@@ -6239,8 +6239,19 @@ class SocialMediaManager {
     document.addEventListener('click', function (e) {
         if (e.target && e.target.closest && e.target.closest('#save-pdf, #export-data, #mcv-docx-btn')) __mcvDegisti = false;
     }, true);
+    function __mcvAnlik() {
+        try { var m = window.autoSaveManager; if (!m || !m.collectData) return null; var d = m.collectData(); delete d.timestamp; return JSON.stringify(d); } catch (x) { return null; }
+    }
+    var __mcvIlk = null;
+    window.mcvCikisDurum = function () { return { degisti: __mcvDegisti, anlik: __mcvIlk !== null, ayni: __mcvIlk !== null && __mcvAnlik() === __mcvIlk }; };
+    window.addEventListener('load', function () { setTimeout(function () { __mcvIlk = __mcvAnlik(); }, 1500); }); // kayitli CV yuklenirken giden input olaylari degisiklik sayilmaz
+    document.addEventListener('click', function (e) {
+        if (e.target && e.target.closest && e.target.closest('#save-pdf, #export-data, #mcv-docx-btn')) setTimeout(function () { __mcvIlk = __mcvAnlik(); }, 0);
+    }, true);
     window.addEventListener('beforeunload', function(e) {
         if (__mcvDegisti) {
+            var simdi = __mcvAnlik();
+            if (__mcvIlk !== null && simdi !== null && simdi === __mcvIlk) return; // CV ayni: uyari yok
             e.preventDefault();
             e.returnValue = '';
         }
