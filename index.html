@@ -11605,6 +11605,7 @@ function saveCV() {
         if (durum().aktif === once) return; // kopya olmadi (or. 5 CV siniri); hata mesaji kopyala() icinde
         var hedef = hs.value, ad = '';
         [].forEach.call(sel.options, function (op) { if (op.value === hedef) ad = op.textContent.trim(); });
+        if (/^(fr|es|it|pt)$/.test(hedef)) ad = ad.charAt(0).toLowerCase() + ad.slice(1); // "en français", "en español"
         sel.value = hedef; sel.dispatchEvent(new Event('change', { bubbles: true }));
         iz('cv_dil_kopya', { cv_language: hedef });
         kapat();
